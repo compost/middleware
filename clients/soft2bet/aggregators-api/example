@@ -1,0 +1,15 @@
+{
+  "contactId":"WZB_6281929",
+  "journeyId":1,
+  "journeyVersion":1,
+  "journeyStep":"1",
+  "acceptUri":"https://soft2bet-checker-api.azurewebsites.net/application/test/WZB_6281929/1",
+  "ttl":1,
+  "ttlTimeUnit":"DAYS",
+  "ruleId":"1",
+  "ruleParameters":[{"from":"2023-07-01T16:45:43.925153384Z", "to":"2023-07-23T16:45:43.925153384Z","kind":"deposit","symbol":"moreOrEqual","times":1,"amount":null,"sports":[]}]
+}
+
+
+
+

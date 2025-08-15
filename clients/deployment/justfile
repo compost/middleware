@@ -1,0 +1,29 @@
+# fmt on terraform
+fmt:
+  terraform fmt
+
+# Select an existing workspace.
+workspace WORKSPACE_NAME:
+    @terraform workspace select {{WORKSPACE_NAME}}
+
+# Create a new workspace.
+workspace-new WORKSPACE_NAME:
+    @terraform workspace new {{WORKSPACE_NAME}}
+
+# Apply 🚀
+apply TFVARS_FILE:
+    # Get the workspace name from the tfvars file name (e.g., "client-a" from "client-a.tfvars").
+    @just workspace $(basename '{{TFVARS_FILE}}' .tfvars)
+
+    # Use `terraform apply -var-file` to apply the changes.
+    @terraform apply -var-file="{{TFVARS_FILE}}"
+
+deactivate RG NAME:
+   az containerapp revision deactivate \
+        --revision $(az containerapp revision list --name {{NAME}} --resource-group {{RG}} | jq -r '.[].name') \
+        --resource-group {{RG}}
+
+activate RG NAME:
+   az containerapp revision activate \
+        --revision $(az containerapp revision list --all --name {{NAME}} --resource-group {{RG}} | jq -r 'sort_by(.properties.createdTime) | reverse |  .[].name') \
+        --resource-group {{RG}}

@@ -1,0 +1,40 @@
+{
+  "app": "soft2bet-firstdepositloss",
+  "host": "soft2bet-firstdepositloss-fufxa6cfgmbhhafy.westeurope-01.azurewebsites.net",
+  "image": "soft2bet.azurecr.io/fld/player-processor:canmore"
+}
+{
+  "app": "soft2bet-players-processor",
+  "host": "soft2bet-players-processor.azurewebsites.net",
+  "image": "soft2bet.azurecr.io/player-processor:banff"
+}
+{
+  "app": "soft2bet-sportpush",
+  "host": "soft2bet-sportpush.azurewebsites.net",
+  "image": "soft2bet.azurecr.io/sportpush/player-processor:canmore"
+}
+{
+  "app": "soft2bet-kafka-to-sqs-kpi",
+  "host": "soft2bet-kafka-to-sqs-kpi-dffjape5e4c6ecb0.westeurope-01.azurewebsites.net",
+  "image": "soft2bet.azurecr.io/kpi/player-processor:canmore"
+}
+{
+  "app": "soft2bet-ldc-stream",
+  "host": "soft2bet-ldc-stream.azurewebsites.net",
+  "image": "soft2bet.azurecr.io/player-processor:canmore"
+}
+{
+  "app": "soft2bet-playersegmentation",
+  "host": "soft2bet-playersegmentation.azurewebsites.net",
+  "image": "soft2bet.azurecr.io/segmentation/player-processor:canmore"
+}
+{
+  "app": "soft2bet-funid-stream",
+  "host": "soft2bet-funid-stream.azurewebsites.net",
+  "image": "soft2bet.azurecr.io/funid/player-processor:canmore"
+}
+{
+  "app": "repartitioner",
+  "host": "repartitioner-h8edh5c6djdbgabt.westeurope-01.azurewebsites.net",
+  "image": "soft2bet.azurecr.io/repartitioner/player-processor:banff"
+}

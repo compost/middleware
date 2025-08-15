@@ -1,0 +1,71 @@
+package io.symplify.kafka;
+
+import java.util.Optional;
+
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
+public class PlayerKafka {
+  public Optional<String> customer_id = Optional.empty();
+  public Optional<String> player_id = Optional.empty();
+  public Optional<String> brand_id = Optional.empty();
+  public Optional<String> external_player_id = Optional.empty();
+  public Optional<String> unique_id = Optional.empty();
+  public Optional<String> first_name = Optional.empty();
+  public Optional<String> last_name = Optional.empty();
+  public Optional<String> middlename = Optional.empty();
+  public Optional<String> username = Optional.empty();
+  public Optional<String> title = Optional.empty();
+  public Optional<String> birth_date = Optional.empty();
+  public Optional<String> sex = Optional.empty();
+  public Optional<String> country_alpha_2_code = Optional.empty();
+  public Optional<String> current_country_name = Optional.empty();
+  public Optional<String> city = Optional.empty();
+  public Optional<String> zipcode = Optional.empty();
+  public Optional<String> address1 = Optional.empty();
+  public Optional<String> address2 = Optional.empty();
+  public Optional<String> language_alpha_2_code = Optional.empty();
+  public Optional<String> signup_language = Optional.empty();
+  public Optional<String> currency_code = Optional.empty();
+  public Optional<String> is_blocked = Optional.empty();
+  public Optional<String> is_self_excluded = Optional.empty();
+  public Optional<String> account_creation_datetime_local = Optional.empty();
+  public Optional<String> account_verification_datetime_local = Optional.empty();
+  public Optional<String> email = Optional.empty();
+  public Optional<String> phone_prefix = Optional.empty();
+  public Optional<String> phone = Optional.empty();
+  public Optional<String> mobile_phone_prefix = Optional.empty();
+  public Optional<String> mobile_phone = Optional.empty();
+  public Optional<String> mobile = Optional.empty();
+  public Optional<String> acquisition_source_code = Optional.empty();
+  public Optional<String> reference = Optional.empty();
+  public Optional<String> role_name = Optional.empty();
+  public Optional<String> tag_name = Optional.empty();
+  public Optional<String> is_abuser = Optional.empty();
+  public Optional<String> fpp_reward_level_name = Optional.empty();
+  public Optional<String> fpp_customer_level = Optional.empty();
+  public Optional<String> fpp_update_datetime_local = Optional.empty();
+  public Optional<String> last_login_datetime_local = Optional.empty();
+  public Optional<String> last_deposit_date = Optional.empty();
+  public Optional<String> last_deposit_tenant = Optional.empty();
+  public Optional<String> last_deposit_customer = Optional.empty();
+  public Optional<String> last_withdrawal_tenant = Optional.empty();
+  public Optional<String> last_withdrawal_datetime_local = Optional.empty();
+  public Optional<String> wallet_balance_total_money_tenant = Optional.empty();
+  public Optional<String> wallet_balance_real_money_tenant = Optional.empty();
+  public Optional<String> wallet_balance_bonus_money_tenant = Optional.empty();
+  public Optional<String> wallet_balance_locked_money_tenant = Optional.empty();
+  public Optional<String> first_deposit_datetime_local = Optional.empty();
+  public Optional<String> first_withdrawal_datetime_local = Optional.empty();
+  public Optional<String> casino_lifetime_ngr_tenant = Optional.empty();
+  public Optional<String> casino_lifetime_ggr_tenant = Optional.empty();
+  public Optional<String> lifetime_deposit_tenant = Optional.empty();
+  public Optional<String> lifetime_deposit_count = Optional.empty();
+  public Optional<String> casino_lifetime_bet_tenant = Optional.empty();
+  public Optional<String> lifetime_withdrawal_tenant = Optional.empty();
+  public Optional<String> lifetime_withdrawal_count = Optional.empty();
+  public Optional<String> sport_lifetime_average_bet_tenant = Optional.empty();
+  public Optional<String> casino_lifetime_average_bet_tenant = Optional.empty();
+  public Optional<String> lifetime_deposit_bonus_cost_percentage_tenant = Optional.empty();
+  public Optional<String> sport_lifetime_bet_count = Optional.empty();
+}
