@@ -270,7 +270,13 @@ class PlayersTransformer(
               VariantExperimentVersion =
                 inputPlayer.VariantExperimentVersion.orElse(
                   player.VariantExperimentVersion
-                )
+                ),
+              wos = inputPlayer.wos.orElse(
+                player.wos
+              ),
+              wos2 = inputPlayer.wos2.orElse(
+                player.wos2
+              )
             )
 
           case None =>
@@ -343,7 +349,9 @@ class PlayersTransformer(
               IsOptInForLastFourPeriodsWeekendReload =
                 inputPlayer.IsOptInForLastFourPeriodsWeekendReload,
               registrationSource = inputPlayer.registrationSource,
-              VariantExperimentVersion = inputPlayer.VariantExperimentVersion
+              VariantExperimentVersion = inputPlayer.VariantExperimentVersion,
+              wos = inputPlayer.wos,
+              wos2 = inputPlayer.wos2
             )
         }
         newPlayer
@@ -555,7 +563,6 @@ class PlayersTransformer(
                 .map(keepYYYYMMDD(_))
                 .map(x => s""""Last_Dep_Crypto_Amount": "$x"""")
                 .getOrElse("")
-
             ).filter(x => x != "")
 
             val body =

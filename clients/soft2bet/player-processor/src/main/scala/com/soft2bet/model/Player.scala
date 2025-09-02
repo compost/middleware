@@ -86,5 +86,7 @@ case class Player(
     RegistrationStatus: Option[String],
     WelcomeChosenBonus: Option[String],
     registrationSource: Option[String],
-    VariantExperimentVersion: Option[String]
+    VariantExperimentVersion: Option[String],
+    wos: Option[String],
+    wos2: Option[String]
 )

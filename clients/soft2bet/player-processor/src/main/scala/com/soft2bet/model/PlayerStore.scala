@@ -100,7 +100,9 @@ case class PlayerStore(
     RegistrationStatus: Option[String] = None,
     WelcomeChosenBonus: Option[String] = None,
     SentFirstDepDatetime: Option[Boolean] = None,
-    VariantExperimentVersion: Option[String] = None
+    VariantExperimentVersion: Option[String] = None,
+    wos: Option[String] = None,
+    wos2: Option[String] = None
 )
 
 case class PlayerStoreSQS(
@@ -173,7 +175,9 @@ case class PlayerStoreSQS(
     RegistrationStatus: Option[String] = None,
     WelcomeChosenBonus: Option[String] = None,
     registrationSource: Option[String] = None,
-    VariantExperimentVersion: Option[String] = None
+    VariantExperimentVersion: Option[String] = None,
+    wos: Option[String] = None,
+    wos2: Option[String] = None
 )
 
 object PlayerStore {
@@ -283,7 +287,9 @@ object PlayerStoreSQS {
       RegistrationStatus = player.RegistrationStatus,
       WelcomeChosenBonus = player.WelcomeChosenBonus,
       registrationSource = player.registrationSource,
-      VariantExperimentVersion = player.VariantExperimentVersion
+      VariantExperimentVersion = player.VariantExperimentVersion,
+      wos = player.wos,
+      wos2 = player.wos2
     )
   }
 }
