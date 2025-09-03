@@ -25,5 +25,5 @@ deactivate RG NAME:
 
 activate RG NAME:
    az containerapp revision activate \
-        --revision $(az containerapp revision list --all --name {{NAME}} --resource-group {{RG}} | jq -r 'sort_by(.properties.createdTime) | reverse |  .[].name') \
+        --revision $(az containerapp revision list --all --name {{NAME}} --resource-group {{RG}} | jq -r 'sort_by(.properties.createdTime) | reverse |  .[0].name') \
         --resource-group {{RG}}

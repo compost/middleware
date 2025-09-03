@@ -18,8 +18,8 @@ storage_account_name = "playbookenvstorage" # Must be globally unique
 container_apps = [
   {
     name               = "playbook-main"
-    cpu                = 1
-    memory             = 2
+    cpu                = 0.5
+    memory             = 1
     docker_image_name  = "playbook/playbook-stream"
     docker_image_tag   = "20250826"
     storage_share_name = "playbook-sharestate"
