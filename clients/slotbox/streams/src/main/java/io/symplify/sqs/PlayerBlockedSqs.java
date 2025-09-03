@@ -13,7 +13,7 @@ public class PlayerBlockedSqs {
   public String blockedUntil;
 
   public PlayerBlockedSqs with(PlayerStatusKafka kafka) {
-    this.type = Type.USER_BLOCK;
+    this.type = Type.USER_BLOCKED;
     this.mappingSelector = Selector.PLAYER_BLOCKED;
     this.contactId = kafka.player_id;
     if (kafka.is_blocked.orElse("").toLowerCase().equals("true")) {

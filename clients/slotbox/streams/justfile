@@ -1,0 +1,8 @@
+
+default: push
+
+login:
+  @az acr login -n centralregistry
+
+push: login
+  @./gradlew imagePush -Dquarkus.profile=slotbox -x test
