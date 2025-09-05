@@ -1,0 +1,13 @@
+
+
+registry := "centralregistry"
+profile := "prod"
+
+
+login:
+  # Authenticate to {{registry}}
+  @az acr login -n {{registry}} > /dev/null
+
+push: login
+  # Push image with profile {{profile}}
+  @./gradlew imagePush -Dquarkus.profile={{profile}} -x test > /dev/null

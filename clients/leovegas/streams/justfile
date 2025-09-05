@@ -1,0 +1,4 @@
+set allow-duplicate-variables
+import '../../justfile'
+
+profile := "leovegas"

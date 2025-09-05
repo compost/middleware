@@ -35,7 +35,6 @@ public class SqsTopology {
     builder.stream(
         Set.of(
             Configuration.Topic.PLAYERS,
-            Configuration.Topic.PLAYER_STATUS,
             Configuration.Topic.LOGINS,
             Configuration.Topic.WAGERING,
             Configuration.Topic.WALLET),
