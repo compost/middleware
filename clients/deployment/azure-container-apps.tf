@@ -128,6 +128,30 @@ resource "azurerm_container_app" "main" {
   }
 
 
+  dynamic "secret" {
+    for_each = each.value.eventhub ? [1] : []
+    content {
+      name  = "eventhub-namespace"
+      value = var.eventhub_namespace
+    }
+  }
+
+  dynamic "secret" {
+    for_each = each.value.eventhub ? [1] : []
+    content {
+      name  = "shared-access-key"
+      value = var.shared_access_key
+    }
+  }
+
+  dynamic "secret" {
+    for_each = each.value.eventhub ? [1] : []
+    content {
+      name  = "shared-access-key-name"
+      value = var.shared_access_key_name
+    }
+  }
+
 
 
   dynamic "secret" {
@@ -211,6 +235,29 @@ resource "azurerm_container_app" "main" {
         }
       }
 
+      dynamic "env" {
+        for_each = each.value.eventhub ? [1] : []
+        content {
+          name        = "EVENTHUB_NAMESPACE"
+          secret_name = "eventhub-namespace"
+        }
+      }
+
+      dynamic "env" {
+        for_each = each.value.eventhub ? [1] : []
+        content {
+          name        = "SHARED_ACCESS_KEY"
+          secret_name = "shared-access-key"
+        }
+      }
+
+      dynamic "env" {
+        for_each = each.value.eventhub ? [1] : []
+        content {
+          name        = "SHARED_ACCESS_KEY_NAME"
+          secret_name = "shared-access-key-name"
+        }
+      }
 
 
       dynamic "env" {

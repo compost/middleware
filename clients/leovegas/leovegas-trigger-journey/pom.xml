@@ -4,7 +4,7 @@
 <modelVersion>4.0.0</modelVersion>
 <groupId>com.jada</groupId>
 <artifactId>leovegas-trigger-journey</artifactId>
-<version>0.7.0</version>
+<version>20250910</version>
 <properties>
   <maven.compiler.source>17</maven.compiler.source>
   <maven.compiler.target>17</maven.compiler.target>

@@ -28,7 +28,7 @@ import scala.util.Try
 import io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.kv
 import org.jboss.logging.Logger
 
-@Path("/application")
+@Path("/q")
 @ApplicationScoped
 class ApplicationResource @Inject()(
     config: ApplicationConfiguration,
@@ -74,7 +74,7 @@ class ApplicationResource @Inject()(
   }
 
   @GET
-  @Path("/status")
+  @Path("/health")
   @Produces(Array[String](MediaType.TEXT_PLAIN))
   def status() = {
     logger.debugv("status", kv("state", streams.state()))

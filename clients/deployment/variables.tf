@@ -30,7 +30,8 @@ variable "container_apps" {
     envs               = map(string)
     secrets            = map(string)
     datasource         = bool
-    aca                = bool # false still in progress
+    eventhub           = bool 
+    aca                = bool
   }))
 }
 
@@ -133,6 +134,19 @@ variable "datasource_passphrase" {
 }
 
 variable "datasource_pem_key_base64" {
+  type      = string
+  sensitive = true
+}
+
+variable "eventhub_namespace" {
+  type      = string
+  sensitive = true
+}
+variable "shared_access_key" {
+  type      = string
+  sensitive = true
+}
+variable "shared_access_key_name" {
   type      = string
   sensitive = true
 }

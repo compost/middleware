@@ -11,3 +11,12 @@ login:
 push: login
   # Push image with profile {{profile}}
   @./gradlew imagePush -Dquarkus.profile={{profile}} -x test > /dev/null
+
+
+mvn-push: login
+  # Push image with profile {{profile}}
+  @mvn clean package -U -DskipTests -Dquarkus.profile={{profile}}
+
+mvn-function:
+  # deploy functions
+  @mvn clean package azure-functions:deploy -Pjada
