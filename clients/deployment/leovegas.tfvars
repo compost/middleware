@@ -18,10 +18,10 @@ storage_account_name = "leovegasenvstorage" # Must be globally unique
 container_apps = [
   {
     name               = "leovegas-eventhub"
-    cpu                = 1.25
-    memory             = 2.5
+    cpu                = 0.5
+    memory             = 1
     docker_image_name  = "leovegas-trigger-journey"
-    docker_image_tag   = "20250910"
+    docker_image_tag   = "202509100020"
     storage_share_name = "leovegas-eventhub-sharestate"
     envs = {
       "QUARKUS_SQS_AWS_REGION" = "eu-central-1"
