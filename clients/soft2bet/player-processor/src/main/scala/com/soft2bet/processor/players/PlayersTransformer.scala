@@ -667,7 +667,7 @@ class PlayersTransformer(
       case Common.loginRepartitionedTopic =>
         val login = deserializeLogin(v)
         if (login.login_success.getOrElse("") == "1") {
-          Option(playerFromStore) match {
+          val p = Option(playerFromStore) match {
             case Some(player) =>
               player.copy(
                 player_id = Some(k),
@@ -749,24 +749,25 @@ class PlayersTransformer(
                   login.IsOptInForLastFourPeriodsWeekendReload
               )
           }
-        } else {
-          null
+
+          playerKVStore.put(k, p)
+
         }
+        null
       case _ =>
         logger.debug(s"${processorContext.topic()} not handled for now")
         null
     }
 
     if (playerToSaveInStore != null) {
+
       val firstModification =
         sendEmailConfirmed(playerFromStore, playerToSaveInStore)
       val toUsed = sendPhoneConfirmed(playerFromStore, firstModification)
 
       playerKVStore.put(k, toUsed)
 
-      if (
-        toUsed != playerFromStore || topicName == Common.loginRepartitionedTopic
-      ) {
+      if (toUsed != playerFromStore) {
 
         sender.sendPlayer(
           Some(processorContext.topic()),

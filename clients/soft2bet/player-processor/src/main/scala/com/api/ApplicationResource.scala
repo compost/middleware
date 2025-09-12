@@ -39,7 +39,7 @@ import org.joda.time.DateTime
 import com.soft2bet.model.PlayerSegmentation
 import com.soft2bet.model.PlayerSegmentationSQS
 
-@Path("/application")
+@Path("/q")
 @ApplicationScoped
 class ApplicationResource @Inject() (
     config: ApplicationConfiguration,
@@ -69,6 +69,9 @@ class ApplicationResource @Inject() (
     @Inject @com.jada.MissingDataTopology missingDataStreams: Option[
       KafkaStreams
     ],
+    @Inject @com.jada.LoginTopology loginStreams: Option[
+      KafkaStreams
+    ],
     kafkaProducer: KafkaProducer[String, String]
 ) {
 
@@ -81,7 +84,8 @@ class ApplicationResource @Inject() (
     ("repartitioner", repartitionerStreams),
     ("player-kpi", playerKPIStreams),
     ("fdl", firstDepositLossStreams),
-    ("missing-data", missingDataStreams)
+    ("missing-data", missingDataStreams),
+    ("login", loginStreams)
   )
 
   val ueNorthSQS: software.amazon.awssdk.services.sqs.SqsClient =
@@ -166,7 +170,7 @@ class ApplicationResource @Inject() (
   }
 
   @GET
-  @Path("/status")
+  @Path("/health")
   @Produces(Array[String](MediaType.TEXT_PLAIN))
   def status() = {
     if (streams.isEmpty) {

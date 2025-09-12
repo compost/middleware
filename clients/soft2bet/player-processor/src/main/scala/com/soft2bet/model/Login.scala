@@ -35,6 +35,7 @@ case class LoginJSON(
     lastLoginDate: Option[String] = None
 )
 
+
 object LoginJSON {
 
   import io.circe.Encoder

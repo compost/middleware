@@ -89,6 +89,10 @@ case class ApplicationConfiguration(
       defaultValue = "false"
     ) val repartitionerTopologyEnabled: Boolean,
     @ConfigProperty(
+      name = "login.topology.enabled",
+      defaultValue = "false"
+    ) val loginTopologyEnabled: Boolean,
+    @ConfigProperty(
       name = "force",
       defaultValue = "true"
     ) val force: Boolean,

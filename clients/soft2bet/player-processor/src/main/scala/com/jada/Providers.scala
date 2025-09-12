@@ -52,6 +52,15 @@ class Providers @Inject() (config: ApplicationConfiguration) {
   }
 
   @Produces
+  @LoginTopology
+  def buildLoginTopologyKafkaStreams(
+      @LoginTopology topology: Option[Topology]
+  ): Option[KafkaStreams] = {
+    buildKafkaStreams("login-", topology)
+  }
+
+
+  @Produces
   @MissingDataTopology
   def buildMissingDataKafkaStreams(
       @MissingDataTopology topology: Option[Topology]

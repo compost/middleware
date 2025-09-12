@@ -247,9 +247,7 @@ class Topologies @Inject() (
         .stream[String, Wallet](
           Common.walletTopic
         )(Consumed.`with`(stringSerde, CirceSerdes.serde[Wallet]))
-        .filter((_, v) =>
-          v.player_id.isDefined && v.brand_id.isDefined 
-        )
+        .filter((_, v) => v.player_id.isDefined && v.brand_id.isDefined)
         .selectKey((_, v) =>
           s"${Sender.prefix(v.brand_id.get)}-${v.player_id.get}"
         )
@@ -352,6 +350,35 @@ class Topologies @Inject() (
 
   }
 
+  @Produces @com.jada.LoginTopology
+  def buildLoginTopology(): Option[Topology] = {
+
+    if (config.loginTopologyEnabled) {
+
+      val builder = new StreamsBuilder
+
+      builder
+        .stream[String, Login](
+          Common.loginRepartitionedTopic
+        )(Consumed.`with`(stringSerde, CirceSerdes.serde[Login]))
+        .filter((_, v) => v.player_id.isDefined && v.brand_id.isDefined)
+        .selectKey((_, v) =>
+          s"${Sender.prefix(v.brand_id.get)}-${v.player_id.get}"
+        )
+        .transform(() =>
+          new LoginProcessor(
+            config,
+            sqs,
+            ueNorthSQS
+          )
+        )
+      Some(builder.build())
+    } else {
+      None
+    }
+
+  }
+
   @Produces @com.jada.FirstDepositLossTopology
   def buildFirstDepositLossTopology(): Option[Topology] = {
 
@@ -389,7 +416,6 @@ class Topologies @Inject() (
     }
 
   }
-
 
   @Produces @com.jada.RepartitionerTopology
   def buildRepartitionerTopology(): Option[Topology] = {
@@ -521,20 +547,28 @@ class Topologies @Inject() (
 
       val sentStoreName = "missing-data"
 
-      val sentSttore = Stores.keyValueStoreBuilder(
-        Stores.persistentKeyValueStore(sentStoreName),
-        stringSerde,
-        CirceSerdes.serde[PlayerStore]
-      ).withLoggingDisabled()
+      val sentSttore = Stores
+        .keyValueStoreBuilder(
+          Stores.persistentKeyValueStore(sentStoreName),
+          stringSerde,
+          CirceSerdes.serde[PlayerStore]
+        )
+        .withLoggingDisabled()
 
       val builder = new StreamsBuilder
       builder.addStateStore(sentSttore)
 
       builder
-        .stream[String, PlayerStore]("soft2bet-players-app-v8-players-processor-store-changelog")(
+        .stream[String, PlayerStore](
+          "soft2bet-players-app-v8-players-processor-store-changelog"
+        )(
           Consumed
             .`with`(stringSerde, CirceSerdes.serde[PlayerStore])
-        ).filter((_, v) => v.player_id.isDefined && v.brand_id.isDefined && Sender.CasinoInfinity.contains(v.brand_id.get))
+        )
+        .filter((_, v) =>
+          v.player_id.isDefined && v.brand_id.isDefined && Sender.CasinoInfinity
+            .contains(v.brand_id.get)
+        )
         .transform(
           () =>
             new MissingDataTransformer(
@@ -551,6 +585,5 @@ class Topologies @Inject() (
     }
 
   }
-
 
 }
