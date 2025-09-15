@@ -1,22 +1,28 @@
-
+set allow-duplicate-variables 
 
 registry := "centralregistry"
-profile := "prod"
-
 
 login:
   # Authenticate to {{registry}}
   @az acr login -n {{registry}} > /dev/null
 
-push: login
+push profile: login
   # Push image with profile {{profile}}
   @./gradlew imagePush -Dquarkus.profile={{profile}} -x test > /dev/null
 
 
-mvn-push: login
+mvn-push profile: login
   # Push image with profile {{profile}}
   @mvn clean package -U -DskipTests -Dquarkus.profile={{profile}}
 
 mvn-function:
   # deploy functions
   @mvn clean package azure-functions:deploy -Pjada
+
+aca-replicas:
+  # This command is slow as it makes a separate API call for each container app.
+  # It lists the name, resource group, and the current number of replicas.
+  @az containerapp list --query "[].{name:name, resourceGroup:resourceGroup}" -o tsv | while read -r name resourceGroup; do \
+    replicas=$(az containerapp replica count --name "$name" --resource-group "$resourceGroup"); \
+    printf "%-30s%-20s%-10s\n" "$name" "$resourceGroup" "$replicas"; \
+  done

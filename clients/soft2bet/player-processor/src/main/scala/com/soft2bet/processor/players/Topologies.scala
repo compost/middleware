@@ -327,7 +327,7 @@ class Topologies @Inject() (
 
       builder
         .stream[String, PlayerKPI](
-          Common.playerKPITopic
+          config.topicKPI
         )(Consumed.`with`(stringSerde, CirceSerdes.serde[PlayerKPI]))
         .filter((_, v) => v.player_id.isDefined && v.brand_id.isDefined)
         .selectKey((_, v) =>

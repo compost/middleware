@@ -1,0 +1,15 @@
+import "../../justfile"
+
+registry := "soft2bet"
+
+push-all: 
+  @just mvn-push missingdata
+  @just mvn-push fdl 
+  @just mvn-push funid
+  @just mvn-push kpi 
+  @just mvn-push repartitioner 
+  @just mvn-push segmentation
+  @just mvn-push sportpush 
+  @just mvn-push login 
+  @just mvn-push statistics 
+  @just mvn-push prod 

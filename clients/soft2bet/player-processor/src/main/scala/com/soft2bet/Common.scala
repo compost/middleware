@@ -2,7 +2,6 @@ package com.soft2bet
 
 object Common {
   val playersTopic = "players"
-  val playerKPITopic = "playerkpi"
   val playersRepartitionedTopic = "soft2bet-v8-players-repartitioned"
   val wageringTopic = "wagering"
   val wageringRepartitionedTopic = "soft2bet-v8-wagering-repartitioned"

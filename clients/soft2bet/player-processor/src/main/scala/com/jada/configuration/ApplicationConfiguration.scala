@@ -57,6 +57,10 @@ case class ApplicationConfiguration(
       String
     ],
     @ConfigProperty(
+      name = "topic.kpi",
+      defaultValue = "playerkpi"
+    ) topicKPI: String,
+    @ConfigProperty(
       name = "default.topology.enabled",
       defaultValue = "true"
     ) val defaultTopologyEnabled: Boolean,

@@ -1,3 +1,4 @@
+import "../justfile"
 # fmt on terraform
 fmt:
   terraform fmt
