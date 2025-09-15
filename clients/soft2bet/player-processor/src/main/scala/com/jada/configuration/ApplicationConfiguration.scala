@@ -99,5 +99,9 @@ case class ApplicationConfiguration(
     @ConfigProperty(
       name = "missingdata.topology.enabled",
       defaultValue = "false"
-    ) val missingDataTopologyEnabled: Boolean
+    ) val missingDataTopologyEnabled: Boolean,
+    @ConfigProperty(
+      name = "dryRun",
+      defaultValue = "false"
+    ) val dryRun: Boolean
 )

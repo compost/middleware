@@ -361,10 +361,6 @@ class Topologies @Inject() (
         .stream[String, Login](
           Common.loginRepartitionedTopic
         )(Consumed.`with`(stringSerde, CirceSerdes.serde[Login]))
-        .filter((_, v) => v.player_id.isDefined && v.brand_id.isDefined)
-        .selectKey((_, v) =>
-          s"${Sender.prefix(v.brand_id.get)}-${v.player_id.get}"
-        )
         .transform(() =>
           new LoginProcessor(
             config,

@@ -511,22 +511,35 @@ class Sender(
       ): _*
     )
     try {
-      Option(cli.sendMessage(request => {
-        request
-          .queueUrl(queueURL)
-          .messageBody(body)
-          .messageGroupId(config.sqsGroupId)
-          .messageDeduplicationId(deduplicationId)
 
-      })) foreach { result =>
+      if (config.dryRun) {
         logger.infov(
-          s"sent queue message: $result",
+          s"dry run sent queue message",
           Array(
             kv("queueURL", queueURL),
             kv("body", body),
             kv("key", key)
           ): _*
         )
+
+      } else {
+        Option(cli.sendMessage(request => {
+          request
+            .queueUrl(queueURL)
+            .messageBody(body)
+            .messageGroupId(config.sqsGroupId)
+            .messageDeduplicationId(deduplicationId)
+
+        })) foreach { result =>
+          logger.infov(
+            s"sent queue message: $result",
+            Array(
+              kv("queueURL", queueURL),
+              kv("body", body),
+              kv("key", key)
+            ): _*
+          )
+        }
       }
     } catch {
       case e: Exception =>

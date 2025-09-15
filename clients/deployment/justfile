@@ -18,6 +18,15 @@ apply TFVARS_FILE:
     # Use `terraform apply -var-file` to apply the changes.
     @terraform apply -var-file="{{TFVARS_FILE}}"
 
+# Plan 
+plan TFVARS_FILE:
+    # Get the workspace name from the tfvars file name (e.g., "client-a" from "client-a.tfvars").
+    @just workspace $(basename '{{TFVARS_FILE}}' .tfvars)
+
+    # Use `terraform apply -var-file` to plan the changes.
+    @terraform plan -var-file="{{TFVARS_FILE}}"
+
+
 deactivate RG NAME:
    az containerapp revision deactivate \
         --revision $(az containerapp revision list --name {{NAME}} --resource-group {{RG}} | jq -r '.[].name') \

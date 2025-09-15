@@ -66,7 +66,8 @@ class LoginProcessor(
       case Common.loginRepartitionedTopic =>
         if (login.login_success.getOrElse("") == "1") {
           PlayerStore(
-            player_id = Some(k),
+            player_id = login.player_id,
+            brand_id = login.brand_id,
             GDPR = login.GDPR,
             GlobalProductClassification = login.GlobalProductClassification,
             ProductClassification = login.ProductClassification,
