@@ -20,7 +20,7 @@ storage_account_name = "soft2betenvstorage" # Must be globally unique
 # List of container apps to be created
 container_apps = [
   {
-    name               = "logins"
+    name               = "soft2bet-logins"
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "login/player-processor"
@@ -49,7 +49,41 @@ container_apps = [
     datasource = false
     eventhub = false 
     aca = true
+  },
+
+  {
+    name               = "soft2bet-firstdepositloss"
+    cpu                = 0.5
+    memory             = 1
+    docker_image_name  = "fld/player-processor"
+    docker_image_tag   = "20250915"
+    storage_share_name = "firstdepositloss-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+    }
+    secrets    = {}
+    datasource = false
+    eventhub = false 
+    aca = true
+  },
+
+
+  {
+    name               = "soft2bet-statistics"
+    cpu                = 0.5
+    memory             = 1
+    docker_image_name  = "statistics/player-processor"
+    docker_image_tag   = "20250915"
+    storage_share_name = "statistics-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+    }
+    secrets    = {}
+    datasource = false
+    eventhub = false 
+    aca = true
   }
+
 
 
 ]
@@ -62,6 +96,16 @@ storage_configs = {
   }
 
   "segmentation-sharestate" = {
+    quota = 50 # in GB
+    aca   = true
+  }
+
+  "statistics-sharestate" = {
+    quota = 50 # in GB
+    aca   = true
+  }
+
+  "firstdepositloss-sharestate" = {
     quota = 50 # in GB
     aca   = true
   }
