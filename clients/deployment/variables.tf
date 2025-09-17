@@ -1,19 +1,19 @@
 # variables.tf
 
-# Existing resources
+# Infrastructure naming and identification
 variable "name" {
-  description = "The name of the existing resource group."
+  description = "The name of the container app environment."
   type        = string
 }
 
 variable "alert_email_recipient" {
-  description = "The name of the existing resource group."
+  description = "Email address to receive monitoring alerts."
   type        = string
   default     = "stephane.jeandeaux@tilelli.dev"
 }
 
 variable "workload_profile" {
-  description = "The name of the existing resource group."
+  description = "Azure Container Apps workload profile type (e.g., Consumption, D4, D8)."
   type        = string
   nullable    = true
   default     = null
@@ -44,26 +44,28 @@ variable "storage_configs" {
 }
 
 variable "client" {
-  description = "The name of the existing resource group."
+  description = "Client name for resource tagging and identification."
   type        = string
 }
+# Networking configuration
 variable "address_prefixes" {
-  description = "The name of the existing resource group."
+  description = "CIDR block for the subnet (e.g., '10.4.8.0/23')."
   type        = string
 }
+# Existing Azure resources
 variable "resource_group_name" {
-  description = "The name of the existing resource group."
+  description = "The name of the existing resource group where resources will be deployed."
   type        = string
 }
 
 variable "resource_group_name_of_registry" {
-  description = "The name of the existing resource group."
+  description = "The name of the resource group containing the Azure Container Registry."
   type        = string
   default     = "centralised_DW"
 }
 
 variable "resource_group_name_of_monitoring" {
-  description = "The name of the existing resource group."
+  description = "The name of the resource group containing the Log Analytics workspace."
   type        = string
   default     = "monitoring"
 }
@@ -96,21 +98,21 @@ variable "storage_account_name" {
 }
 
 variable "azure_account_key" {
-  description = "The AWS access key ID for the application."
+  description = "Azure storage account access key for application use."
   type        = string
-  sensitive   = true # Mark this as sensitive
+  sensitive   = true
 }
-# Environmental variables
+# Application secrets and credentials
 variable "aws_access_key_id" {
-  description = "The AWS access key ID for the application."
+  description = "AWS access key ID for SQS integration."
   type        = string
-  sensitive   = true # Mark this as sensitive
+  sensitive   = true
 }
 
 variable "aws_secret_key_value" {
-  description = "The AWS secret access key."
+  description = "AWS secret access key for SQS integration."
   type        = string
-  sensitive   = true # Mark this as sensitive
+  sensitive   = true
 }
 
 variable "tags" {
@@ -123,30 +125,38 @@ variable "tags" {
   }
 }
 
+# Snowflake database credentials
 variable "sf_password" {
-  type      = string
-  sensitive = true
+  description = "Snowflake database password for data source connections."
+  type        = string
+  sensitive   = true
 }
 
 variable "datasource_passphrase" {
-  type      = string
-  sensitive = true
+  description = "Passphrase for datasource PEM key decryption."
+  type        = string
+  sensitive   = true
 }
 
 variable "datasource_pem_key_base64" {
-  type      = string
-  sensitive = true
+  description = "Base64-encoded PEM key for secure datasource connections."
+  type        = string
+  sensitive   = true
 }
 
+# Azure Event Hub credentials
 variable "eventhub_namespace" {
-  type      = string
-  sensitive = true
+  description = "Azure Event Hub namespace for event streaming."
+  type        = string
+  sensitive   = true
 }
 variable "shared_access_key" {
-  type      = string
-  sensitive = true
+  description = "Azure Event Hub shared access key."
+  type        = string
+  sensitive   = true
 }
 variable "shared_access_key_name" {
-  type      = string
-  sensitive = true
+  description = "Azure Event Hub shared access key name."
+  type        = string
+  sensitive   = true
 }

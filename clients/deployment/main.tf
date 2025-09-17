@@ -10,22 +10,20 @@ terraform {
   }
 }
 
-
-
-
 # Configure the AzureRM provider
 provider "azurerm" {
   resource_provider_registrations = "none"
   features {}
 }
 
+# Local values for consistent resource tagging
 locals {
   tags = merge({
     "Client" = var.client
   }, var.tags)
-
 }
-# Data source to reference the existing resource group
+
+# Data sources to reference existing Azure resources
 data "azurerm_resource_group" "main" {
   name = var.resource_group_name
 }
@@ -37,8 +35,6 @@ data "azurerm_resource_group" "registry" {
 data "azurerm_resource_group" "monitoring" {
   name = var.resource_group_name_of_monitoring
 }
-
-
 
 # Data source to reference the existing Azure Container Registry
 data "azurerm_container_registry" "acr" {
@@ -67,9 +63,10 @@ resource "azurerm_storage_share" "state_share" {
   for_each           = var.storage_configs
   name               = each.key
   storage_account_id = azurerm_storage_account.state.id
-  quota              = each.value.quota # Quota in GB
+  quota              = each.value.quota
 }
 
+# Monitoring and alerting configuration
 resource "azurerm_monitor_action_group" "email_alert" {
   name                = "email-action-group"
   resource_group_name = data.azurerm_resource_group.main.name
@@ -81,14 +78,13 @@ resource "azurerm_monitor_action_group" "email_alert" {
   }
 
   tags = local.tags
-
 }
 
 resource "azurerm_monitor_metric_alert" "storage_share_usage_alerts" {
   name                = "storage-usage-alert"
   resource_group_name = data.azurerm_resource_group.main.name
-  scopes              = ["${azurerm_storage_account.state.id}"]
-  description         = "Alert when usage is over 50%."
+  scopes              = [azurerm_storage_account.state.id]
+  description         = "Alert when storage usage exceeds 50% of total quota."
 
   criteria {
     metric_namespace = "Microsoft.Storage/storageAccounts"
