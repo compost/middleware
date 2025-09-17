@@ -52,6 +52,23 @@ container_apps = [
   },
 
   {
+    name               = "soft2bet-deprecated-kpi"
+    cpu                = 0.5
+    memory             = 1
+    docker_image_name  = "kpi/player-processor"
+    docker_image_tag   = "202509142258"
+    storage_share_name = "deprecated-kpi-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+    }
+    secrets    = {}
+    datasource = false
+    eventhub = false 
+    aca = true
+  },
+
+
+  {
     name               = "soft2bet-firstdepositloss"
     cpu                = 0.5
     memory             = 1
@@ -82,7 +99,24 @@ container_apps = [
     datasource = false
     eventhub = false 
     aca = true
+  },
+
+  {
+    name               = "soft2bet-sportpush"
+    cpu                = 0.5
+    memory             = 1
+    docker_image_name  = "sportpush/player-processor"
+    docker_image_tag   = "202509142258"
+    storage_share_name = "sportpush-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+    }
+    secrets    = {}
+    datasource = false
+    eventhub = false 
+    aca = true
   }
+
 
 
 
@@ -106,6 +140,16 @@ storage_configs = {
   }
 
   "firstdepositloss-sharestate" = {
+    quota = 50 # in GB
+    aca   = true
+  }
+
+  "deprecated-kpi-sharestate" = {
+    quota = 50 # in GB
+    aca   = true
+  }
+
+  "sportpush-sharestate" = {
     quota = 50 # in GB
     aca   = true
   }
