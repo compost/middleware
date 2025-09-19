@@ -18,6 +18,12 @@ variable "workload_profile" {
   nullable    = true
   default     = null
 }
+
+variable "create_outbound_ip" {
+  description = "Whether to create a dedicated outbound IP for the ACA environment. Optional - used for AWS inbound rule configuration."
+  type        = bool
+  default     = false
+}
 variable "container_apps" {
   description = "A list of container apps to create."
   type = list(object({

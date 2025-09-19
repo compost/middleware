@@ -5,6 +5,36 @@ locals {
 
 }
 
+# Create outbound public IP for ACA environment (optional)
+resource "azurerm_public_ip" "aca_outbound" {
+  count               = var.create_outbound_ip && length(local.aca) > 0 ? 1 : 0
+  name                = "${var.name}-aca-outbound-ip"
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  
+  tags = local.tags
+}
+
+# Create NAT Gateway for outbound connectivity (optional)
+resource "azurerm_nat_gateway" "aca_outbound" {
+  count               = var.create_outbound_ip && length(local.aca) > 0 ? 1 : 0
+  name                = "${var.name}-aca-nat-gateway"
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
+  sku_name            = "Standard"
+  
+  tags = local.tags
+}
+
+# Associate public IP with NAT Gateway
+resource "azurerm_nat_gateway_public_ip_association" "aca_outbound" {
+  count                = var.create_outbound_ip && length(local.aca) > 0 ? 1 : 0
+  nat_gateway_id       = azurerm_nat_gateway.aca_outbound[0].id
+  public_ip_address_id = azurerm_public_ip.aca_outbound[0].id
+}
+
 resource "azurerm_subnet" "container-kafka" {
   count                = length(local.aca) > 0 ? 1 : 0
   name                 = var.subnet_name
@@ -25,6 +55,13 @@ resource "azurerm_subnet" "container-kafka" {
       }
     }
   }
+}
+
+# Associate NAT Gateway with the subnet for outbound connectivity
+resource "azurerm_subnet_nat_gateway_association" "aca_outbound" {
+  count          = var.create_outbound_ip && length(local.aca) > 0 ? 1 : 0
+  subnet_id      = azurerm_subnet.container-kafka[0].id
+  nat_gateway_id = azurerm_nat_gateway.aca_outbound[0].id
 }
 # Create a Container App environment connected to the existing subnet
 resource "azurerm_container_app_environment" "main" {
