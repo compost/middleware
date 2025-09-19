@@ -30,6 +30,24 @@ container_apps = [
     secrets    = {}
     datasource = false
     eventhub = true
+    mks = false
+    aca = true
+  },
+
+  {
+    name               = "leovegas-mks"
+    cpu                = 0.5
+    memory             = 1
+    docker_image_name  = "leovegas/leovegas"
+    docker_image_tag   = "20250918"
+    storage_share_name = "leovegas-mks"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+    }
+    secrets    = {}
+    datasource = false
+    eventhub = true
+    mks = true
     aca = true
   }
 
@@ -41,4 +59,9 @@ storage_configs = {
     quota = 5 # in GB
     aca   = true
   }
+  "leovegas-mks" = {
+    quota = 50 # in GB
+    aca   = true
+  }
+
 }

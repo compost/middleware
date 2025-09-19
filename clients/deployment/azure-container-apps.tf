@@ -152,6 +152,21 @@ resource "azurerm_container_app" "main" {
     }
   }
 
+  dynamic "secret" {
+    for_each = each.value.mks ? [1] : []
+    content {
+      name  = "mks-password"
+      value = var.mks_password
+    }
+  }
+
+  dynamic "secret" {
+    for_each = each.value.mks ? [1] : []
+    content {
+      name  = "mks-username"
+      value = var.mks_username
+    }
+  }
 
 
   dynamic "secret" {
@@ -258,6 +273,23 @@ resource "azurerm_container_app" "main" {
           secret_name = "shared-access-key-name"
         }
       }
+
+      dynamic "env" {
+        for_each = each.value.mks ? [1] : []
+        content {
+          name        = "MKS_PASSWORD"
+          secret_name = "mks-password"
+        }
+      }
+
+      dynamic "env" {
+        for_each = each.value.mks ? [1] : []
+        content {
+          name        = "MKS_USERNAME"
+          secret_name = "mks-username"
+        }
+      }
+
 
 
       dynamic "env" {

@@ -30,6 +30,7 @@ variable "container_apps" {
     envs               = map(string)
     secrets            = map(string)
     datasource         = bool
+    mks         = bool
     eventhub           = bool 
     aca                = bool
   }))
@@ -157,6 +158,17 @@ variable "shared_access_key" {
 }
 variable "shared_access_key_name" {
   description = "Azure Event Hub shared access key name."
+  type        = string
+  sensitive   = true
+}
+
+variable "mks_username" {
+  description = "MKS username."
+  type        = string
+  sensitive   = true
+}
+variable "mks_password" {
+  description = "MKS password."
   type        = string
   sensitive   = true
 }

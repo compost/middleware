@@ -134,8 +134,8 @@ class Functions {
     "sfWarehouse" -> getenv("SF_WAREHOUSE", "DELIVERY_WH")
   )
 
-  @FunctionName("FixGetDepositCount")
-  def fixGetDepositCount(
+  @FunctionName("FixLastDate")
+  def fixLastDate(
       @HttpTrigger(
         name = "req",
         methods = Array(HttpMethod.GET),
@@ -170,8 +170,8 @@ class Functions {
 
     val filter = " AND DATEDIFF(day, LAST_UPDATE, GETDATE()) <= 7"
     val subQuery =
-      s"select player_id as id, num_deposits as nb, deposits as total FROM bus.V_PLAYERS_LIFETIME_VALUES WHERE BRAND_ID ${b.filter}"
-    val query = if(withFilter) {
+      s"select player_id as id, num_deposits::string as nb, deposits::string as total,TO_VARCHAR(last_update, 'yyyy-MM-dd') as last_activity_date, TO_VARCHAR(last_bet_date, 'yyyy-MM-dd') as last_bet_date   FROM bus.V_PLAYERS_LIFETIME_VALUES WHERE BRAND_ID ${b.filter}"
+    val query = if (withFilter) {
       subQuery + filter
     } else {
       subQuery
@@ -190,7 +190,11 @@ class Functions {
         lit("lifetime_deposit_count"),
         $"nb",
         lit("lifetime_deposit_amount"),
-        $"total"
+        $"total",
+        lit("last_activity_date"),
+        $"last_activity_date",
+        lit("last_bet_date"),
+        $"last_bet_date"
       ).as("properties")
     )
 
@@ -200,110 +204,6 @@ class Functions {
       "lifetime_deposit",
       "lifetime_deposit.json"
     )(logger)
-  }
-
-  @FunctionName("LastActivityDate")
-  def runLastActivityDate(
-      @TimerTrigger(
-        name = "LastActivityDate",
-        schedule = "0 1 10 * * *"
-      ) timerInfo: String,
-      context: ExecutionContext
-  ): Unit = {
-    implicit val logger = context.getLogger
-    logger.info(s"starting app $timerInfo")
-    runLastAD(playnorth100)
-    runLastAD(playnorth101)
-    runLastAD(vegasonline)
-  }
-
-  def runLastAD(b: Brand)(implicit logger: Logger) = {
-    val query =
-      s"""
-          |SELECT player_id as id, last_activity_date 
-          |FROM CENTRALDW.BUS.PLAYERS_LAST_ACTIVITY_DATE 
-          |WHERE brand_id ${b.filter} AND DATEDIFF(day, LAST_ACTIVITY_DATE, GETDATE()) <= 7
-          |""".stripMargin
-
-    logger.info(query)
-    val df = spark.read
-      .format(net.snowflake.spark.snowflake.Utils.SNOWFLAKE_SOURCE_NAME)
-      .option("query", query)
-      .options(sfOptions)
-      .load()
-
-    import spark.implicits._
-    import functions._
-    val newDf = df.select(
-      df.col("id"),
-      map(
-        lit("last_activity_date"),
-        $"last_activity_date"
-      ).as("properties")
-    )
-
-    saveDFAndSendBatchNotif(
-      newDf,
-      b,
-      "last_activity_date",
-      "last_activity_date.json"
-    )
-  }
-
-  @FunctionName("LastBetDatetime")
-  def runLastBetDatetime(
-      @TimerTrigger(
-        name = "LastBetDatetime",
-        schedule = "0 5 10 * * *"
-      ) timerInfo: String,
-      context: ExecutionContext
-  ): Unit = {
-    implicit val logger = context.getLogger
-    logger.info(s"starting app $timerInfo")
-    runLastBD(playnorth100)
-    runLastBD(playnorth101)
-    runLastBD(vegasonline)
-  }
-
-  def runLastBD(b: Brand)(implicit logger: Logger) = {
-    val query =
-      s"""
-         |SELECT player_id  as id,
-         | CASE p.brand_id WHEN ${vegasonline.id} THEN 
-         |TO_VARCHAR(CONVERT_TIMEZONE('UTC', 'Europe/Budapest', max(bet_datetime)), 'yyyy-MM-dd') 
-         | ELSE 
-         | max(bet_datetime) 
-         | END as last_bet_date
-         |from dbo.fct_wagering w
-         |INNER JOIN dbo.dim_players p on w.player_wid = p.player_wid AND p.brand_id = w.brand_id
-         |where w.brand_id ${b.filter}
-         |AND DATEDIFF(day, TRY_TO_DATE(TO_CHAR(w.pif_delta),'YYYYMMDDHHMISS'), GETDATE()) <= 8
-         |group by player_id, p.brand_id
-      """.stripMargin
-
-    logger.info(query)
-    val df = spark.read
-      .format(net.snowflake.spark.snowflake.Utils.SNOWFLAKE_SOURCE_NAME)
-      .option("query", query)
-      .options(sfOptions)
-      .load()
-
-    import spark.implicits._
-    import functions._
-    val newDf = df.select(
-      df.col("id"),
-      map(
-        lit("last_bet_date"),
-        $"last_bet_date"
-      ).as("properties")
-    )
-
-    saveDFAndSendBatchNotif(
-      newDf,
-      b,
-      "last_bet_date",
-      "last_bet_date.json"
-    )
   }
 
   @FunctionName("FixLastDepositDatetime")
@@ -351,7 +251,7 @@ class Functions {
       """.stripMargin
 
     val query = if (withFilter) {
-      queryBase + filter 
+      queryBase + filter
     } else {
       queryBase
     }
@@ -381,7 +281,7 @@ class Functions {
     )
   }
 
-  @FunctionName("CleanLastDepositDatetime")
+  @FunctionName("CleanLastDatetime")
   def cleanLastLastDepositDatetime(
       @HttpTrigger(
         name = "req",
@@ -393,20 +293,19 @@ class Functions {
   ): Unit = {
     implicit val logger = context.getLogger
     logger.info(s"starting app $request")
-    runLastDepositClean(playnorth100)
-    runLastDepositClean(playnorth101)
-    runLastDepositClean(vegasonline)
+    runLastClean(playnorth100)
+    runLastClean(playnorth101)
+    runLastClean(vegasonline)
   }
-  def runLastDepositClean(b: Brand)(implicit
+  def runLastClean(b: Brand)(implicit
       logger: Logger
   ) = {
     val query =
       s"""
-      > SELECT players.PLAYER_ID as id, '' as last_deposit_date FROM DIM_PLAYERS players LEFT JOIN BUS.V_LAST_DEPOSIT_WITHDRAWAL i_dont_want
+      > SELECT players.PLAYER_ID as id, '' as last_bet_date, '' as last_activity_date FROM DIM_PLAYERS players LEFT JOIN bus.V_PLAYERS_LIFETIME_VALUES i_dont_want
       > ON (players.player_id = i_dont_want.player_id AND players.brand_id = i_dont_want.brand_id )
       > WHERE i_dont_want.player_id IS NULL AND players.brand_id ${b.filter}
       """.stripMargin('>')
-
 
     logger.info(query)
     val df = spark.read
@@ -420,8 +319,10 @@ class Functions {
     val newDf = df.select(
       df.col("id"),
       map(
-        lit("last_deposit_date"),
-        $"last_deposit_date"
+        lit("last_bet_date"),
+        $"last_bet_date",
+        lit("last_activity_date"),
+        $"last_activity_date"
       ).as("properties")
     )
 
@@ -432,7 +333,6 @@ class Functions {
       "clean_last_deposit_date.json"
     )
   }
-
 
   def runDateFix(
       timerInfo: String,

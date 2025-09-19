@@ -8,7 +8,7 @@ login:
 
 push profile: login
   # Push image with profile {{profile}}
-  @./gradlew imagePush -Dquarkus.profile={{profile}} -x test > /dev/null
+  @./gradlew clean imagePush -Dquarkus.profile={{profile}} -x test 
 
 
 mvn-push profile: login
