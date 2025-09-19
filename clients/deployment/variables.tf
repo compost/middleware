@@ -35,9 +35,9 @@ variable "container_apps" {
     memory             = number
     envs               = map(string)
     secrets            = map(string)
-    datasource         = bool
-    mks         = bool
-    eventhub           = bool 
+    datasource         = optional(bool, false)
+    mks                = optional(bool, false)
+    eventhub           = optional(bool, false)
     aca                = bool
   }))
 }
