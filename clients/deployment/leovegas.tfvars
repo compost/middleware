@@ -4,13 +4,14 @@ client               = "leovegas"
 resource_group_name  = "LeoVegas-RG"
 virtual_network_name = "vnet-leovegas"
 subnet_name          = "leovegas-environment"
-address_prefixes     = "10.10.6.0/23"
+address_prefixes     = "10.10.9.0/27"
 
+workload_profile     = "Consumption"
 # New resources to be created
-storage_account_name = "leovegasenvstorage" # Must be globally unique
-
+storage_account_name = "leovegas2envstorage" # Must be globally unique
+create_outbound_ip = true
 # Environmental variables for your application
-#aws_access_key_id    = ""
+#aws_access_key_id    = 
 #aws_secret_key_value = ""
 
 
@@ -43,7 +44,6 @@ container_apps = [
       "STATE_DIR"          = "/app/state/current"
     }
     secrets    = {}
-    eventhub = true
     mks = true
     aca = true
   }
