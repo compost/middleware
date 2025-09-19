@@ -28,9 +28,7 @@ container_apps = [
       "STATE_DIR"          = "/app/state/current"
     }
     secrets    = {}
-    datasource = false
     eventhub = true
-    mks = false
     aca = true
   },
 
@@ -45,7 +43,6 @@ container_apps = [
       "STATE_DIR"          = "/app/state/current"
     }
     secrets    = {}
-    datasource = false
     eventhub = true
     mks = true
     aca = true

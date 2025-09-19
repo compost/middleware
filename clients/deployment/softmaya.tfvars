@@ -27,7 +27,6 @@ container_apps = [
       "STATE_DIR" = "/app/state/2025-08-26"
     }
     secrets    = {}
-    datasource = false
     aca        = true
   }
 

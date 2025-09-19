@@ -132,40 +132,46 @@ variable "tags" {
   }
 }
 
-# Snowflake database credentials
+# Snowflake database credentials (optional - only required when datasource = true)
 variable "sf_password" {
   description = "Snowflake database password for data source connections."
   type        = string
   sensitive   = true
+  default     = null
 }
 
 variable "datasource_passphrase" {
   description = "Passphrase for datasource PEM key decryption."
   type        = string
   sensitive   = true
+  default     = null
 }
 
 variable "datasource_pem_key_base64" {
   description = "Base64-encoded PEM key for secure datasource connections."
   type        = string
   sensitive   = true
+  default     = null
 }
 
-# Azure Event Hub credentials
+# Azure Event Hub credentials (optional - only required when eventhub = true)
 variable "eventhub_namespace" {
   description = "Azure Event Hub namespace for event streaming."
   type        = string
   sensitive   = true
+  default     = null
 }
 variable "shared_access_key" {
   description = "Azure Event Hub shared access key."
   type        = string
   sensitive   = true
+  default     = null
 }
 variable "shared_access_key_name" {
   description = "Azure Event Hub shared access key name."
   type        = string
   sensitive   = true
+  default     = null
 }
 
 variable "mks_username" {

@@ -28,7 +28,6 @@ container_apps = [
       "STATE_DIR"  = "/app/state/2025-08-23"
     }
     secrets    = {}
-    datasource = false
     aca        = true
   },
   {
@@ -42,7 +41,6 @@ container_apps = [
       "STATE_DIR" = "/app/state/2025-08-23"
     }
     secrets    = {}
-    datasource = false
     aca        = true
 
   }

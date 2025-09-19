@@ -28,7 +28,6 @@ container_apps = [
       "WEBSITE_DNS_SERVER" = "168.63.129.16"
     }
     secrets    = {}
-    datasource = false
     aca        = false
   }
 

@@ -31,7 +31,6 @@ container_apps = [
     }
     secrets    = {}
     datasource = true
-
     aca = true
   }
 
