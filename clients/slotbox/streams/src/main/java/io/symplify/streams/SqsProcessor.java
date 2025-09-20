@@ -17,8 +17,18 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
-import io.symplify.kafka.*;
-import io.symplify.sqs.*;
+import io.symplify.kafka.LoginKafka;
+import io.symplify.kafka.PlayerConsentKafka;
+import io.symplify.kafka.PlayerKafka;
+import io.symplify.kafka.PlayerStatusKafka;
+import io.symplify.kafka.WageringKafka;
+import io.symplify.kafka.WalletKafka;
+import io.symplify.sqs.BigWinSqs;
+import io.symplify.sqs.LoginSqs;
+import io.symplify.sqs.PlayerBlockedSqs;
+import io.symplify.sqs.PlayerConsentSqs;
+import io.symplify.sqs.PlayerSqs;
+import io.symplify.sqs.WalletSqs;
 import io.symplify.store.PlayerStore;
 import io.symplify.streams.Configuration.Mapping.Selector;
 import io.symplify.streams.Configuration.Mapping.Type;
@@ -161,8 +171,6 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
         PlayerKafka.class);
 
     final Optional<PlayerStore> playerInStore = Optional.ofNullable(store.get(record.key()));
-    var mappingSelector = playerInStore.isEmpty() || playerInStore.get().player.isEmpty() ? Selector.PLAYER_REGISTRATION
-        : Selector.PLAYER_UPDATED;
 
     final Optional<PlayerSqs> oldPlayerSqs = playerInStore.flatMap(PlayerSqs::transform);
 
@@ -170,12 +178,29 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
         .flatMap(ps -> ps.with(player));
     final Optional<PlayerSqs> newPlayerSqs = newPlayer.flatMap(PlayerSqs::transform);
 
+    final String mappingSelector;
+    final Boolean playerRegistration;
+    if (newPlayerSqs.flatMap(v -> v.emailaddress).orElse("").equals("")) {
+      mappingSelector = null;
+      playerRegistration = false;
+    } else if (playerInStore.isEmpty() || playerInStore.get().player.isEmpty()
+        || playerInStore.get().playerRegistrationHasBeenSent.isEmpty()
+        || playerInStore.get().playerRegistrationHasBeenSent.get() == false) {
+      mappingSelector = Selector.PLAYER_REGISTRATION;
+      playerRegistration = true;
+    } else {
+      mappingSelector = Selector.PLAYER_UPDATED;
+      playerRegistration = true;
+    }
+
     if (!Objects.equals(oldPlayerSqs, newPlayerSqs)
-        && !newPlayerSqs.flatMap(v -> v.emailaddress).orElse("").equals("")) {
+        && mappingSelector != null) {
       sender.send(player.brand_id.get(), player.player_id.get(), Type.GENERIC_USER, mappingSelector,
           newPlayerSqs.get());
+      return newPlayer.map(ps -> ps.withPlayerRegistrationHasBeenSent(playerRegistration));
     }
 
     return newPlayer;
   }
+
 }

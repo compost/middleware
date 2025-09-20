@@ -1,6 +1,5 @@
 package io.symplify.store;
 
-import java.lang.StackWalker.Option;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +13,12 @@ public class PlayerStore {
   public Optional<io.symplify.kafka.PlayerKafka> player = Optional.empty();
   public Optional<io.symplify.kafka.PlayerStatusKafka> status = Optional.empty();
   public Map<String, io.symplify.kafka.PlayerConsentKafka> playerConsents = new HashMap<String, io.symplify.kafka.PlayerConsentKafka>();
+  public Optional<Boolean> playerRegistrationHasBeenSent = Optional.empty();
+
+  public PlayerStore withPlayerRegistrationHasBeenSent(Boolean value) {
+    playerRegistrationHasBeenSent = Optional.ofNullable(value);
+    return this;
+  }
 
   public Optional<PlayerStore> with(io.symplify.kafka.PlayerConsentKafka playerConsent) {
     if (playerConsent.channel.isEmpty()) {
