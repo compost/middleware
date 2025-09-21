@@ -1,0 +1,93 @@
+services:
+  # Source Kafka Cluster
+  kafka-source:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka-source
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-source:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-source:29093'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - kafka_source_data:/var/lib/kafka/data
+
+  # Target Kafka Cluster  
+  kafka-target:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka-target
+    ports:
+      - "9093:9093"
+      - "9102:9102"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-target:29092,PLAINTEXT_HOST://localhost:9093'
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9093'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-target:29093'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_JMX_PORT: 9102
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      CLUSTER_ID: 'TkE0QjhGNzczQTJENDI2Qk'
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9093"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - kafka_target_data:/var/lib/kafka/data
+
+  # Kafka UI supporting both clusters
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "Source Cluster"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-source:29092
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9101
+      KAFKA_CLUSTERS_1_NAME: "Target Cluster"
+      KAFKA_CLUSTERS_1_BOOTSTRAPSERVERS: kafka-target:29092
+      KAFKA_CLUSTERS_1_METRICS_PORT: 9102
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    depends_on:
+      kafka-source:
+        condition: service_healthy
+      kafka-target:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  kafka_source_data:
+  kafka_target_data:

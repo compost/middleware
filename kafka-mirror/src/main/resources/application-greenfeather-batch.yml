@@ -1,0 +1,61 @@
+# Greenfeather Profile Configuration
+mp:
+  messaging:
+    incoming:
+      source:
+        bootstrap:
+          servers: "10.20.1.4:9092,10.20.1.5:9092,10.20.1.6:9092"
+        topic: "greenfeather-batch-player-store-changelog"
+        auto:
+          offset:
+            reset: "earliest"
+        group:
+          id: "kafka-mirror-greenfeather"
+        key:
+          deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+        value:
+          deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+    
+    outgoing:
+      target:
+        bootstrap:
+          servers: "10.20.5.6:9092,10.20.5.7:9092,10.20.5.8:9092"
+        topic: "greenfeather-batch-player-store-changelog"
+        key:
+          serializer: "org.apache.kafka.common.serialization.StringSerializer"
+        value:
+          serializer: "org.apache.kafka.common.serialization.StringSerializer"
+        acks: "all"
+
+quarkus:
+  # Container image configuration
+  container-image:
+    registry: "centralregistry.azurecr.io"
+    group: "kafka-mirror"
+    name: "greenfeather-service"
+    tag: "${quarkus.application.version:latest}"
+    push: true
+    builder: "jib"
+
+  # Health check configuration
+  smallrye-health:
+    ui:
+      enable: true
+  
+  # Logging for greenfeather environment  
+  log:
+    level: "WARN"
+    category:
+      "io.symplify":
+        level: "INFO"
+    console:
+      json: true
+      json:
+        additional-field:
+          serviceName:
+            value: "kafka-mirror-greenfeather"
+  
+  # Profile identification
+  application:
+    name: "kafka-mirror-greenfeather"
+    version: "1.0.0"

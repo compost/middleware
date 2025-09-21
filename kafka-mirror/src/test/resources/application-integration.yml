@@ -1,0 +1,22 @@
+# Integration Test Configuration
+quarkus:
+  kafka:
+    devservices:
+      enabled: false
+  
+  log:
+    level: "INFO"
+    category:
+      "io.symplify":
+        level: "DEBUG"
+
+# Integration profile specific settings
+"%integration":
+  mp:
+    messaging:
+      incoming:
+        source:
+          connector: "smallrye-in-memory"
+      outgoing:
+        target:
+          connector: "smallrye-in-memory"
