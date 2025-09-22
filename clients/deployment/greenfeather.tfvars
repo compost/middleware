@@ -42,7 +42,42 @@ container_apps = [
     }
     secrets    = {}
     aca        = true
+  },
 
+  {
+    name               = "greenfeather-mirror-main"
+    cpu                = 0.5
+    memory             = 1
+    docker_image_name  = "kafka-mirror-group/kafka-mirror"
+    docker_image_tag   = "anglet"
+    storage_share_name = "mirror-main-sharestate"
+    envs = {
+      "MIRROR_CONSUMER_GROUP_ID" = "greenfeather-mirror-main"
+      "KAFKA_SOURCE_TOPIC" = "greenfeather-player-store-changelog"
+      "KAFKA_TARGET_TOPIC" = "greenfeather-player-store-changelog"  
+      "KAFKA_SOURCE_BOOTSTRAP_SERVERS" = "10.20.1.4:9092,10.20.1.5:9092,10.20.1.6:9092"
+      "KAFKA_TARGET_BOOTSTRAP_SERVERS" = "10.20.5.6:9092,10.20.5.7:9092,10.20.5.8:9092"
+    }
+    secrets    = {}
+    aca        = true
+  },
+
+  {
+    name               = "greenfeather-mirror-batch"
+    cpu                = 0.5
+    memory             = 1
+    docker_image_name  = "kafka-mirror-group/kafka-mirror"
+    docker_image_tag   = "anglet"
+    storage_share_name = "mirror-batch-sharestate"
+    envs = {
+      "MIRROR_CONSUMER_GROUP_ID" = "greenfeather-mirror-batch"
+      "KAFKA_SOURCE_TOPIC" = "greenfeather-batch-player-store-changelog"
+      "KAFKA_TARGET_TOPIC" = "greenfeather-batch-player-store-changelog"  
+      "KAFKA_SOURCE_BOOTSTRAP_SERVERS" = "10.20.1.4:9092,10.20.1.5:9092,10.20.1.6:9092"
+      "KAFKA_TARGET_BOOTSTRAP_SERVERS" = "10.20.5.6:9092,10.20.5.7:9092,10.20.5.8:9092"
+    }
+    secrets    = {}
+    aca        = true
   }
 ]
 
@@ -56,4 +91,14 @@ storage_configs = {
     quota = 50 # in GB
     aca   = true
   }
+ "mirror-main-sharestate" = {
+    quota = 1 # in GB
+    aca   = true
+  }
+ "mirror-batch-sharestate" = {
+    quota = 1 # in GB
+    aca   = true
+  }
+
+
 }

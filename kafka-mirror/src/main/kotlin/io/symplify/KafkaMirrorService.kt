@@ -32,7 +32,7 @@ class KafkaMirrorService {
             Record.of(partitionKey, record.value())
         } catch (e: Exception) {
             logger.error("Error processing message: ${e.message}", e)
-            Record.of(record.key() ?: "unknown", record.value())
+            throw e
         }
     }
 }

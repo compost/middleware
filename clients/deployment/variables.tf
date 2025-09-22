@@ -113,7 +113,7 @@ variable "azure_account_key" {
 variable "aws_access_key_id" {
   description = "AWS access key ID for SQS integration."
   type        = string
-  sensitive   = true
+  sensitive   = false
 }
 
 variable "aws_secret_key_value" {

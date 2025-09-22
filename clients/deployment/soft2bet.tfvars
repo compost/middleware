@@ -24,7 +24,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "login/player-processor"
-    docker_image_tag   = "202509142258"
+    docker_image_tag = "20250922"
     storage_share_name = "logins-sharestate"
     envs = {
       "STATE_DIR"          = "/app/state/current"
@@ -39,7 +39,7 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "segmentation/player-processor"
-    docker_image_tag   = "202509142258"
+    docker_image_tag = "20250922"
     storage_share_name = "segmentation-sharestate"
     envs = {
       "STATE_DIR"          = "/app/state/current"
@@ -53,7 +53,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "kpi/player-processor"
-    docker_image_tag   = "202509142258"
+    docker_image_tag = "20250922"
     storage_share_name = "deprecated-kpi-sharestate"
     envs = {
       "STATE_DIR"          = "/app/state/current"
@@ -68,7 +68,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "fld/player-processor"
-    docker_image_tag   = "20250915"
+    docker_image_tag = "20250922"
     storage_share_name = "firstdepositloss-sharestate"
     envs = {
       "STATE_DIR"          = "/app/state/current"
@@ -83,7 +83,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "statistics/player-processor"
-    docker_image_tag   = "20250915"
+    docker_image_tag = "20250922"
     storage_share_name = "statistics-sharestate"
     envs = {
       "STATE_DIR"          = "/app/state/current"
@@ -97,16 +97,60 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "sportpush/player-processor"
-    docker_image_tag   = "202509142258"
+    docker_image_tag = "20250922"
     storage_share_name = "sportpush-sharestate"
     envs = {
       "STATE_DIR"          = "/app/state/current"
     }
     secrets    = {}
     aca = true
+  },
+
+
+  {
+    name               = "soft2bet-ldc"
+    cpu                = 1
+    memory             = 2
+    docker_image_name  = "player-processor"
+    docker_image_tag = "20250922"
+    storage_share_name = "ldc-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+      "DEFAULT_TOPOLOGY_ENABLED" = "false"
+      "LIFETIMEDEPOSITCOUNT_TOPOLOGY_ENABLED" = "true"
+    }
+    secrets    = {}
+    aca = true
+  },
+
+
+  {
+    name               = "soft2bet-repartitioner"
+    cpu                = 1
+    memory             = 2
+    docker_image_name  = "repartitioner/player-processor"
+    docker_image_tag = "20250922"
+    storage_share_name = "repartitioner-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+    }
+    secrets    = {}
+    aca = true
+  },
+
+  {
+    name               = "soft2bet-funid"
+    cpu                = 1
+    memory             = 2
+    docker_image_name  = "funid/player-processor"
+    docker_image_tag = "20250922"
+    storage_share_name = "funid-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+    }
+    secrets    = {}
+    aca = true
   }
-
-
 
 
 ]
@@ -117,6 +161,12 @@ storage_configs = {
     quota = 5 # in GB
     aca   = true
   }
+
+  "repartitioner-sharestate" = {
+    quota = 5 # in GB
+    aca   = true
+  }
+
 
   "segmentation-sharestate" = {
     quota = 50 # in GB
@@ -142,4 +192,15 @@ storage_configs = {
     quota = 50 # in GB
     aca   = true
   }
+
+  "ldc-sharestate" = {
+    quota = 50 # in GB
+    aca   = true
+  }
+
+  "funid-sharestate" = {
+    quota = 50 # in GB
+    aca   = true
+  }
+
 }

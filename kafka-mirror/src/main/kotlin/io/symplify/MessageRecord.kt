@@ -10,13 +10,13 @@ data class MessageRecord(
   @JsonProperty("player_id")
   val playerId: String
 ) {
-    private val additionalProperties: MutableMap<String, Any> = mutableMapOf()
+    private val additionalProperties: MutableMap<String, Any?> = mutableMapOf()
     
     @JsonAnyGetter
-    fun getAdditionalProperties(): Map<String, Any> = additionalProperties
+    fun getAdditionalProperties(): Map<String, Any?> = additionalProperties
     
     @JsonAnySetter
-    fun setAdditionalProperty(name: String, value: Any) {
+    fun setAdditionalProperty(name: String, value: Any?) {
         additionalProperties[name] = value
     }
 }

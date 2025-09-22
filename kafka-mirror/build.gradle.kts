@@ -37,7 +37,7 @@ dependencies {
 }
 
 group = "io.symplify"
-version = "20250921"
+version = "anglet"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17

@@ -290,9 +290,10 @@ For production deployment to Azure Container Apps (ACA):
 This project is part of a Kafka mirroring solution for gaming event processing.
 
 ```
-kafka-topics --create \
-  --bootstrap-server <new-kafka-cluster>:9092 \
-  --topic <application-id>-<store-name>-changelog \
+
+/usr/hdp/current/kafka-broker/bin/kafka-topics.sh --create \
+  --bootstrap-server 10.20.5.6:9092 \
+  --topic greenfeather-batch-player-store-changelog \
   --partitions 16 \
   --replication-factor 3 \
   --config cleanup.policy=compact \
