@@ -28,6 +28,24 @@ container_apps = [
     }
     secrets    = {}
     aca        = true
+  },
+
+  {
+    name               = "marsbet-mirror-main"
+    cpu                = 1
+    memory             = 2
+    docker_image_name  = "kafka-mirror-group/kafka-mirror"
+    docker_image_tag   = "hostage"
+    storage_share_name = "mirror-main-sharestate"
+    envs = {
+      "MIRROR_CONSUMER_GROUP_ID" = "marsbet-mirror-main"
+      "KAFKA_SOURCE_TOPIC" = "marsbet-v1-player-store-changelog"
+      "KAFKA_TARGET_TOPIC" = "marsbet-v1-player-store-changelog"  
+      "KAFKA_SOURCE_BOOTSTRAP_SERVERS" = "10.21.1.4:9092,10.21.1.5:9092,10.21.1.6:9092"
+      "KAFKA_TARGET_BOOTSTRAP_SERVERS" = "10.21.3.14:9092,10.21.3.15:9092,10.21.3.16:9092"
+    }
+    secrets    = {}
+    aca        = true
   }
 
 ]
@@ -36,6 +54,11 @@ container_apps = [
 storage_configs = {
   "marsbet-sharestate" = {
     quota = 50 # in GB
+    aca   = true
+  }
+
+  "mirror-main-sharestate" = {
+    quota = 1 # in GB
     aca   = true
   }
 }

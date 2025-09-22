@@ -46,10 +46,10 @@ container_apps = [
 
   {
     name               = "greenfeather-mirror-main"
-    cpu                = 0.5
-    memory             = 1
+    cpu                = 1
+    memory             = 2
     docker_image_name  = "kafka-mirror-group/kafka-mirror"
-    docker_image_tag   = "anglet"
+    docker_image_tag   = "hostage"
     storage_share_name = "mirror-main-sharestate"
     envs = {
       "MIRROR_CONSUMER_GROUP_ID" = "greenfeather-mirror-main"
@@ -64,10 +64,10 @@ container_apps = [
 
   {
     name               = "greenfeather-mirror-batch"
-    cpu                = 0.5
-    memory             = 1
+    cpu                = 1
+    memory             = 2
     docker_image_name  = "kafka-mirror-group/kafka-mirror"
-    docker_image_tag   = "anglet"
+    docker_image_tag   = "hostage"
     storage_share_name = "mirror-batch-sharestate"
     envs = {
       "MIRROR_CONSUMER_GROUP_ID" = "greenfeather-mirror-batch"
