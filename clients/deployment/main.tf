@@ -1,8 +1,20 @@
 # Define the required providers and their versions
 terraform {
-  backend "local" {
+
+  required_version = ">= 1.0"
+  
+  backend "s3" {
+    bucket  = "symplify-terraform-state-bucket"     
+    key     = "terraform.tfstate"          
+    region  = "eu-central-1"                         
+    encrypt = true
+    
   }
   required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.14.1"
+    }
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "~> 4.40.0"
