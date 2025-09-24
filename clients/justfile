@@ -13,11 +13,11 @@ push profile: login
 
 mvn-push profile: login
   # Push image with profile {{profile}}
-  @mvn clean package -U -DskipTests -Dquarkus.profile={{profile}}
+  mvn clean package -U -DskipTests -Dquarkus.profile={{profile}} -f {{invocation_directory()}}/pom.xml
 
 mvn-function:
   # deploy functions
-  @mvn clean package azure-functions:deploy -Pjada
+  mvn clean package azure-functions:deploy -Pjada -f {{invocation_directory()}}/pom.xml
 
 aca-replicas:
   # This command is slow as it makes a separate API call for each container app.
