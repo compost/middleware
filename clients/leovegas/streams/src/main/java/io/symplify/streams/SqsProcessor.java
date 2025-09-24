@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
+import org.jboss.logging.Logger;
 import io.symplify.kafka.*;
 import io.symplify.sqs.*;
 import io.symplify.store.PlayerStore;
@@ -25,6 +26,7 @@ import io.symplify.streams.Configuration.Mapping.Type;
 
 public class SqsProcessor implements Processor<String, byte[], Void, Void> {
 
+  private final Logger logger = Logger.getLogger(this.getClass());
   public static ObjectMapper getObjectMapper() {
     var objMp = new ObjectMapper();
     objMp.registerModules(new Jdk8Module());
@@ -56,7 +58,9 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
   }
 
   private Optional<PlayerStore> processMesssage(RecordMetadata metadata, Record<String, byte[]> record) {
-    System.out.println("boooom");
+    if(record.key() == null){
+        return Optional.empty();
+    }
     try {
       switch (metadata.topic()) {
         case Configuration.Topic.PLAYERS:
@@ -72,6 +76,9 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
         default:
           return Optional.empty();
       }
+    } catch(com.fasterxml.jackson.core.JsonParseException pfff) {
+        logger.warn("unable to read", pfff);  
+        return Optional.empty();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

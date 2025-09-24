@@ -90,6 +90,11 @@ resource "azurerm_container_app_environment" "main" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      infrastructure_resource_group_name
+    ]
+  }
 }
 
 
@@ -364,6 +369,9 @@ resource "azurerm_container_app" "main" {
     }
   }
   tags = local.tags
+  lifecycle {
+   ignore_changes = [ workload_profile_name]
+  }
 }
 
 resource "azurerm_monitor_metric_alert" "replica_count_alerts" {

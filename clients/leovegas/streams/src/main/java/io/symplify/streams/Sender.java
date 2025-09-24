@@ -16,6 +16,7 @@ import io.symplify.sqs.Body;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import software.amazon.awssdk.services.sqs.SqsClient;
+import static io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.*;
 
 @ApplicationScoped
 public class Sender {
@@ -67,40 +68,50 @@ public class Sender {
     var body = encode(brandId, playerId, type, mappingSelector, data);
     if (queue == null) {
       logger.warnv(
-          "missing queue"
-      // kv("playerId", playerId),
-      // kv("brandId", brandId),
-      // kv("messageId", messageId),
-      // kv("type", type),
-      // kv("body", body),
-      // kv("mappingSelector", mappingSelector)
+          "missing queue",
+       kv("playerId", playerId),
+       kv("brandId", brandId),
+       kv("messageId", messageId),
+       kv("type", type),
+       kv("body", body),
+       kv("mappingSelector", mappingSelector)
       );
     } else {
       try {
         logger.debugv(
-            "sending message"
-        // kv("playerId", playerId),
-        // kv("brandId", brandId),
-        // kv("url", queue),
-        // kv("messageId", messageId),
-        // kv("type", type),
-        // kv("mappingSelector", mappingSelector),
-        // kv("body", body)
+            "sending message",
+         kv("playerId", playerId),
+         kv("brandId", brandId),
+         kv("url", queue),
+         kv("messageId", messageId),
+         kv("type", type),
+         kv("mappingSelector", mappingSelector),
+         kv("body", body)
         );
         sqs.sendMessage(m -> m.queueUrl(queue)
             .messageBody(body)
             .messageDeduplicationId(messageId)
             .messageGroupId(messageGroupId));
+        logger.infov(
+            "sent message",
+            kv("playerId", playerId),
+            kv("brandId", brandId),
+            kv("url", queue),
+            kv("messageId", messageId),
+            kv("type", type),
+            kv("mappingSelector", mappingSelector),
+            kv("body", body));
+
       } catch (Exception e) {
         logger.errorv(
             "unable to send message",
-            // kv("playerId", playerId),
-            // kv("brandId", brandId),
-            // kv("url", queue),
-            // kv("messageId", messageId),
-            // kv("type", type),
-            // kv("mappingSelector", mappingSelector),
-            // kv("body", body),
+            kv("playerId", playerId),
+            kv("brandId", brandId),
+            kv("url", queue),
+            kv("messageId", messageId),
+            kv("type", type),
+            kv("mappingSelector", mappingSelector),
+            kv("body", body),
             e);
         throw e;
 

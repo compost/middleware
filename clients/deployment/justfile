@@ -12,12 +12,12 @@ workspace-new WORKSPACE_NAME:
     @terraform workspace new {{WORKSPACE_NAME}}
 
 # Apply 🚀
-apply TFVARS_FILE:
+apply TFVARS_FILE *FLAGS="":
     # Get the workspace name from the tfvars file name (e.g., "client-a" from "client-a.tfvars").
     @just workspace $(basename '{{TFVARS_FILE}}' .tfvars)
 
     # Use `terraform apply -var-file` to apply the changes.
-    @terraform apply -var-file="{{TFVARS_FILE}}"
+    @terraform apply -var-file="{{TFVARS_FILE}}" {{FLAGS}}
 
 destroy TFVARS_FILE:
     # Get the workspace name from the tfvars file name (e.g., "client-a" from "client-a.tfvars").
