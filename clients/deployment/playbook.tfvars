@@ -30,7 +30,27 @@ container_apps = [
     secrets    = {}
 
     aca = true
-  }
+  },
+
+  {
+    name               = "playbook-mirror-main"
+    cpu                = 1
+    memory             = 2
+    docker_image_name  = "kafka-mirror-group/kafka-mirror"
+    docker_image_tag   = "hostage"
+    storage_share_name = "mirror-main-sharestate"
+    envs = {
+      "MIRROR_CONSUMER_GROUP_ID" = "playbook-mirror-main"
+      "KAFKA_SOURCE_TOPIC" = "playbook-player-store-changelog"
+      "KAFKA_TARGET_TOPIC" = "playbook-player-store-changelog"  
+      "KAFKA_SOURCE_BOOTSTRAP_SERVERS" = "10.11.1.12:9092,10.11.1.13:9092,10.11.1.14:9092"
+      "KAFKA_TARGET_BOOTSTRAP_SERVERS" = "10.11.6.20:9092,10.11.6.21:9092,10.11.6.22:9092"
+    }
+    secrets    = {}
+    aca        = true
+  },
+
+
 
 ]
 
@@ -38,6 +58,11 @@ container_apps = [
 storage_configs = {
   "playbook-sharestate" = {
     quota = 50 # in GB
+    aca   = true
+  }
+
+  "mirror-main-sharestate" = {
+    quota = 1 # in GB
     aca   = true
   }
 }
