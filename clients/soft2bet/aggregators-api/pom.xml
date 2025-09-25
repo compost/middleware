@@ -15,14 +15,13 @@
   <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
   <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
   <quarkus.platform.version>2.14.3.Final</quarkus.platform.version>
-  <scala-maven-plugin.version>4.5.6</scala-maven-plugin.version>
-  <scala.major.version>2.12</scala.major.version>
+  <scala-maven-plugin.version>4.9.5</scala-maven-plugin.version>
+  <scala.major.version>2.13</scala.major.version>
   <scala.minor.version>15</scala.minor.version>
   <scala.version>${scala.major.version}.${scala.minor.version}</scala.version>
   <quarkus-amazon-services.version>2.14.3.Final</quarkus-amazon-services.version>
   <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
 
-  <semanticdb.version>4.7.4</semanticdb.version>
   <quarkus.container-image.push>true</quarkus.container-image.push>
 </properties>
 <dependencyManagement>
@@ -313,42 +312,23 @@
       <artifactId>scala-maven-plugin</artifactId>
       <version>${scala-maven-plugin.version}</version>
       <executions>
-        <execution>
-          <id>scala-compile-first</id>
-          <phase>process-resources</phase>
-          <goals>
-            <goal>add-source</goal>
-            <goal>compile</goal>
-          </goals>
-        </execution>
-        <execution>
-          <id>scala-test-compile</id>
-          <phase>process-test-resources</phase>
-          <goals>
-            <goal>add-source</goal>
-            <goal>testCompile</goal>
-          </goals>
-        </execution>
+      <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
       </executions>
       <configuration>
         <scalaVersion>${scala.version}</scalaVersion>
         <args>
           <arg>-deprecation</arg>
-          <arg>-Ywarn-unused</arg>
           <arg>-feature</arg>
           <arg>-explaintypes</arg>
-          <arg>-target:jvm-1.8</arg>
-          <arg>-Ypartial-unification</arg>
         </args>
-        <compilerPlugins>
-          <compilerPlugin>
-            <groupId>org.scalameta</groupId>
-            <artifactId>semanticdb-scalac_${scala.version}</artifactId>
-            <version>${semanticdb.version}</version>
-          </compilerPlugin>
-        </compilerPlugins>
       </configuration>
     </plugin>
+
     <plugin>
       <artifactId>maven-surefire-plugin</artifactId>
       <version>2.22.2</version>

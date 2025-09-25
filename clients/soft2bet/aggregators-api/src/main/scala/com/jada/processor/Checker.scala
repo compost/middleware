@@ -12,7 +12,7 @@ import org.jboss.logging.Logger
 
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
-import scala.collection.mutable.MutableList
+import scala.collection.mutable.ArrayDeque
 import java.time.ZoneOffset
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore
 import org.apache.kafka.streams.state.ValueAndTimestamp
@@ -430,7 +430,7 @@ abstract class Checker[V](
   final def buildPlayerActionFromDeposit(
       kv: KeyValueIterator[String, V]
   ): List[PlayerAction] = {
-    val l = new MutableList[PlayerAction]
+    val l = new ArrayDeque[PlayerAction]
     while (kv.hasNext()) {
       val next = kv.next()
       l += PlayerAction(
@@ -446,7 +446,7 @@ abstract class Checker[V](
   final def buildPlayerActionFromWagering(
       kv: KeyValueIterator[String, V]
   ): List[PlayerAction] = {
-    val l = new MutableList[PlayerAction]
+    val l = new ArrayDeque[PlayerAction]
     while (kv.hasNext()) {
       val next = kv.next()
       val sportsbets =

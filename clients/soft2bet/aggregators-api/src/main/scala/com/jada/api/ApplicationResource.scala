@@ -29,7 +29,7 @@ import org.apache.kafka.streams.StoreQueryParameters.fromNameAndType
 import com.jada.processor.Topologies
 import org.apache.kafka.streams.state.QueryableStoreTypes
 import com.fasterxml.jackson.databind.JsonNode
-import scala.collection.mutable.MutableList
+import scala.collection.mutable.ArrayDeque
 import java.net.URI
 import scala.util.Try
 import java.time.Clock
@@ -41,7 +41,7 @@ import org.apache.kafka.common.serialization.StringSerializer
 import java.util.ArrayList
 import java.time.temporal.ChronoUnit  
 
-@Path("/application")
+@Path("/q")
 @ApplicationScoped
 class ApplicationResource(
     @Inject config: ApplicationConfiguration,
@@ -112,7 +112,7 @@ class ApplicationResource(
           Array(kv("nb", store.approximateNumEntries())): _*
         )
         val sports = store.all()
-        val l = new MutableList[JsonNode]
+        val l = new ArrayDeque[JsonNode]
         while (sports.hasNext()) {
           l += sports.next().value
         }
@@ -205,7 +205,7 @@ class ApplicationResource(
   }
 
   @GET
-  @Path("/status")
+  @Path("/health")
   @Produces(Array[String](MediaType.TEXT_PLAIN))
   def status() = {
     if (streams.isEmpty) {

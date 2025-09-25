@@ -1,0 +1,8 @@
+import "../../justfile"
+
+registry := "soft2bet"
+
+push-all: 
+  @just mvn-push api
+  @just mvn-push repartitioner
+  @just mvn-push checker
