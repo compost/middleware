@@ -11,28 +11,32 @@ import org.jboss.logging.Logger
 
 @ApplicationScoped
 class KafkaMirrorService {
-    
-    @Inject
-    lateinit var objectMapper: ObjectMapper
-    
-    companion object {
-        private val logger = Logger.getLogger(KafkaMirrorService::class.java)
+
+  @Inject
+  lateinit var objectMapper: ObjectMapper
+
+  companion object {
+    private val logger = Logger.getLogger(KafkaMirrorService::class.java)
+  }
+
+  @Incoming("source")
+  @Outgoing("target")
+  @Blocking
+  fun mirrorMessage(record: Record<String?, String>): Record<String, String> {
+    return try {
+      val partitionKey = if (record.value() != null) {
+        val messageRecord = objectMapper.readValue(record.value(), MessageRecord::class.java)
+        "${messageRecord.brandId}-${messageRecord.playerId}"
+      } else {
+        record.key()
+      }
+
+      logger.info("Mirroring message with partition key: $partitionKey")
+
+      Record.of(partitionKey, record.value())
+    } catch (e: Exception) {
+      logger.error("Error processing message: ${e.message}", e)
+      throw e
     }
-    
-    @Incoming("source")
-    @Outgoing("target")
-    @Blocking
-    fun mirrorMessage(record: Record<String?, String>): Record<String, String> {
-        return try {
-            val messageRecord = objectMapper.readValue(record.value(), MessageRecord::class.java)
-            val partitionKey = "${messageRecord.brandId}-${messageRecord.playerId}"
-            
-            logger.info("Mirroring message with partition key: $partitionKey")
-            
-            Record.of(partitionKey, record.value())
-        } catch (e: Exception) {
-            logger.error("Error processing message: ${e.message}", e)
-            throw e
-        }
-    }
+  }
 }

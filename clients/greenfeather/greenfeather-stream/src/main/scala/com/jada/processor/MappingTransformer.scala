@@ -95,45 +95,45 @@ class MappingTransformer(
   ): KeyValue[String, PlayerStore] = {
     val playerFromStore = playerStore.get(key)
     val playerToSaveInStore = processorContext.topic() match {
-      case config.topicPlayersBatchRepartitioned =>
+      case config.topicPlayersBatch=>
         val inputPlayerBatch = deserialize[PlayerBatch](v)
         alert(
-          config.topicPlayersBatchRepartitioned,
+          config.topicPlayersBatch,
           key,
           v,
           inputPlayerBatch.kafka_timestamp
         )
         processPlayerBatch(playerFromStore, inputPlayerBatch)
 
-      case config.topicPlayerStatusRepartitioned =>
+      case config.topicPlayerStatus=>
         val inputPlayerStatus = deserialize[PlayerStatus](v)
         alert(
-          config.topicPlayerStatusRepartitioned,
+          config.topicPlayerStatus,
           key,
           v,
           inputPlayerStatus.kafka_timestamp
         )
         processPlayerStatus(playerFromStore, inputPlayerStatus)
 
-      case config.topicPlayersRepartitioned =>
+      case config.topicPlayers =>
         val inputPlayer = deserialize[Player](v)
         alert(
-          config.topicPlayersRepartitioned,
+          config.topicPlayers,
           key,
           v,
           inputPlayer.kafka_timestamp
         )
         processPlayer(playerFromStore, inputPlayer)
 
-      case config.topicActionTriggerRepartitioned =>
+      case config.topicActionTrigger=>
         val actionTrigger = deserialize[ActionTrigger](v)
         processActionTrigger(actionTrigger)
         null
 
-      case config.topicLoginsRepartitioned =>
+      case config.topicLogins=>
         val inputLogin = deserialize[Login](v)
         alert(
-          config.topicLoginsRepartitioned,
+          config.topicLogins,
           key,
           v,
           inputLogin.kafka_timestamp
@@ -145,7 +145,7 @@ class MappingTransformer(
           null
         }
 
-      case config.topicWageringsRepartitioned =>
+      case config.topicWagerings=>
         val input = deserialize[Wagering](v)
         val pl = Option(playerFromStore) match {
           case None =>
@@ -162,17 +162,17 @@ class MappingTransformer(
         }
         processWebPush(pl, input.result_datetime.orElse(input.bet_datetime))
 
-      case config.topicWalletsRepartitioned =>
+      case config.topicWallets=>
         val inputWallet = deserialize[Wallet](v)
         processWallet(inputWallet)
         null
 
-      case config.topicBonusTransactionRepartitioned =>
+      case config.topicBonusTransaction=>
         val inputBonus = deserialize[BonusTransaction](v)
         processBonusTransaction(inputBonus)
         null
 
-      case config.topicUserConsentUpdateRepartitioned =>
+      case config.topicUserConsentUpdate=>
         val inputConsent = deserialize[UserConsentUpdate](v)
         processConsent(playerFromStore, inputConsent)
     }

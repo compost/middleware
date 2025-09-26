@@ -50,46 +50,25 @@ case class ApplicationConfiguration(
   val topicOutput = s"${prefix}-full-players"
 
   val topicPlayers = "players"
-  val topicPlayersRepartitioned = s"${prefix}-players-repartitioned"
-
   val topicPlayersBatch = "player_batch"
-  val topicPlayersBatchRepartitioned = s"${prefix}-player-batch-repartitioned"
-
   val topicLogins = "logins"
-  val topicLoginsRepartitioned = s"${prefix}-logins-repartitioned"
-
   val topicWallets = "wallet"
-  val topicWalletsRepartitioned = s"${prefix}-wallets-repartitioned"
-
   val topicWagerings = "wagering"
-  val topicWageringsRepartitioned = s"${prefix}-wagerings-repartitioned"
-
   val topicPlayerStatus = "player_status"
-  val topicPlayerStatusRepartitioned =
-    s"${prefix}-player-status-repartitioned"
-
   val topicUserConsentUpdate = "player_consent"
-  val topicUserConsentUpdateRepartitioned =
-    s"${prefix}-player-consent-repartitioned"
-
   val topicActionTrigger = "action_triggers"
-  val topicActionTriggerRepartitioned =
-    s"${prefix}-action-triggers-repartitioned"
-
   val topicBonusTransaction = "bonus_transaction"
-  val topicBonusTransactionRepartitioned =
-    s"${prefix}-bonus-transaction-repartitioned"
 
   val appTopics = Set(
-    topicPlayersBatchRepartitioned,
-    topicPlayersRepartitioned,
-    topicWageringsRepartitioned,
-    topicLoginsRepartitioned,
-    topicWalletsRepartitioned,
-    topicPlayerStatusRepartitioned,
-    topicUserConsentUpdateRepartitioned,
-    topicActionTriggerRepartitioned,
-    topicBonusTransactionRepartitioned
+    topicPlayersBatch,
+    topicPlayers,
+    topicWagerings,
+    topicLogins,
+    topicWallets,
+    topicPlayerStatus,
+    topicUserConsentUpdate,
+    topicActionTrigger,
+    topicBonusTransaction
   )
 
   val externalTopics =

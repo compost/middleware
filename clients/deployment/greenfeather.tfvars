@@ -17,88 +17,44 @@ storage_account_name = "greenfeatherstorage" # Must be globally unique
 # List of container apps to be created
 container_apps = [
   {
-    name               = "greenfeather-main"
+    name               = "greenfeather-joy-main"
     cpu                = 2
     memory             = 4
     docker_image_name  = "greenfeather/greenfeather-stream"
-    docker_image_tag   = "20250824"
-    storage_share_name = "main-sharestate"
+    docker_image_tag   = "20250925"
+    storage_share_name = "joy-main-sharestate"
     envs = {
       "PUNCTUATOR" = "PT60M"
-      "STATE_DIR"  = "/app/state/2025-08-23"
+      "STATE_DIR"  = "/app/state/current"
     }
     secrets    = {}
     aca        = true
   },
   {
-    name               = "greenfeather-batch"
+    name               = "greenfeather-joy-batch"
     cpu                = 2
     memory             = 4
     docker_image_name  = "greenfeather-batch/greenfeather-stream-batch"
-    docker_image_tag   = "20250824"
-    storage_share_name = "batch-sharestate"
+    docker_image_tag   = "20250925"
+    storage_share_name = "joy-batch-sharestate"
     envs = {
-      "STATE_DIR" = "/app/state/2025-08-23"
+      "STATE_DIR" = "/app/state/current"
     }
     secrets    = {}
     aca        = true
   },
 
-  {
-    name               = "greenfeather-mirror-main"
-    cpu                = 1
-    memory             = 2
-    docker_image_name  = "kafka-mirror-group/kafka-mirror"
-    docker_image_tag   = "hostage"
-    storage_share_name = "mirror-main-sharestate"
-    envs = {
-      "MIRROR_CONSUMER_GROUP_ID" = "greenfeather-mirror-main"
-      "KAFKA_SOURCE_TOPIC" = "greenfeather-player-store-changelog"
-      "KAFKA_TARGET_TOPIC" = "greenfeather-player-store-changelog"  
-      "KAFKA_SOURCE_BOOTSTRAP_SERVERS" = "10.20.1.4:9092,10.20.1.5:9092,10.20.1.6:9092"
-      "KAFKA_TARGET_BOOTSTRAP_SERVERS" = "10.20.5.6:9092,10.20.5.7:9092,10.20.5.8:9092"
-    }
-    secrets    = {}
-    aca        = true
-  },
 
-  {
-    name               = "greenfeather-mirror-batch"
-    cpu                = 1
-    memory             = 2
-    docker_image_name  = "kafka-mirror-group/kafka-mirror"
-    docker_image_tag   = "hostage"
-    storage_share_name = "mirror-batch-sharestate"
-    envs = {
-      "MIRROR_CONSUMER_GROUP_ID" = "greenfeather-mirror-batch"
-      "KAFKA_SOURCE_TOPIC" = "greenfeather-batch-player-store-changelog"
-      "KAFKA_TARGET_TOPIC" = "greenfeather-batch-player-store-changelog"  
-      "KAFKA_SOURCE_BOOTSTRAP_SERVERS" = "10.20.1.4:9092,10.20.1.5:9092,10.20.1.6:9092"
-      "KAFKA_TARGET_BOOTSTRAP_SERVERS" = "10.20.5.6:9092,10.20.5.7:9092,10.20.5.8:9092"
-    }
-    secrets    = {}
-    aca        = true
-  }
 ]
 
 # Map of storage configurations to be created
 storage_configs = {
-  "main-sharestate" = {
+  "joy-main-sharestate" = {
     quota = 50 # in GB
     aca   = true
   },
-  "batch-sharestate" = {
+  "joy-batch-sharestate" = {
     quota = 50 # in GB
     aca   = true
   }
- "mirror-main-sharestate" = {
-    quota = 1 # in GB
-    aca   = true
-  }
- "mirror-batch-sharestate" = {
-    quota = 1 # in GB
-    aca   = true
-  }
-
-
 }
