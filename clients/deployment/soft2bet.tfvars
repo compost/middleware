@@ -152,19 +152,19 @@ container_apps = [
     aca = true
   },
 
-  {
-    name               = "soft2bet-main"
-    cpu                = 1
-    memory             = 2
-    docker_image_name  = "player-processor"
-    docker_image_tag = "20250924"
-    storage_share_name = "main-sharestate"
-    envs = {
-      "STATE_DIR"          = "/app/state/current"
-    }
-    secrets    = {}
-    aca = true
-  },
+//  {
+//    name               = "soft2bet-main"
+//    cpu                = 1
+//    memory             = 2
+//    docker_image_name  = "player-processor"
+//    docker_image_tag = "20250924"
+//    storage_share_name = "main-sharestate"
+//    envs = {
+//      "STATE_DIR"          = "/app/state/current"
+//    }
+//    secrets    = {}
+//    aca = true
+//  },
 
 
 
@@ -213,10 +213,10 @@ storage_configs = {
     aca   = true
   }
 
-  "main-sharestate" = {
-    quota = 500 # in GB
-    aca   = true
-  }
+//  "main-sharestate" = {
+//    quota = 500 # in GB
+//    aca   = true
+//  }
 
   "funid-sharestate" = {
     quota = 50 # in GB
