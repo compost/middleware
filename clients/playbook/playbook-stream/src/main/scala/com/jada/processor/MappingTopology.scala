@@ -65,14 +65,12 @@ class MappingTopology @Inject() (
   @Produces
   def buildTopology(): Topology = {
     val storePlayerStoreName = "player-store"
-    val storeCI1359Name = "ci1359-store"
     val storeCountryName = "country-store"
     val storeCurrencyName = "currency-store"
 
     val stringSerde: Serde[String] = Serdes.String
     val arrayByteSerde: Serde[Array[Byte]] = Serdes.ByteArray
     val playerStoreSerde = CirceSerdes.serde[PlayerStore]
-    val ci1359BlockedReasonStoreSerde = CirceSerdes.serde[CI1359BlockedReason]
     val currencySerde = CirceSerdes.serde[Currency]
     val countrySerde = CirceSerdes.serde[Country]
     implicit val consumed = Consumed.`with`(stringSerde, arrayByteSerde)
@@ -88,14 +86,6 @@ class MappingTopology @Inject() (
       )
     )
 
-    builder.addStateStore(
-      Stores.keyValueStoreBuilder(
-        Stores.persistentKeyValueStore(storeCI1359Name),
-        stringSerde,
-        ci1359BlockedReasonStoreSerde
-      )
-    )
-
     val brandIds = config.brandQueue.keySet()
 
     builder
@@ -106,7 +96,7 @@ class MappingTopology @Inject() (
         v.country_id.isDefined && v.brand_id.exists(b => brandIds.contains(b))
       )
       .selectKey((_, v) => generateKey(v.brand_id, v.country_id))
-      .to(config.topicCountriesRepartitioned)(
+      .to(config.topicCountryRepartitioned)(
         Produced.`with`(stringSerde, CirceSerdes.serde[Country])
       )
 
@@ -145,108 +135,12 @@ class MappingTopology @Inject() (
 
     builder.addGlobalStore(
       countryStateStore,
-      config.topicCountriesRepartitioned,
+      config.topicCountryRepartitioned,
       consumedCountry,
       new GlobalStoreSupplier[String, com.jada.models.Country](
         storeCountryName
       )
     )
-
-    builder
-      .stream[String, Player](
-        config.topicPlayers
-      )(Consumed.`with`(stringSerde, CirceSerdes.serde[Player]))
-      .filter((_, v) =>
-        v.player_id.isDefined && v.brand_id.exists(b => brandIds.contains(b))
-      )
-      .selectKey((_, v) => generateKey(v.brand_id, v.player_id))
-      .to(config.topicPlayersRepartitioned)(
-        Produced.`with`(stringSerde, CirceSerdes.serde[Player])
-      )
-
-    builder
-      .stream[String, Login](
-        config.topicLogins
-      )(Consumed.`with`(stringSerde, CirceSerdes.serde[Login]))
-      .filter((_, v) =>
-        v.player_id.isDefined && v.brand_id.exists(b => brandIds.contains(b))
-      )
-      .selectKey((_, v) => generateKey(v.brand_id, v.player_id))
-      .to(config.topicLoginsRepartitioned)(
-        Produced.`with`(stringSerde, CirceSerdes.serde[Login])
-      )
-
-    builder
-      .stream[String, Wallet](
-        config.topicWallets
-      )(Consumed.`with`(stringSerde, CirceSerdes.serde[Wallet]))
-      .filter((_, v) =>
-        v.player_id.isDefined && v.brand_id.exists(b => brandIds.contains(b))
-      )
-      .selectKey((_, v) => generateKey(v.brand_id, v.player_id))
-      .to(config.topicWalletsRepartitioned)(
-        Produced.`with`(stringSerde, CirceSerdes.serde[Wallet])
-      )
-
-    builder
-      .stream[String, Wagering](
-        config.topicWagerings
-      )(Consumed.`with`(stringSerde, CirceSerdes.serde[Wagering]))
-      .filter((_, v) =>
-        v.player_id.isDefined && v.brand_id.exists(b => brandIds.contains(b))
-      )
-      .selectKey((_, v) => generateKey(v.brand_id, v.player_id))
-      .to(config.topicWageringsRepartitioned)(
-        Produced.`with`(stringSerde, CirceSerdes.serde[Wagering])
-      )
-
-    builder
-      .stream[String, UserConsentUpdate](
-        config.topicUserConsentUpdatePlaybook
-      )(Consumed.`with`(stringSerde, CirceSerdes.serde[UserConsentUpdate]))
-      .filter((_, v) =>
-        v.player_id.isDefined && v.brand_id.exists(b => brandIds.contains(b))
-      )
-      .selectKey((_, v) => generateKey(v.brand_id, v.player_id))
-      .to(config.topicUserConsentUpdatePlaybookRepartitioned)(
-        Produced.`with`(stringSerde, CirceSerdes.serde[UserConsentUpdate])
-      )
-
-    builder
-      .stream[String, PlayerStatus](
-        config.topicPlayerStatus
-      )(Consumed.`with`(stringSerde, CirceSerdes.serde[PlayerStatus]))
-      .filter((_, v) =>
-        v.player_id.isDefined && v.brand_id.exists(b => brandIds.contains(b))
-      )
-      .selectKey((_, v) => generateKey(v.brand_id, v.player_id))
-      .to(config.topicPlayerStatusRepartitioned)(
-        Produced.`with`(stringSerde, CirceSerdes.serde[PlayerStatus])
-      )
-
-    builder
-      .stream[String, PlayerConsentMulti](
-        config.topicPlayerConsentMulti
-      )(Consumed.`with`(stringSerde, CirceSerdes.serde[PlayerConsentMulti]))
-      .filter((_, v) =>
-        v.player_id.isDefined && v.brand_id.exists(b => brandIds.contains(b))
-      )
-      .selectKey((_, v) => generateKey(v.brand_id, v.player_id))
-      .to(config.topicPlayerConsentMultiRepartitioned)(
-        Produced.`with`(stringSerde, CirceSerdes.serde[PlayerConsentMulti])
-      )
-
-    builder
-      .stream[String, StakeFactor](
-        config.topicStakeFactor
-      )(Consumed.`with`(stringSerde, CirceSerdes.serde[StakeFactor]))
-      .filter((_, v) =>
-        v.player_id.isDefined && v.brand_id.exists(b => brandIds.contains(b))
-      )
-      .selectKey((_, v) => generateKey(v.brand_id, v.player_id))
-      .to(config.topicStakeFactorRepartitioned)(
-        Produced.`with`(stringSerde, CirceSerdes.serde[StakeFactor])
-      )
 
     import scala.collection.JavaConverters._
     val kstream: KStream[String, Array[Byte]] =
@@ -261,11 +155,8 @@ class MappingTopology @Inject() (
           storePlayerStoreName,
           storeCurrencyName,
           storeCountryName,
-          storeCI1359Name
         ),
       storePlayerStoreName,
-      storeCI1359Name
-
     )
 
     val b = builder.build()

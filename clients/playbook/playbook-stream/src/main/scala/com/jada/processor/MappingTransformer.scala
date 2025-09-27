@@ -61,10 +61,8 @@ class MappingTransformer(
     clientNorth: software.amazon.awssdk.services.sqs.SqsClient,
     playerStoreName: String,
     currencyStoreName: String,
-    countryStoreName: String,
-    ci1359StoreName: String
-) extends Transformer[String, Array[Byte], KeyValue[Unit, Unit]]
-    with Punctuator {
+    countryStoreName: String
+) extends Transformer[String, Array[Byte], KeyValue[Unit, Unit]] {
 
   import MappingTransformer._
   val sender = new Sender(config, client, clientNorth)
@@ -105,13 +103,7 @@ class MappingTransformer(
     this.playerStore = processorContext.getStateStore(playerStoreName)
     this.currencyStore = processorContext.getStateStore(currencyStoreName)
     this.countryStore = processorContext.getStateStore(countryStoreName)
-    this.blockedReasonStore = processorContext.getStateStore(ci1359StoreName)
 
-    // this.processorContext.schedule(
-    //  config.punctuator,
-    //  PunctuationType.WALL_CLOCK_TIME,
-    //  this
-    // )
   }
 
   override def transform(key: String, v: Array[Byte]): KeyValue[Unit, Unit] = {
@@ -120,34 +112,19 @@ class MappingTransformer(
     val thirtyDaysAgo = Instant.now.minus(30, ChronoUnit.DAYS)
 
     val playerToSaveInStore = processorContext.topic() match {
-      case config.topicCI1359BlockedReason => {
-        val input = deserialize[CI1359BlockedReason](v)
-        if (
-          playerFromStore != null && playerFromStore.status == Some("blocked")
-        ) {
-          blockedReasonStore.put(key, input)
-        }
-        null
-      }
-      case config.topicRaw => {
-        val input = deserialize[PlayerDB](v)
-        val newPlayer = PlayerStore(Option(playerFromStore), input)
-        playerStore.put(key, newPlayer)
-        null
-      }
-      case config.topicPlayerStatusRepartitioned => {
+      case config.topicPlayerStatus => {
         val input = deserialize[PlayerStatus](v)
         processPlayerStatus(Option(playerFromStore), input).orNull
       }
-      case config.topicStakeFactorRepartitioned => {
+      case config.topicStakeFactor => {
         val input = deserialize[StakeFactor](v)
         processStakeFactor(Option(playerFromStore), input)
       }
-      case config.topicPlayerConsentMultiRepartitioned => {
+      case config.topicPlayerConsentMulti => {
         val input = deserialize[PlayerConsentMulti](v)
         processPlayerConsentMulti(Option(playerFromStore), input)
       }
-      case config.topicPlayersRepartitioned =>
+      case config.topicPlayers =>
         val inputPlayer = deserialize[Player](v)
 
         val newPlayer = PlayerStore(Option(playerFromStore), inputPlayer)
@@ -197,7 +174,7 @@ class MappingTransformer(
           }
         pp
 
-      case config.topicUserConsentUpdatePlaybookRepartitioned =>
+      case config.topicUserConsentUpdatePlaybook =>
         val userConsentUpdate = deserialize[UserConsentUpdate](v)
 
         if (
@@ -231,7 +208,7 @@ class MappingTransformer(
         } else {
           null
         }
-      case config.topicLoginsRepartitioned =>
+      case config.topicLogins =>
         val login = deserialize[Login](v)
 
         val loginDTAsDate = login.login_datetime.map(x => parseDate(x))
@@ -269,7 +246,7 @@ class MappingTransformer(
           newPlayerWithLogin
         } else { null }
 
-      case config.topicWalletsRepartitioned =>
+      case config.topicWallets =>
         val wallet = deserialize[Wallet](v)
         val newActivityDate = wallet.transaction_datetime.map(x => parseDate(x))
 
@@ -375,7 +352,7 @@ class MappingTransformer(
           newPlayerWithWallet
         } else { null }
 
-      case config.topicWageringsRepartitioned =>
+      case config.topicWagerings =>
         val wagering = deserialize[Wagering](v)
         val newActivityDate =
           wagering.bet_datetime.map(x => parseDate(x))
@@ -705,110 +682,6 @@ class MappingTransformer(
 
     }
   }
-
-  override def punctuate(timestamp: Long): Unit = {
-    logger.debug("punctuate")
-
-    val players = blockedReasonStore.all()
-    try {
-      val now = UUID.randomUUID.toString
-      logger.debug(s"start bootstrap players ${now}")
-      val brandFile = writeFile(now, players)
-      brandFile.foreach {
-        case (key, value) => {
-          logger.debug(s"expose ${key}")
-          expose(key, now, value)
-        }
-      }
-      if (brandFile.isEmpty) {
-        logger.info(s"punctuate done ${now}")
-      }
-      logger.debug(s"end bootstrap players ${now}")
-    } finally {
-      players.close()
-    }
-    cleanStore()
-  }
-
-  def cleanStore(): Unit = {
-    val playersBalance = blockedReasonStore.all
-    try {
-      while (playersBalance.hasNext) {
-        blockedReasonStore.delete(playersBalance.next().key)
-      }
-    } finally {
-      playersBalance.close()
-    }
-  }
-
-  def writeFile(
-      now: String,
-      players: KeyValueIterator[String, CI1359BlockedReason]
-  ): Map[String, Path] = {
-
-    import io.circe._, io.circe.generic.auto._, io.circe.parser._,
-    io.circe.syntax._
-    val brandFile = scala.collection.mutable.Map[String, (Path, FileWriter)]()
-
-    try {
-
-      while (players.hasNext()) {
-        val keyAndValue = players.next()
-        if (keyAndValue.value.BRAND_ID.isDefined) {
-          val filewrite = brandFile.getOrElseUpdate(
-            keyAndValue.value.BRAND_ID.get.toString, {
-              val tmp = Files.createTempFile(
-                s"players-${now}-${keyAndValue.value.BRAND_ID}",
-                ".json"
-              )
-              logger.debug(s"file: ${tmp}")
-              val writer = new FileWriter(tmp.toFile())
-              (tmp, writer)
-            }
-          )
-
-          filewrite._2.write(
-            s"""{"id":"${keyAndValue.value.PLAYER_ID.get}", "properties":{"player_blocked_reason":"${keyAndValue.value.PLAYER_BLOCKED_REASON_DESCRIPTION.get}"}}\n"""
-          )
-        }
-      }
-    } finally {
-      brandFile.foreach { case (key, value) => value._2.close() }
-    }
-    brandFile.map { case (key, value) => (key, value._1) }.toMap
-  }
-
-  def expose(brandId: String, timestamp: String, file: Path): Unit = {
-    val bsclient = new BlobServiceClientBuilder()
-      .connectionString(config.connectionString)
-      .buildClient()
-    val blobClient = bsclient
-      .getBlobContainerClient(config.outputContainerName)
-      .getBlobClient(
-        s"data/${brandId}/players/data-${timestamp}.json"
-      )
-    blobClient.uploadFromFile(file.toString(), true)
-    val blobSasPermission = new BlobSasPermission().setReadPermission(true)
-    val expiryTime = OffsetDateTime.now().plusDays(1)
-    val values =
-      new BlobServiceSasSignatureValues(expiryTime, blobSasPermission)
-    val url = s"${blobClient.getBlobUrl}?${blobClient.generateSas(values)}"
-    val body =
-      s"""
-         |{
-         |  "type": "BATCH_NOTIFICATION",
-         |  "mappingSelector":"${computeMappingSelector(
-          Option(brandId),
-          "batch-import"
-        )}",
-         |  "downloadUri": "$url"
-         |}
-         |""".stripMargin
-
-    logger.debug(body)
-    sender.sendMessageToSQS("batch-import", brandId, body)
-  }
-
   def computeMappingSelector(brandId: Option[String], mp: String): String = {
     if (brandId.exists(v => config.mappingSelectorDevPrefix.contains(v))) {
       s"DEV_${mp}"
@@ -816,6 +689,7 @@ class MappingTransformer(
       mp
     }
   }
+
   override def close(): Unit = {}
 }
 

@@ -17,6 +17,23 @@ storage_account_name = "playbookenvstorage" # Must be globally unique
 # List of container apps to be created
 container_apps = [
   {
+    name               = "playbook-joy-main"
+    cpu                = 0.5
+    memory             = 1
+    docker_image_name  = "playbook/playbook-stream"
+    docker_image_tag   = "20250927"
+    storage_share_name = "playbook-joy-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+      "WEBSITE_DNS_SERVER" = "168.63.129.16" # not sure
+    }
+    secrets    = {}
+
+    aca = true
+  },
+
+
+  {
     name               = "playbook-main"
     cpu                = 0.5
     memory             = 1
@@ -56,6 +73,12 @@ container_apps = [
 
 # Map of storage configurations to be created
 storage_configs = {
+  "playbook-joy-sharestate" = {
+    quota = 50 # in GB
+    aca   = true
+  }
+
+
   "playbook-sharestate" = {
     quota = 50 # in GB
     aca   = true

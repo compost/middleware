@@ -49,54 +49,27 @@ case class ApplicationConfiguration(
 ) {
 
   val topicCurrency = "currency"
-  val topicCurrencyRepartitioned = s"${prefix}-currency-repartitioned"
+  val topicCurrencyRepartitioned = "currency-repartitioned"
   val topicCountries = "countries"
-  val topicCountriesRepartitioned = s"${prefix}-countries-repartitioned"
+  val topicCountryRepartitioned = "country-repartitioned"
   val topicPlayers = "players"
-  val topicPlayersRepartitioned = s"${prefix}-players-repartitioned"
-
   val topicLogins = "logins"
-  val topicLoginsRepartitioned = s"${prefix}-logins-repartitioned"
-
   val topicWallets = "wallet"
-  val topicWalletsRepartitioned = s"${prefix}-wallets-repartitioned"
-
   val topicWagerings = "wagering"
-  val topicWageringsRepartitioned = s"${prefix}-wagerings-repartitioned"
-
   val topicPlayerStatus = "player_status"
-  val topicPlayerStatusRepartitioned =
-    s"${prefix}-player-status-repartitioned"
-
   val topicStakeFactor = "stake_factor"
-  val topicStakeFactorRepartitioned =
-    s"${prefix}-stake-factor-repartitioned"
-
   val topicUserConsentUpdatePlaybook = "player_consent"
-  val topicUserConsentUpdatePlaybookRepartitioned =
-    s"${prefix}-player-consent-repartitioned"
-
   val topicPlayerConsentMulti = "player_consent_multi"
-  val topicPlayerConsentMultiRepartitioned =
-    s"${prefix}-player-consent-multi-repartitioned"
 
-  // RAW_CRM_IMPORT_PLAYBOOK
-  val topicRaw = "raw-crm-import-playbook"
-  val topicCI1359BlockedReason = "ci-1359-blocked-reason"
-  // RAW_CRM_PLAYER_STATUS_IMPORT_PLAYBOOK
-  val topicStatusRaw = "raw-crm-player-status-import-playbook"
   val appTopics = Set(
-    topicPlayersRepartitioned,
-    topicLoginsRepartitioned,
-    topicWalletsRepartitioned,
-    topicWageringsRepartitioned,
-    topicPlayerStatusRepartitioned,
-    topicStakeFactorRepartitioned,
-    topicUserConsentUpdatePlaybookRepartitioned,
-    topicPlayerConsentMultiRepartitioned,
-    topicStatusRaw,
-    topicRaw,
-    topicCI1359BlockedReason
+    topicPlayers,
+    topicLogins,
+    topicWallets,
+    topicWagerings,
+    topicPlayerStatus,
+    topicStakeFactor,
+    topicUserConsentUpdatePlaybook,
+    topicPlayerConsentMulti,
   )
 
   val externalTopics =
