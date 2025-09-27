@@ -98,11 +98,6 @@ class MappingTransformer(
     val playerFromStore = playerStore.get(key)
 
     val playerToSaveInStore = processorContext.topic() match {
-      case config.topicHistoryPlayers =>
-        val inputPlayer = deserialize[PlayerDatabase](v)
-        val previous = Option(playerFromStore)
-        PlayerStore(previous, inputPlayer)
-
       case config.topicPlayers =>
         val inputPlayer = deserialize[Player](v)
 

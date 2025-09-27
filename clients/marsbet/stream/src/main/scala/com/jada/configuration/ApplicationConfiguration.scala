@@ -53,7 +53,6 @@ case class ApplicationConfiguration(
   val topicWagerings = "wagering"
   val topicPlayerStatus = "player_status"
   val topicPlayerConsent = "player_consent"
-  val topicHistoryPlayers = "history-players"
 
   val externalTopics =
     Set(
@@ -63,7 +62,6 @@ case class ApplicationConfiguration(
       topicWagerings,
       topicPlayerStatus,
       topicPlayerConsent,
-      topicHistoryPlayers
     )
 
   val sqsGroupId = s"${applicationId}-stream-app"
