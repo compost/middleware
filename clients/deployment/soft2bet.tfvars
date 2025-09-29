@@ -152,6 +152,35 @@ container_apps = [
     aca = true
   },
 
+  {
+    name               = "soft2bet-checker-anglet"
+    cpu                = 2
+    memory             = 4
+    docker_image_name  = "checker/aggregators-api"
+    docker_image_tag = "20250929"
+    storage_share_name = "checker-anglet-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+    }
+    secrets    = {}
+    aca = true
+  },
+
+  {
+    name               = "soft2bet-checker-biarritz"
+    cpu                = 2
+    memory             = 4
+    docker_image_name  = "checker/aggregators-api"
+    docker_image_tag = "20250929"
+    storage_share_name = "checker-biarritz-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+    }
+    secrets    = {}
+    aca = true
+  },
+
+
 //  {
 //    name               = "soft2bet-main"
 //    cpu                = 1
@@ -222,5 +251,16 @@ storage_configs = {
     quota = 50 # in GB
     aca   = true
   }
+
+  "checker-anglet-sharestate" = {
+    quota = 150 # in GB
+    aca   = true
+  }
+
+  "checker-biarritz-sharestate" = {
+    quota = 150 # in GB
+    aca   = true
+  }
+
 
 }
