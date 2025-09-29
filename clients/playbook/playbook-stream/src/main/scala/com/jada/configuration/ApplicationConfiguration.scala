@@ -45,7 +45,15 @@ case class ApplicationConfiguration(
       name = "brands-sqs-north"
     ) brandsSqsNorth: java.util.Set[
       String
-    ]
+    ],
+    @ConfigProperty(
+      name = "default.topology.enabled",
+      defaultValue = "true"
+    ) val defaultTopologyEnabled: Boolean,
+    @ConfigProperty(
+      name = "balance.topology.enabled",
+      defaultValue = "false"
+    ) val balanceTopologyEnabled: Boolean
 ) {
 
   val topicCurrency = "currency"
@@ -69,7 +77,7 @@ case class ApplicationConfiguration(
     topicPlayerStatus,
     topicStakeFactor,
     topicUserConsentUpdatePlaybook,
-    topicPlayerConsentMulti,
+    topicPlayerConsentMulti
   )
 
   val externalTopics =
@@ -83,7 +91,7 @@ case class ApplicationConfiguration(
       topicPlayerStatus,
       topicStakeFactor,
       topicUserConsentUpdatePlaybook,
-      topicPlayerConsentMulti,
+      topicPlayerConsentMulti
     )
 
   val sqsGroupId = s"${prefix}-stream-app"

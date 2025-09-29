@@ -30,13 +30,32 @@ container_apps = [
     secrets    = {}
 
     aca = true
+  },
+  {
+    name               = "playbook-balance"
+    cpu                = 1
+    memory             = 2
+    docker_image_name  = "balance/playbook-stream"
+    docker_image_tag   = "20250929-choisy"
+    storage_share_name = "playbook-balance-sharestate"
+    envs = {
+      "STATE_DIR"          = "/app/state/current"
+    }
+    secrets    = {}
+
+    aca = true
   }
+
 ]
 
-# Map of storage configurations to be created
 storage_configs = {
   "playbook-joy-sharestate" = {
-    quota = 50 # in GB
+    quota = 50 
+    aca   = true
+  }
+
+  "playbook-balance-sharestate" = {
+    quota = 50
     aca   = true
   }
 }

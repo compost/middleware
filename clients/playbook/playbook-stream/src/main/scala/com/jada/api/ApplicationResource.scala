@@ -36,9 +36,14 @@ import com.jada.models.Country
 @ApplicationScoped
 class ApplicationResource @Inject() (
     config: ApplicationConfiguration,
-    streams: KafkaStreams,
-    kafkaProducer: KafkaProducer[String, String]
+    @Inject @com.jada.DefaultTopology defaultStreams: Option[KafkaStreams],
+    @Inject @com.jada.BalanceTopology balanceStreams: Option[KafkaStreams]
 ) {
+
+  val streams = Map(
+    ("default", defaultStreams),
+    ("balance", balanceStreams)
+  )
 
   final val printer: Printer = Printer(
     dropNullValues = true,
@@ -53,7 +58,7 @@ class ApplicationResource @Inject() (
   }
 
   def onStop(@Observes ev: ShutdownEvent) = {
-    streams.close();
+    streams.values.flatten.foreach(_.close())
   }
 
   def onStop(@Observes ev: Nothing): Unit = {
@@ -62,84 +67,39 @@ class ApplicationResource @Inject() (
 
   def start() = {
     if (running.compareAndSet(false, true)) {
-      if (!KafkaStreams.State.RUNNING.equals(streams.state())) {
-        streams.start()
-      }
+      logger.debugv(
+        "start",
+        kv("instance-id", System.getenv("WEBSITE_SITE_NAME"))
+      )
+      streams.values.flatten.foreach(s => {
+        if (!s.state().isRunningOrRebalancing()) {
+          s.start()
+        }
+      })
     } else {
       logger.debug("already running")
     }
-  }
 
-  @GET
-  @Path("/player")
-  @Produces(Array[String](MediaType.APPLICATION_JSON))
-  def players(
-      @QueryParam("playerId") playerId: String,
-      @QueryParam("token") token: String,
-      @QueryParam("sqs") sqs: Boolean
-  ): String = {
-    if (token == "eb20ec2f-81b2-4ad0-82bd-5cfa796d43b4") {
-      Option(streams)
-        .map(s => {
-          val p = s
-            .store(
-              fromNameAndType(
-                "player-store",
-                QueryableStoreTypes.keyValueStore[String, PlayerStore]()
-              ).enableStaleStores()
-            )
-            .get(playerId)
-          printer.print(PlayerStore.playerStoreEncoder.apply(p))
-        })
-        .getOrElse("")
-    } else {
-      "ko"
-    }
-  }
-
-  @GET
-  @Path("/country")
-  @Produces(Array[String](MediaType.TEXT_PLAIN))
-  def country(
-      @QueryParam("id") id: String,
-      @QueryParam("token") token: String,
-      @QueryParam("sqs") sqs: Boolean
-  ): String = {
-    if (token == "eb20ec2f-81b2-4ad0-82bd-5cfa796d43b4") {
-      Option(streams)
-        .map(s => {
-          val store = s
-            .store(
-              fromNameAndType(
-                "country-store",
-                QueryableStoreTypes.keyValueStore[String, Country]()
-              ).enableStaleStores()
-            )
-          val p = store.get(id)
-          s"${p} nb:${store.approximateNumEntries()}"
-        })
-        .getOrElse("")
-    } else {
-      "ko"
-    }
   }
 
   @GET
   @Path("/health")
   @Produces(Array[String](MediaType.TEXT_PLAIN))
   def status() = {
-    if (streams.state().isRunningOrRebalancing()) {
-      streams.state()
+    if (streams.isEmpty) {
+      "OK"
     } else {
-      Response.serverError().entity(streams.state()).build()
+      val allRunningOrRebalancing =
+        streams.values.flatten.forall(_.state().isRunningOrRebalancing())
+      val status = streams
+        .collect { case (key, Some(v)) => s"${key}:${v.state()}" }
+        .mkString(";")
+      if (allRunningOrRebalancing) {
+        status
+      } else {
+        Response.serverError().entity(status).build()
+      }
     }
-  }
-
-  @GET
-  @Path("/build")
-  @Produces(Array[String](MediaType.TEXT_PLAIN))
-  def build(): String = {
-    return "2024-12-19"
   }
 
 }

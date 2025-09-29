@@ -6,5 +6,6 @@ case class Wallet(
     brand_id: Option[String] = None,
     transaction_type_id: Option[String] = None,
     transaction_status_id: Option[String] = None,
-    transaction_datetime: Option[String] = None
+    transaction_datetime: Option[String] = None,
+    balance: Option[String] = None,
 )

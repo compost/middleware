@@ -1,0 +1,5 @@
+import "../../justfile"
+
+push-all: 
+  @just mvn-push prod 
+  @just mvn-push balance 

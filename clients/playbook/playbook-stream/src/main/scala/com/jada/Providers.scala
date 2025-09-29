@@ -15,15 +15,40 @@ import javax.inject.Inject
 import com.jada.configuration.ApplicationConfiguration
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.Topology
+import org.apache.kafka.streams.StreamsConfig
 
 @ApplicationScoped
-class Providers @Inject()(config: ApplicationConfiguration) {
+class Providers @Inject() (config: ApplicationConfiguration) {
 
   @Produces
-  def buildKafkaStreams(topology: Topology): KafkaStreams = {
-    val prop = new java.util.Properties()
-    config.configStreams.forEach((k, v) => prop.put(k, v))
-    new KafkaStreams(topology, prop)
+  @com.jada.DefaultTopology
+  def buildDefaultKafkaStreams(@com.jada.DefaultTopology topology: Option[Topology]): Option[KafkaStreams] = {
+    buildKafkaStreams("", topology)
+  }
+
+  @Produces
+  @com.jada.BalanceTopology
+  def buildBalanceTopologyKafkaStreams(
+      @com.jada.BalanceTopology topology: Option[Topology]
+  ): Option[KafkaStreams] = {
+    buildKafkaStreams("balance-", topology)
+  }
+
+  def buildKafkaStreams(
+      prefix: String = "",
+      topology: Option[Topology] = None
+  ): Option[KafkaStreams] = {
+    topology.map(t => {
+      val prop = new java.util.Properties()
+      config.configStreams.forEach((k, v) => {
+        if (k == StreamsConfig.APPLICATION_ID_CONFIG) {
+          prop.put(k, s"${prefix}${v}")
+        } else {
+          prop.put(k, v)
+        }
+      })
+      new KafkaStreams(t, prop)
+    })
   }
 
   @Produces
