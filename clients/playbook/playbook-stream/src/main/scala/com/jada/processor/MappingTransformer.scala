@@ -107,6 +107,10 @@ class MappingTransformer(
   }
 
   override def transform(key: String, v: Array[Byte]): KeyValue[Unit, Unit] = {
+    if (key == null) {
+      logger.warn(s"the key is null :${new String(v)}");
+      return null
+    }
     val playerFromStore = playerStore.get(key)
 
     val thirtyDaysAgo = Instant.now.minus(30, ChronoUnit.DAYS)

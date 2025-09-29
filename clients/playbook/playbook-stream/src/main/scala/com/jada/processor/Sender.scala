@@ -26,6 +26,10 @@ class Sender(
       messageId: String = java.util.UUID.randomUUID().toString
   ): Unit = {
     val queue = config.brandQueue.get(brandId)
+    if(queue == null){
+      logger.warn(s"unknown brand id ${brandId}")
+      return
+    }
     logger.debugv(
       "send message to sqs",
       java.util.Map.of(
