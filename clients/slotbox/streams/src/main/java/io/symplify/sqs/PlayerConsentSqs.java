@@ -1,10 +1,14 @@
 package io.symplify.sqs;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import io.symplify.kafka.PlayerKafka;
+import io.symplify.store.PlayerStore;
 
 @RegisterForReflection
 public class PlayerConsentSqs {
@@ -35,5 +39,20 @@ public class PlayerConsentSqs {
 
     sqs.properties.put("consent_" + input.channel.get(), input.consented.orElse("undefined"));
     return Optional.of(sqs);
+  }
+
+  public static List<PlayerConsentSqs> create(PlayerKafka player, String userConsentUpdate, String playerConsent) {
+    return List.of("SMS", "EMAIL").stream().map(channel -> {
+      PlayerConsentSqs sqs = new PlayerConsentSqs();
+      sqs.player_id = player.player_id;
+      sqs.contactId = player.player_id.orElse("");
+      sqs.type = userConsentUpdate;
+      sqs.mappingSelector = playerConsent;
+      sqs.brand_id = player.brand_id;
+      sqs.consented = Optional.of("false");
+      sqs.channel = Optional.ofNullable(channel);
+      sqs.properties.put("consent_" + channel, "false");
+      return sqs;
+    }).collect(Collectors.toList());
   }
 }

@@ -197,10 +197,21 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
         && mappingSelector != null) {
       sender.send(player.brand_id.get(), player.player_id.get(), Type.GENERIC_USER, mappingSelector,
           newPlayerSqs.get());
+      if (mappingSelector == Selector.PLAYER_REGISTRATION) {
+        sendPlayerConsent(player);
+      }
       return newPlayer.map(ps -> ps.withPlayerRegistrationHasBeenSent(playerRegistration));
     }
 
     return newPlayer;
+  }
+
+  private void sendPlayerConsent(PlayerKafka player) {
+    PlayerConsentSqs.create(player, Type.USER_CONSENT_UPDATE, Selector.PLAYER_CONSENT).forEach(sqs -> {
+      sender.sendFull(sqs.brand_id.get(), sqs.player_id.get(), Type.USER_CONSENT_UPDATE,
+          Selector.PLAYER_CONSENT, sqs);
+
+    });
   }
 
 }
