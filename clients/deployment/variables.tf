@@ -32,7 +32,7 @@ variable "container_apps" {
     docker_image_tag   = string
     storage_share_name = string
     path = optional(string, "/app/state/")
-    sub_path = optional(string)
+    sub_path = optional(string, "current")
     mount_options = optional(string, "dir_mode=0777,file_mode=0777,uid=1001,gid=0,nobrl,mfsymlinks")
     cpu                = number
     memory             = number
