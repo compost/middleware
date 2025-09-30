@@ -23,6 +23,8 @@ container_apps = [
     docker_image_name  = "marsbet/base-stream"
     docker_image_tag   = "20250927"
     storage_share_name = "marsbet-joy-sharestate"
+    path = "/app/state/"
+    sub_path = "current"
     envs = {
       "STATE_DIR" = "/app/state/current"
     }

@@ -345,7 +345,8 @@ resource "azurerm_container_app" "main" {
 
       volume_mounts {
         name = "rocksdb-volume"
-        path = "/app/state"
+        path = each.value.path
+        sub_path = each.value.sub_path
       }
 
       readiness_probe {
@@ -366,6 +367,7 @@ resource "azurerm_container_app" "main" {
       name         = "rocksdb-volume"
       storage_type = "AzureFile"
       storage_name = azurerm_container_app_environment_storage.share_state[each.value.storage_share_name].name
+      mount_options = each.value.mount_options
     }
   }
   tags = local.tags
