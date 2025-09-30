@@ -26,7 +26,7 @@ container_apps = [
     envs = {
       "WEBSITE_DNS_SERVER" : "168.63.129.16"
       "STATE_DIR" : "/app/state/20250825"
-      "QUARKUS_DATASOURCE_ACQUISITION_TIMEOUT" : "180s"
+      "QUARKUS_DATASOURCE_ACQUISITION_TIMEOUT" : "300s"
     }
     secrets    = {}
     datasource = true

@@ -45,3 +45,11 @@ activate RG NAME:
    az containerapp revision activate \
         --revision $(az containerapp revision list --all --name {{NAME}} --resource-group {{RG}} | jq -r 'sort_by(.properties.createdTime) | reverse |  .[0].name') \
         --resource-group {{RG}}
+
+deactivate-activate RG NAME:
+  @just deactivate {{RG}} {{NAME}}
+  sleep 2
+  @just activate {{RG}} {{NAME}}
+
+
+
