@@ -129,6 +129,14 @@ class Functions {
     region = Regions.EU_CENTRAL_1
   )
 
+  val sp = new Brands(
+    ids = Set(327),
+    folder = "sp",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5311_medierES.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
+
   val ibet = new Brands(
     ids = Set(216, 244, 226, 41, 286),
     folder = "mx",
@@ -292,7 +300,8 @@ class Functions {
       mx,
       nb,
       sq,
-      ibet
+      ibet,
+      sp
     ).filterNot(_.ids.isEmpty)
 
   def getenv(key: String, defaultValue: String): String = {

@@ -73,6 +73,7 @@ class LoginProcessor(
             ProductClassification = login.ProductClassification,
             FavoriteGameIds = login.FavoriteGameIds,
             FavoriteGameNames = login.FavoriteGameNames,
+            is_blocked = None,
             IsVerified = login.IsVerified,
             block_reason = login.BlockReason,
             VIPLevel = login.VIPLevel,

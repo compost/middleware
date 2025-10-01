@@ -375,6 +375,49 @@ class Topologies @Inject() (
 
   }
 
+  @Produces @com.jada.FixBlockedTopology
+  def buildFixBlockedTopology(): Option[Topology] = {
+
+    if (config.fixBlockedTopologyEnabled) {
+
+      val playerStoreName = "fix-blocked-store"
+      val builder = new StreamsBuilder
+
+      val playersStore = Stores.keyValueStoreBuilder(
+        Stores.persistentKeyValueStore(playerStoreName),
+        stringSerde,
+        CirceSerdes.serde[PlayerStore]
+      ).withLoggingDisabled()
+
+      builder.addStateStore(playersStore)
+
+      builder
+        .stream[String, PlayerStore](
+          "soft2bet-players-app-v8-players-processor-store-changelog"
+        )(Consumed.`with`(stringSerde, CirceSerdes.serde[PlayerStore]))
+        .filter((_, v) =>
+          v.player_id.isDefined && v.brand_id.isDefined && v.is_blocked.isDefined && !v.is_blocked
+            .map(_.toLowerCase())
+            .contains("false")
+        )
+        .selectKey((_, v) =>
+          s"${Sender.prefix(v.brand_id.get)}-${v.brand_id.get}-${v.player_id.get}"
+        )
+        .transform(() =>
+          new FixBlockedTransformer(
+            config,
+            sqs,
+            ueNorthSQS,
+            playerStoreName
+          ), playerStoreName
+        )
+      Some(builder.build())
+    } else {
+      None
+    }
+
+  }
+
   @Produces @com.jada.FirstDepositLossTopology
   def buildFirstDepositLossTopology(): Option[Topology] = {
 

@@ -195,6 +195,7 @@ object Sender {
   val Cp = Set("252")
   val Ds: Set[String] = Set()
   val Sq = Set("255", "274")
+  val SP = Set("327")
 
   val SgaPrefix = "sga"
   val DkPrefix = "dk"
@@ -215,6 +216,7 @@ object Sender {
   val CpPrefix = "cp"
   val SqPrefix = "sq"
   val IBetPrefix = "ibet"
+  val SPPrefix = "sp"
 
   val Brands = Set(
     SgaPrefix,
@@ -235,7 +237,8 @@ object Sender {
     Spin247Prefix,
     CpPrefix,
     SqPrefix,
-    IBetPrefix
+    IBetPrefix,
+    SPPrefix
   )
   def prefix(brandID: String): String = {
     if (Sender.Sga.contains(brandID)) {
@@ -260,8 +263,8 @@ object Sender {
       CAPrefix
     } else if (Sender.FP.contains(brandID)) {
       FPPrefix
-      // } else if (Sender.NB.contains(brandID)) {
-      // NBPrefix
+    } else if (Sender.SP.contains(brandID)) {
+      SPPrefix
     } else if (Sender.Funid.contains(brandID)) {
       FunidPrefix
     } else if (Sender.Elabet.contains(brandID)) {
@@ -394,8 +397,8 @@ class Sender(
       (sqs, config.sqsQueueCA)
     } else if (Sender.FPPrefix == prefix) {
       (sqs, config.sqsQueueFP)
-      // } else if (Sender.NBPrefix == prefix) {
-      //  (sqs, config.sqsQueueNB)
+    } else if (Sender.SPPrefix == prefix) {
+      (sqs, config.sqsQueueSP)
     } else if (Sender.FunidPrefix == prefix) {
       (sqs, config.sqsQueueFunid)
     } else if (Sender.ElabetPrefix == prefix) {
@@ -471,6 +474,8 @@ class Sender(
       (sqs, config.sqsQueueMX)
     } else if (Sender.IBet.contains(brandID)) {
       (sqs, config.sqsQueueIBet)
+    } else if (Sender.SP.contains(brandID)) {
+      (sqs, config.sqsQueueSP)
     } else { (null, null) }
 
     if (cli != null) {

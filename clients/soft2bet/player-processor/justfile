@@ -3,7 +3,6 @@ import "../../justfile"
 registry := "soft2bet"
 
 push-all: 
-  @just mvn-push missingdata
   @just mvn-push fdl 
   @just mvn-push funid
   @just mvn-push kpi 

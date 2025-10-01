@@ -38,6 +38,7 @@ case class ApplicationConfiguration(
     @ConfigProperty(name = "sqs.queue.ca") sqsQueueCA: String,
     @ConfigProperty(name = "sqs.queue.fp") sqsQueueFP: String,
     @ConfigProperty(name = "sqs.queue.nb") sqsQueueNB: String,
+    @ConfigProperty(name = "sqs.queue.sp") sqsQueueSP: String,
     @ConfigProperty(name = "sqs.queue.funid") sqsQueueFunid: String,
     @ConfigProperty(name = "sqs.queue.elabet") sqsQueueElabet: String,
     @ConfigProperty(name = "sqs.queue.mx") sqsQueueMX: String,
@@ -96,6 +97,10 @@ case class ApplicationConfiguration(
       name = "login.topology.enabled",
       defaultValue = "false"
     ) val loginTopologyEnabled: Boolean,
+     @ConfigProperty(
+      name = "fixblocked.topology.enabled",
+      defaultValue = "false"
+    ) val fixBlockedTopologyEnabled: Boolean,
     @ConfigProperty(
       name = "force",
       defaultValue = "true"

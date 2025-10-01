@@ -59,6 +59,15 @@ class Providers @Inject() (config: ApplicationConfiguration) {
     buildKafkaStreams("login-", topology)
   }
 
+  @Produces
+  @FixBlockedTopology
+  def buildFixBlockedTopologyKafkaStreams(
+      @FixBlockedTopology topology: Option[Topology]
+  ): Option[KafkaStreams] = {
+    buildKafkaStreams("fix-blocked-", topology)
+  }
+
+
 
   @Produces
   @MissingDataTopology
