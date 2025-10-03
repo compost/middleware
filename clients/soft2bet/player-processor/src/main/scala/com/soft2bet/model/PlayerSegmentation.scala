@@ -52,7 +52,7 @@ case class PlayerSegmentation(
     ZBR_days_from_registration: Option[String],
     ZBR_current_activity_days: Option[String],
     ZBR_churn_prediction: Option[String],
-    cross_activity_status: Option[String],
+    CROSS_ACTIVITY_STATUS: Option[String],
 )
 
 case class PlayerSegmentationSQS(
@@ -107,7 +107,7 @@ case class PlayerSegmentationSQS(
     ZBR_days_from_registration: Option[String],
     ZBR_current_activity_days: Option[String],
     ZBR_churn_prediction: Option[String],
-    cross_activity_status: Option[String],
+    CROSS_ACTIVITY_STATUS: Option[String],
 )
 
 object PlayerSegmentationSQS {
@@ -178,7 +178,7 @@ object PlayerSegmentationSQS {
         playerSegmentation.ZBR_days_from_registration,
       ZBR_current_activity_days = playerSegmentation.ZBR_current_activity_days,
       ZBR_churn_prediction = playerSegmentation.ZBR_churn_prediction,
-      cross_activity_status = playerSegmentation.cross_activity_status
+      CROSS_ACTIVITY_STATUS = playerSegmentation.CROSS_ACTIVITY_STATUS
     )
   }
 }

@@ -56,42 +56,66 @@ public class Sender {
     }
     return mappingSelector;
   }
-
   public <T> void send(
       String brandId,
       String playerId,
       String type,
       String mappingSelector,
       T data) {
+    Body<T> body = new Body<T>();
+    body.contactId = playerId;
+    body.type = type;
+    body.mappingSelector = withPrefix(brandId, mappingSelector);
+    body.properties = data;
+    sendFull(brandId, playerId, type, mappingSelector, body);
+  }
+
+  public <T> void sendFull(
+      String brandId,
+      String playerId,
+      String type,
+      String mappingSelector,
+      T data) {
+    try {
+      var body = mapper.writeValueAsString(data);
+      send(brandId, playerId, type, mappingSelector, body);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void send(
+      String brandId,
+      String playerId,
+      String type,
+      String mappingSelector,
+      String body) {
     var messageId = UUID.randomUUID().toString();
     var queue = brandQueue.get(brandId);
-    var body = encode(brandId, playerId, type, mappingSelector, data);
     if (queue == null) {
       logger.warnv(
           "missing queue",
-       kv("playerId", playerId),
-       kv("brandId", brandId),
-       kv("messageId", messageId),
-       kv("type", type),
-       kv("body", body),
-       kv("mappingSelector", mappingSelector)
-      );
+          kv("playerId", playerId),
+          kv("brandId", brandId),
+          kv("messageId", messageId),
+          kv("type", type),
+          kv("body", body),
+          kv("mappingSelector", mappingSelector));
     } else {
       try {
         logger.debugv(
             "sending message",
-         kv("playerId", playerId),
-         kv("brandId", brandId),
-         kv("url", queue),
-         kv("messageId", messageId),
-         kv("type", type),
-         kv("mappingSelector", mappingSelector),
-         kv("body", body)
-        );
-        sqs.sendMessage(m -> m.queueUrl(queue)
-            .messageBody(body)
-            .messageDeduplicationId(messageId)
-            .messageGroupId(messageGroupId));
+            kv("playerId", playerId),
+            kv("brandId", brandId),
+            kv("url", queue),
+            kv("messageId", messageId),
+            kv("type", type),
+            kv("mappingSelector", mappingSelector),
+            kv("body", body));
+          sqs.sendMessage(m -> m.queueUrl(queue)
+              .messageBody(body)
+              .messageDeduplicationId(messageId)
+              .messageGroupId(messageGroupId));
         logger.infov(
             "sent message",
             kv("playerId", playerId),
@@ -101,7 +125,6 @@ public class Sender {
             kv("type", type),
             kv("mappingSelector", mappingSelector),
             kv("body", body));
-
       } catch (Exception e) {
         logger.errorv(
             "unable to send message",

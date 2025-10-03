@@ -165,7 +165,7 @@ class PlayerSegmentationPunctuatorTransformer(
           ),
           ZBR_churn_prediction =
             value.ZBR_churn_prediction.orElse(inStore.ZBR_churn_prediction),
-          cross_activity_status = value.cross_activity_status.orElse(inStore.cross_activity_status)
+          CROSS_ACTIVITY_STATUS = value.CROSS_ACTIVITY_STATUS.orElse(inStore.CROSS_ACTIVITY_STATUS)
         )
       }
     }

@@ -71,8 +71,6 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
           return onTopicWagering(record);
         case Configuration.Topic.WALLET:
           return onTopicWallet(record);
-        case Configuration.Topic.PLAYER_STATUS:
-          return onTopicPlayerStatus(record);
         default:
           return Optional.empty();
       }
@@ -82,17 +80,6 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private Optional<PlayerStore> onTopicPlayerStatus(Record<String, byte[]> record)
-      throws StreamReadException, DatabindException, IOException {
-    final PlayerStatusKafka kafka = mapper.readValue(record.value(), PlayerStatusKafka.class);
-    PlayerBlockedSqs.transform(kafka)
-        .ifPresent(
-            sqs -> sender.send(kafka.brand_id.get(), kafka.player_id.get(), Type.GENERIC_USER, sqs.mappingSelector,
-                sqs));
-
-    return Optional.empty();
   }
 
   private Optional<PlayerStore> onTopicWallet(Record<String, byte[]> record)
@@ -160,6 +147,17 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
       var firstDepositDatetime = FirstDepositDatetimeSqs.transform(newPlayer.get());
       sender.send(player.brand_id.get(), player.player_id.get(), Type.GENERIC_USER, Selector.FIRST_DEPOSIT,
           firstDepositDatetime.get());
+
+    }
+
+    if ((oldPlayerSqs.isEmpty() || oldPlayerSqs.get().locked.isEmpty() || oldPlayerSqs.flatMap(p -> p.locked).map(p -> p.toLowerCase()).equals("false")) 
+        && newPlayerSqs.flatMap(p -> p.locked).map(p -> p.toLowerCase()).equals("true")) {
+      PlayerBlockedSqs sqs = new PlayerBlockedSqs();
+      sqs.mappingSelector = Selector.PLAYER_BLOCKED;
+      sqs.type = Type.USER_BLOCK;
+      sqs.originalId = player.player_id.get();
+      sender.sendFull(player.brand_id.get(), player.player_id.get(), Type.USER_BLOCK, Selector.PLAYER_BLOCKED,
+          sqs);
 
     }
     return newPlayer;
