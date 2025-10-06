@@ -10,8 +10,6 @@ case class PlayerKPI(
     BonusGGRRatio: Option[String],
     BonusDepositRatio: Option[String],
     NGRDepositRatio: Option[String],
-    TotalDeposit: Option[String],
-    TotalDepositEUR: Option[String]
 )
 
 case class Player(
@@ -60,8 +58,6 @@ case class Player(
     BonusGGRRatio: Option[String],
     BonusDepositRatio: Option[String],
     NGRDepositRatio: Option[String],
-    TotalDeposit: Option[String],
-    TotalDepositEUR: Option[String],
     BonusAbusing: Option[String],
     BlockedCasino: Option[String],
     BlockedSport: Option[String],

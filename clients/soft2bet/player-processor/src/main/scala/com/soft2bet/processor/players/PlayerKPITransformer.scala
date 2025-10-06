@@ -79,9 +79,6 @@ class PlayerKPITransformer(
             value.BonusDepositRatio.orElse(inStore.BonusDepositRatio),
           NGRDepositRatio =
             value.NGRDepositRatio.orElse(inStore.NGRDepositRatio),
-          TotalDeposit = value.TotalDeposit.orElse(inStore.TotalDeposit),
-          TotalDepositEUR =
-            value.TotalDepositEUR.orElse(inStore.TotalDepositEUR)
         )
 
       }
@@ -145,9 +142,7 @@ class PlayerKPITransformer(
           player.NGRAmountEUR.isDefined ||
           player.BonusGGRRatio.isDefined ||
           player.BonusDepositRatio.isDefined ||
-          player.NGRDepositRatio.isDefined ||
-          player.TotalDeposit.isDefined ||
-          player.TotalDepositEUR.isDefined
+          player.NGRDepositRatio.isDefined 
         ) {
           val ld = PlayerKPIData(
             GGRAmount = player.GGRAmount,
@@ -157,8 +152,6 @@ class PlayerKPITransformer(
             BonusGGRRatio = player.BonusGGRRatio,
             BonusDepositRatio = player.BonusDepositRatio,
             NGRDepositRatio = player.NGRDepositRatio,
-            TotalDeposit = player.TotalDeposit,
-            TotalDepositEUR = player.TotalDepositEUR
           )
 
           val ldJson = printer.print(
@@ -245,8 +238,6 @@ case class PlayerKPIData(
     BonusGGRRatio: Option[String] = None,
     BonusDepositRatio: Option[String] = None,
     NGRDepositRatio: Option[String] = None,
-    TotalDeposit: Option[String] = None,
-    TotalDepositEUR: Option[String] = None
 )
 
 object PlayerKPIData {

@@ -53,7 +53,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "kpi/player-processor"
-    docker_image_tag = "20251001"
+    docker_image_tag = "20251004"
     storage_share_name = "deprecated-kpi-sharestate"
     envs = {
       "STATE_DIR"          = "/app/state/current"
@@ -83,7 +83,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "statistics/player-processor"
-    docker_image_tag = "20251001"
+    docker_image_tag = "20251004"
     storage_share_name = "statistics-sharestate"
     envs = {
       "STATE_DIR"          = "/app/state/current"
@@ -112,10 +112,10 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "player-processor"
-    docker_image_tag = "20251001"
-    storage_share_name = "ldc-sharestate"
+    docker_image_tag = "20251004"
+    storage_share_name = "ldc-2-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR"          = "/app/state/ldc-20251004"
       "DEFAULT_TOPOLOGY_ENABLED" = "false"
       "LIFETIMEDEPOSITCOUNT_TOPOLOGY_ENABLED" = "true"
     }
@@ -237,7 +237,7 @@ storage_configs = {
     aca   = true
   }
 
-  "ldc-sharestate" = {
+  "ldc-2-sharestate" = {
     quota = 50 # in GB
     aca   = true
   }

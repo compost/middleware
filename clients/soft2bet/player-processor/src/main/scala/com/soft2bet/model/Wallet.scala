@@ -21,6 +21,8 @@ case class Wallet(
     LifetimeDepositCount: Option[String],
     TotalWithdrawalLifetime: Option[String],
     TotalWithdrawalLifetimeEUR: Option[String],
+    TotalDeposit: Option[String],
+    TotalDepositEUR: Option[String],
     currency: Option[String],
     PayMethod: Option[String]
 )

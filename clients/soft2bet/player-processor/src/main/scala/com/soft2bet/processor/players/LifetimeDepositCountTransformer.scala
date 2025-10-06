@@ -51,14 +51,11 @@ class LifetimeDepositCountTransformer(
     sqs: software.amazon.awssdk.services.sqs.SqsClient,
     ueNorthSQS: software.amazon.awssdk.services.sqs.SqsClient,
     walletStore: String,
-    playerStore: String
 ) extends Transformer[String, Wallet, KeyValue[String, Wallet]]
     with Punctuator {
 
   private var processorContext: ProcessorContext = _
   private var storeWallet: KeyValueStore[String, Wallet] = _
-  private var storePlayers
-      : ReadOnlyKeyValueStore[String, ValueAndTimestamp[Player]] = _
   private val sender = new Sender(config, sqs, ueNorthSQS, both = true, false)
   final val printer: Printer = Printer(
     dropNullValues = true,
@@ -115,6 +112,8 @@ class LifetimeDepositCountTransformer(
           TotalWithdrawalLifetimeEUR = value.TotalWithdrawalLifetimeEUR.orElse(
             previous.TotalWithdrawalLifetimeEUR
           ),
+          TotalDepositEUR= value.TotalDepositEUR.orElse(previous.TotalDepositEUR),
+          TotalDeposit= value.TotalDeposit.orElse(previous.TotalDeposit),
           currency = value.currency.orElse(previous.currency),
           PayMethod = value.PayMethod.orElse(previous.PayMethod)
         )
@@ -154,19 +153,9 @@ class LifetimeDepositCountTransformer(
     } finally {
       wallets.close()
     }
-    cleanStore(prefix)
   }
 
-  def cleanStore(prefix: String): Unit = {
-    val wallets = storeWallet.prefixScan(s"${prefix}-", new StringSerializer())
-    try {
-      while (wallets.hasNext()) {
-        storeWallet.delete(wallets.next().key)
-      }
-    } finally {
-      wallets.close()
-    }
-  }
+  
   def writeFile(
       prefix: String,
       wallets: KeyValueIterator[String, Wallet]
@@ -187,13 +176,10 @@ class LifetimeDepositCountTransformer(
         val id = keyAndValue.value.player_id.get
         val lifetimeDepositCount =
           keyAndValue.value.LifetimeDepositCount.map(_.toIntOption).flatten
-        val player = Option(storePlayers.get(keyAndValue.key)).map(_.value())
         val ld = LifetimeDeposit(
           lifetimeDepositCount = lifetimeDepositCount,
-          averageDeposit = player
+          averageDeposit = keyAndValue.value.TotalDepositEUR
             .filter(_ => lifetimeDepositCount.filter(v => v > 0).isDefined)
-            .map(_.TotalDepositEUR)
-            .flatten
             .map(_.toDouble)
             .map(v => v / lifetimeDepositCount.get),
           last_deposit_date =
@@ -203,7 +189,9 @@ class LifetimeDepositCountTransformer(
             keyAndValue.value.LifetimeWithdrawalCountEUR,
           TotalWithdrawalLifetime = keyAndValue.value.TotalWithdrawalLifetime,
           TotalWithdrawalLifetimeEUR =
-            keyAndValue.value.TotalWithdrawalLifetimeEUR
+            keyAndValue.value.TotalWithdrawalLifetimeEUR,
+          TotalDeposit = keyAndValue.value.TotalDeposit,
+          TotalDepositEUR = keyAndValue.value.TotalDepositEUR
         )
 
         val ldJson = printer.print(
@@ -213,7 +201,6 @@ class LifetimeDepositCountTransformer(
         val line =
           s"""{"id":"${id}","properties":${ldJson}}\n"""
         writer.write(line)
-        storeWallet.delete(keyAndValue.key)
       }
     } finally {
       logger.debugv(
@@ -261,7 +248,6 @@ class LifetimeDepositCountTransformer(
   }
 
   override def init(processorContext: ProcessorContext): Unit = {
-    this.storePlayers = processorContext.getStateStore(playerStore)
     storeWallet = processorContext.getStateStore(walletStore)
     processorContext.schedule(
       config.punctuator,
@@ -278,7 +264,9 @@ case class LifetimeDeposit(
     LifetimeWithdrawalCount: Option[String],
     LifetimeWithdrawalCountEUR: Option[String],
     TotalWithdrawalLifetime: Option[String],
-    TotalWithdrawalLifetimeEUR: Option[String]
+    TotalWithdrawalLifetimeEUR: Option[String],
+    TotalDeposit: Option[String],
+    TotalDepositEUR: Option[String],
 )
 
 object LifetimeDeposit {

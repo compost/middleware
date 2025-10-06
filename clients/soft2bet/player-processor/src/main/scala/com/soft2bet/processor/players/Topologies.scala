@@ -167,8 +167,6 @@ class Topologies @Inject() (
 
       val walletStore = "wallet"
       val wageringStore = "wagering"
-      val playerStore = "player"
-      val playerPunctuatorStore = "player-punctuator"
       val loginStore = "login"
       val storeWallet = Stores.keyValueStoreBuilder(
         Stores.persistentKeyValueStore(walletStore),
@@ -187,63 +185,12 @@ class Topologies @Inject() (
         CirceSerdes.serde[Login]
       )
 
-      val storePlayerPunctuator = Stores.keyValueStoreBuilder(
-        Stores.persistentKeyValueStore(playerPunctuatorStore),
-        stringSerde,
-        CirceSerdes.serde[Player]
-      )
-
       val builder = new StreamsBuilder
       builder.addStateStore(storeWallet)
       builder.addStateStore(storeWagering)
       builder.addStateStore(storeLogin)
-      builder.addStateStore(storePlayerPunctuator)
 
-      implicit val materializedPlayer
-          : Materialized[String, Player, ByteArrayKeyValueStore] =
-        Materialized
-          .as[String, Player](
-            Stores
-              .persistentKeyValueStore(playerStore)
-          )(
-            stringSerde,
-            CirceSerdes.serde[Player]
-          )
-          .withKeySerde(stringSerde)
-          .withValueSerde(CirceSerdes.serde[Player])
-
-      builder
-        .stream[String, Player](
-          Common.playersTopic
-        )(Consumed.`with`(stringSerde, CirceSerdes.serde[Player]))
-        .filter((_, v) =>
-          v.player_id.isDefined && v.brand_id.isDefined && v.TotalDepositEUR.isDefined
-        )
-        .selectKey((_, v) =>
-          s"${Sender.prefix(v.brand_id.get)}-${v.player_id.get}"
-        )
-        .toTable(materializedPlayer)
-
-      builder
-        .stream[String, Player](
-          Common.playersTopic
-        )(Consumed.`with`(stringSerde, CirceSerdes.serde[Player]))
-        .filter((_, v) => v.player_id.isDefined && v.brand_id.isDefined)
-        .selectKey((_, v) =>
-          s"${Sender.prefix(v.brand_id.get)}-${v.player_id.get}"
-        )
-        .transform(
-          () =>
-            new PlayerPunctuatorTransformer(
-              config,
-              sqs,
-              ueNorthSQS,
-              playerPunctuatorStore
-            ),
-          playerPunctuatorStore
-        )
-
-      builder
+       builder
         .stream[String, Wallet](
           Common.walletTopic
         )(Consumed.`with`(stringSerde, CirceSerdes.serde[Wallet]))
@@ -258,10 +205,8 @@ class Topologies @Inject() (
               sqs,
               ueNorthSQS,
               walletStore,
-              playerStore
             ),
           walletStore,
-          playerStore
         )
 
       builder

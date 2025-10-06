@@ -85,8 +85,6 @@ case class PlayerStore(
     BonusGGRRatio: Option[String] = None, // not sent
     BonusDepositRatio: Option[String] = None, // not sent
     NGRDepositRatio: Option[String] = None, // not sent
-    TotalDeposit: Option[String] = None, // not sent
-    TotalDepositEUR: Option[String] = None, // not sent
     BonusAbusing: Option[String] = None,
     VIPLevel: Option[String] = None,
     BlockedCasino: Option[String] = None,
