@@ -24,14 +24,14 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "login/player-processor"
-    docker_image_tag = "20251001"
+    docker_image_tag   = "20251001"
     storage_share_name = "logins-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
+    secrets  = {}
     eventhub = true
-    aca = true
+    aca      = true
   },
 
   {
@@ -39,13 +39,13 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "segmentation/player-processor"
-    docker_image_tag = "20251002"
+    docker_image_tag   = "20251002"
     storage_share_name = "segmentation-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
-    aca = true
+    secrets = {}
+    aca     = true
   },
 
   {
@@ -53,13 +53,13 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "kpi/player-processor"
-    docker_image_tag = "20251004"
+    docker_image_tag   = "20251004"
     storage_share_name = "deprecated-kpi-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
-    aca = true
+    secrets = {}
+    aca     = true
   },
 
 
@@ -68,13 +68,13 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "fld/player-processor"
-    docker_image_tag = "20251001"
+    docker_image_tag   = "20251001"
     storage_share_name = "firstdepositloss-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
-    aca = true
+    secrets = {}
+    aca     = true
   },
 
 
@@ -83,13 +83,13 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "statistics/player-processor"
-    docker_image_tag = "20251004"
+    docker_image_tag   = "20251004"
     storage_share_name = "statistics-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
-    aca = true
+    secrets = {}
+    aca     = true
   },
 
   {
@@ -97,13 +97,13 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "sportpush/player-processor"
-    docker_image_tag = "20251001"
+    docker_image_tag   = "20251001"
     storage_share_name = "sportpush-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
-    aca = true
+    secrets = {}
+    aca     = true
   },
 
 
@@ -112,15 +112,15 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "player-processor"
-    docker_image_tag = "20251004"
+    docker_image_tag   = "20251004"
     storage_share_name = "ldc-2-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/ldc-20251004"
-      "DEFAULT_TOPOLOGY_ENABLED" = "false"
+      "STATE_DIR"                             = "/app/state/ldc-20251004"
+      "DEFAULT_TOPOLOGY_ENABLED"              = "false"
       "LIFETIMEDEPOSITCOUNT_TOPOLOGY_ENABLED" = "true"
     }
-    secrets    = {}
-    aca = true
+    secrets = {}
+    aca     = true
   },
 
 
@@ -129,13 +129,13 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "repartitioner/player-processor"
-    docker_image_tag = "20251001"
+    docker_image_tag   = "20251004"
     storage_share_name = "repartitioner-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
-    aca = true
+    secrets = {}
+    aca     = true
   },
 
   {
@@ -143,13 +143,13 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "funid/player-processor"
-    docker_image_tag = "20251001"
+    docker_image_tag   = "20251001"
     storage_share_name = "funid-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
-    aca = true
+    secrets = {}
+    aca     = true
   },
 
   {
@@ -157,13 +157,13 @@ container_apps = [
     cpu                = 2
     memory             = 4
     docker_image_name  = "checker/aggregators-api"
-    docker_image_tag = "20250929-choisy"
+    docker_image_tag   = "20250929-choisy"
     storage_share_name = "checker-anglet-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
-    aca = true
+    secrets = {}
+    aca     = true
   },
 
   {
@@ -171,29 +171,29 @@ container_apps = [
     cpu                = 2
     memory             = 4
     docker_image_name  = "checker/aggregators-api"
-    docker_image_tag = "20250929-choisy"
+    docker_image_tag   = "20250929-choisy"
     storage_share_name = "checker-biarritz-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
-    aca = true
+    secrets = {}
+    aca     = true
   },
 
 
-//  {
-//    name               = "soft2bet-main"
-//    cpu                = 1
-//    memory             = 2
-//    docker_image_name  = "player-processor"
-//    docker_image_tag = "20250924"
-//    storage_share_name = "main-sharestate"
-//    envs = {
-//      "STATE_DIR"          = "/app/state/current"
-//    }
-//    secrets    = {}
-//    aca = true
-//  },
+  //  {
+  //    name               = "soft2bet-main"
+  //    cpu                = 1
+  //    memory             = 2
+  //    docker_image_name  = "player-processor"
+  //    docker_image_tag = "20250924"
+  //    storage_share_name = "main-sharestate"
+  //    envs = {
+  //      "STATE_DIR"          = "/app/state/current"
+  //    }
+  //    secrets    = {}
+  //    aca = true
+  //  },
 
 
 
@@ -242,10 +242,10 @@ storage_configs = {
     aca   = true
   }
 
-//  "main-sharestate" = {
-//    quota = 500 # in GB
-//    aca   = true
-//  }
+  //  "main-sharestate" = {
+  //    quota = 500 # in GB
+  //    aca   = true
+  //  }
 
   "funid-sharestate" = {
     quota = 50 # in GB

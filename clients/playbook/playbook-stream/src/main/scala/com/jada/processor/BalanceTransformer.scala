@@ -176,7 +176,7 @@ class BalanceTransformer(
   override def init(processorContext: ProcessorContext): Unit = {
     this.balances = processorContext.getStateStore(balancesName)
     processorContext.schedule(
-      Duration.ofHours(1),
+      Duration.ofHours(24),
       PunctuationType.WALL_CLOCK_TIME,
       this
     )

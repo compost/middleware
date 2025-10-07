@@ -18,16 +18,15 @@ storage_account_name = "playbookenvstorage" # Must be globally unique
 container_apps = [
   {
     name               = "playbook-joy-main"
-    cpu                = 0.5
-    memory             = 1
+    cpu                = 1
+    memory             = 2
     docker_image_name  = "playbook/playbook-stream"
-    docker_image_tag   = "20250929-biarritz"
+    docker_image_tag   = "20251006"
     storage_share_name = "playbook-joy-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
-      "WEBSITE_DNS_SERVER" = "168.63.129.16" # not sure
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
+    secrets = {}
 
     aca = true
   },
@@ -36,12 +35,12 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "balance/playbook-stream"
-    docker_image_tag   = "20250929-choisy"
+    docker_image_tag   = "20251006"
     storage_share_name = "playbook-balance-sharestate"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
+    secrets = {}
 
     aca = true
   }
@@ -50,7 +49,7 @@ container_apps = [
 
 storage_configs = {
   "playbook-joy-sharestate" = {
-    quota = 50 
+    quota = 50
     aca   = true
   }
 
