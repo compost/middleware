@@ -139,7 +139,7 @@ class Functions {
 
   val ibet = new Brands(
     ids = Set(216, 244, 226, 41, 286),
-    folder = "mx",
+    folder = "ibet",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5308_medierIbet.fifo",
     region = Regions.EU_CENTRAL_1
@@ -645,7 +645,7 @@ class Functions {
 
     val outputContainerPath =
       s"wasbs://$outputContainerName@$storageName.blob.core.windows.net"
-    val dataFolder = if (send) "test" else "data"
+    val dataFolder = if (send) "data" else "test"
 
     val destinationFolder = s"$dataFolder/${b.folder}/$kindOfData"
     val outputBlobFolder = s"$outputContainerPath/$destinationFolder"
