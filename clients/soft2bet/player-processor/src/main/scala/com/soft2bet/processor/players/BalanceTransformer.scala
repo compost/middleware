@@ -47,6 +47,7 @@ import java.time.Instant
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore
 import org.apache.kafka.streams.state.ValueAndTimestamp
 import com.soft2bet.model.WageringJSON
+import java.util.UUID
 
 class BalanceTransformer(
     config: com.jada.configuration.ApplicationConfiguration,
@@ -73,7 +74,10 @@ class BalanceTransformer(
 
     val newValue = previous match {
       case Some(oldWagering) => {
-        if (oldWagering.bet_datetime.getOrElse("") < value.bet_datetime.getOrElse("")) {
+        if (
+          oldWagering.bet_datetime
+            .getOrElse("") < value.bet_datetime.getOrElse("")
+        ) {
           storeWagering.put(key, value)
         }
       }
@@ -99,7 +103,8 @@ class BalanceTransformer(
         kv("prefix", prefix)
       ): _*
     )
-    val wagerings = storeWagering.prefixScan(s"${prefix}-", new StringSerializer())
+    val wagerings =
+      storeWagering.prefixScan(s"${prefix}-", new StringSerializer())
     try {
       if (wagerings.hasNext()) {
         val file = writeFile(prefix, wagerings)
@@ -109,20 +114,8 @@ class BalanceTransformer(
     } finally {
       wagerings.close()
     }
-    cleanStore(prefix)
   }
 
-  def cleanStore(prefix: String): Unit = {
-    val wagerings = storeWagering.prefixScan(s"${prefix}-", new StringSerializer())
-    try {
-      while (wagerings.hasNext()) {
-        val kv = wagerings.next()
-        storeWagering.put(kv.key, kv.value.copy(Sent = Some(true)))
-      }
-    } finally {
-      wagerings.close()
-    }
-  }
   def writeFile(
       prefix: String,
       wagerings: KeyValueIterator[String, Wagering]
@@ -178,7 +171,7 @@ class BalanceTransformer(
     val blobClient = client
       .getBlobContainerClient(config.outputContainerName)
       .getBlobClient(
-        s"data/${prefix}/balance/balance-${timestamp}.json"
+        s"data/${prefix}/balance/balance-${UUID.randomUUID.toString()}.json"
       )
     blobClient.uploadFromFile(file.toString(), true)
     val blobSasPermission = new BlobSasPermission().setReadPermission(true)

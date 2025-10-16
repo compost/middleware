@@ -22,6 +22,7 @@ import org.jboss.logging.Logger
 import java.io.FileWriter
 import java.nio.file.{Files, Path}
 import java.time.{Instant, OffsetDateTime}
+import java.util.UUID
 
 class LoginTransformer(
     config: com.jada.configuration.ApplicationConfiguration,
@@ -88,19 +89,8 @@ class LoginTransformer(
     } finally {
       elements.close()
     }
-    cleanStore(prefix)
   }
 
-  def cleanStore(prefix: String): Unit = {
-    val elements = store.prefixScan(s"${prefix}-", new StringSerializer())
-    try {
-      while (elements.hasNext()) {
-        store.delete(elements.next().key)
-      }
-    } finally {
-      elements.close()
-    }
-  }
   def writeFile(
       prefix: String,
       login: KeyValueIterator[String, Login]
@@ -151,7 +141,7 @@ class LoginTransformer(
     val blobClient = client
       .getBlobContainerClient(config.outputContainerName)
       .getBlobClient(
-        s"data/${prefix}/login/login-${timestamp}.json"
+        s"data/${prefix}/login/login-${UUID.randomUUID().toString()}.json"
       )
     blobClient.uploadFromFile(file.toString(), true)
     val blobSasPermission = new BlobSasPermission().setReadPermission(true)

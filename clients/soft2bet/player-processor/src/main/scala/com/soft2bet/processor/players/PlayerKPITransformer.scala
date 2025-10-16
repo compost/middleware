@@ -42,6 +42,7 @@ import com.azure.storage.blob.sas.BlobServiceSasSignatureValues
 import java.time.Instant
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore
 import org.apache.kafka.streams.state.ValueAndTimestamp
+import java.util.UUID
 
 class PlayerKPITransformer(
     config: com.jada.configuration.ApplicationConfiguration,
@@ -78,7 +79,7 @@ class PlayerKPITransformer(
           BonusDepositRatio =
             value.BonusDepositRatio.orElse(inStore.BonusDepositRatio),
           NGRDepositRatio =
-            value.NGRDepositRatio.orElse(inStore.NGRDepositRatio),
+            value.NGRDepositRatio.orElse(inStore.NGRDepositRatio)
         )
 
       }
@@ -104,7 +105,8 @@ class PlayerKPITransformer(
         kv("prefix", prefix)
       ): _*
     )
-    val players = storePlayerKPIs.prefixScan(s"${prefix}-", new StringSerializer())
+    val players =
+      storePlayerKPIs.prefixScan(s"${prefix}-", new StringSerializer())
     try {
       if (players.hasNext()) {
         val file = writeFile(prefix, players)
@@ -114,7 +116,6 @@ class PlayerKPITransformer(
     } finally {
       players.close()
     }
-    cleanStore(prefix)
   }
 
   def writeFile(
@@ -142,7 +143,7 @@ class PlayerKPITransformer(
           player.NGRAmountEUR.isDefined ||
           player.BonusGGRRatio.isDefined ||
           player.BonusDepositRatio.isDefined ||
-          player.NGRDepositRatio.isDefined 
+          player.NGRDepositRatio.isDefined
         ) {
           val ld = PlayerKPIData(
             GGRAmount = player.GGRAmount,
@@ -151,7 +152,7 @@ class PlayerKPITransformer(
             NGRAmountEUR = player.NGRAmountEUR,
             BonusGGRRatio = player.BonusGGRRatio,
             BonusDepositRatio = player.BonusDepositRatio,
-            NGRDepositRatio = player.NGRDepositRatio,
+            NGRDepositRatio = player.NGRDepositRatio
           )
 
           val ldJson = printer.print(
@@ -178,17 +179,6 @@ class PlayerKPITransformer(
     tmp
   }
 
-  def cleanStore(prefix: String): Unit = {
-    val players = storePlayerKPIs.prefixScan(s"${prefix}-", new StringSerializer())
-    try {
-      while (players.hasNext()) {
-        storePlayerKPIs.delete(players.next().key)
-      }
-    } finally {
-      players.close()
-    }
-  }
-
   def expose(prefix: String, timestamp: Long, file: Path): Unit = {
     val client = new BlobServiceClientBuilder()
       .connectionString(config.connectionString)
@@ -196,7 +186,7 @@ class PlayerKPITransformer(
     val blobClient = client
       .getBlobContainerClient(config.outputContainerName)
       .getBlobClient(
-        s"data/${prefix}/players/kpi-${timestamp}.json"
+        s"data/${prefix}/players/kpi-${UUID.randomUUID().toString()}.json"
       )
     blobClient.uploadFromFile(file.toString(), true)
     val blobSasPermission = new BlobSasPermission().setReadPermission(true)
@@ -237,7 +227,7 @@ case class PlayerKPIData(
     NGRAmountEUR: Option[String] = None,
     BonusGGRRatio: Option[String] = None,
     BonusDepositRatio: Option[String] = None,
-    NGRDepositRatio: Option[String] = None,
+    NGRDepositRatio: Option[String] = None
 )
 
 object PlayerKPIData {

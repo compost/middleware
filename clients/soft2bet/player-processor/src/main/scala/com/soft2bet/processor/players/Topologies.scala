@@ -190,7 +190,7 @@ class Topologies @Inject() (
       builder.addStateStore(storeWagering)
       builder.addStateStore(storeLogin)
 
-       builder
+      builder
         .stream[String, Wallet](
           Common.walletTopic
         )(Consumed.`with`(stringSerde, CirceSerdes.serde[Wallet]))
@@ -204,9 +204,9 @@ class Topologies @Inject() (
               config,
               sqs,
               ueNorthSQS,
-              walletStore,
+              walletStore
             ),
-          walletStore,
+          walletStore
         )
 
       builder
@@ -328,11 +328,13 @@ class Topologies @Inject() (
       val playerStoreName = "fix-blocked-store"
       val builder = new StreamsBuilder
 
-      val playersStore = Stores.keyValueStoreBuilder(
-        Stores.persistentKeyValueStore(playerStoreName),
-        stringSerde,
-        CirceSerdes.serde[PlayerStore]
-      ).withLoggingDisabled()
+      val playersStore = Stores
+        .keyValueStoreBuilder(
+          Stores.persistentKeyValueStore(playerStoreName),
+          stringSerde,
+          CirceSerdes.serde[PlayerStore]
+        )
+        .withLoggingDisabled()
 
       builder.addStateStore(playersStore)
 
@@ -348,13 +350,15 @@ class Topologies @Inject() (
         .selectKey((_, v) =>
           s"${Sender.prefix(v.brand_id.get)}-${v.brand_id.get}-${v.player_id.get}"
         )
-        .transform(() =>
-          new FixBlockedTransformer(
-            config,
-            sqs,
-            ueNorthSQS,
-            playerStoreName
-          ), playerStoreName
+        .transform(
+          () =>
+            new FixBlockedTransformer(
+              config,
+              sqs,
+              ueNorthSQS,
+              playerStoreName
+            ),
+          playerStoreName
         )
       Some(builder.build())
     } else {
@@ -485,6 +489,7 @@ class Topologies @Inject() (
   def buildTopology(): Option[Topology] = {
     if (config.defaultTopologyEnabled) {
       val playerStoreName = "players-processor-store"
+      val walletStoreName = "cryptos-store"
       val builder = new StreamsBuilder
 
       val playersStore = Stores.keyValueStoreBuilder(
@@ -492,8 +497,14 @@ class Topologies @Inject() (
         stringSerde,
         CirceSerdes.serde[PlayerStore]
       )
+      val walletStore = Stores.keyValueStoreBuilder(
+        Stores.persistentKeyValueStore(walletStoreName),
+        stringSerde,
+        stringSerde
+      )
 
       builder.addStateStore(playersStore)
+      builder.addStateStore(walletStore)
 
       builder
         .stream[String, Array[Byte]](
@@ -513,9 +524,11 @@ class Topologies @Inject() (
               config,
               sqs,
               ueNorthSQS,
-              playerStoreName
+              playerStoreName,
+              walletStoreName
             ),
-          playerStoreName
+          playerStoreName,
+          walletStoreName
         )
 
       Some(builder.build())

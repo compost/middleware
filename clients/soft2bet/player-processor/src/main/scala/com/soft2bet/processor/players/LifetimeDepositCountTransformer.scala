@@ -45,12 +45,13 @@ import java.time.Instant
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore
 import org.apache.kafka.streams.state.ValueAndTimestamp
 import com.soft2bet.model.keepYYYYMMDD
+import java.util.UUID
 
 class LifetimeDepositCountTransformer(
     config: com.jada.configuration.ApplicationConfiguration,
     sqs: software.amazon.awssdk.services.sqs.SqsClient,
     ueNorthSQS: software.amazon.awssdk.services.sqs.SqsClient,
-    walletStore: String,
+    walletStore: String
 ) extends Transformer[String, Wallet, KeyValue[String, Wallet]]
     with Punctuator {
 
@@ -112,8 +113,9 @@ class LifetimeDepositCountTransformer(
           TotalWithdrawalLifetimeEUR = value.TotalWithdrawalLifetimeEUR.orElse(
             previous.TotalWithdrawalLifetimeEUR
           ),
-          TotalDepositEUR= value.TotalDepositEUR.orElse(previous.TotalDepositEUR),
-          TotalDeposit= value.TotalDeposit.orElse(previous.TotalDeposit),
+          TotalDepositEUR =
+            value.TotalDepositEUR.orElse(previous.TotalDepositEUR),
+          TotalDeposit = value.TotalDeposit.orElse(previous.TotalDeposit),
           currency = value.currency.orElse(previous.currency),
           PayMethod = value.PayMethod.orElse(previous.PayMethod)
         )
@@ -155,7 +157,6 @@ class LifetimeDepositCountTransformer(
     }
   }
 
-  
   def writeFile(
       prefix: String,
       wallets: KeyValueIterator[String, Wallet]
@@ -223,7 +224,7 @@ class LifetimeDepositCountTransformer(
     val blobClient = client
       .getBlobContainerClient(config.outputContainerName)
       .getBlobClient(
-        s"data/${prefix}/lifetimeDepositCount/lifetimeDepositCount-${timestamp}.json"
+        s"data/${prefix}/lifetimeDepositCount/lifetimeDepositCount-${UUID.randomUUID().toString()}.json"
       )
     blobClient.uploadFromFile(file.toString(), true)
     val blobSasPermission = new BlobSasPermission().setReadPermission(true)
@@ -266,7 +267,7 @@ case class LifetimeDeposit(
     TotalWithdrawalLifetime: Option[String],
     TotalWithdrawalLifetimeEUR: Option[String],
     TotalDeposit: Option[String],
-    TotalDepositEUR: Option[String],
+    TotalDepositEUR: Option[String]
 )
 
 object LifetimeDeposit {

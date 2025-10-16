@@ -47,6 +47,7 @@ import org.apache.kafka.streams.state.ValueAndTimestamp
 import com.soft2bet.model.PlayerSegmentation
 import com.soft2bet.model.PlayerSegmentationSQS
 import java.time.ZonedDateTime
+import java.util.UUID
 
 class PlayerSegmentationPunctuatorTransformer(
     config: com.jada.configuration.ApplicationConfiguration,
@@ -165,7 +166,8 @@ class PlayerSegmentationPunctuatorTransformer(
           ),
           ZBR_churn_prediction =
             value.ZBR_churn_prediction.orElse(inStore.ZBR_churn_prediction),
-          CROSS_ACTIVITY_STATUS = value.CROSS_ACTIVITY_STATUS.orElse(inStore.CROSS_ACTIVITY_STATUS)
+          CROSS_ACTIVITY_STATUS =
+            value.CROSS_ACTIVITY_STATUS.orElse(inStore.CROSS_ACTIVITY_STATUS)
         )
       }
     }
@@ -200,7 +202,6 @@ class PlayerSegmentationPunctuatorTransformer(
     } finally {
       players.close()
     }
-    cleanStore(prefix)
   }
 
   def writeFile(
@@ -246,17 +247,6 @@ class PlayerSegmentationPunctuatorTransformer(
     tmp
   }
 
-  def cleanStore(prefix: String): Unit = {
-    val players = storePlayers.prefixScan(s"${prefix}-", new StringSerializer())
-    try {
-      while (players.hasNext()) {
-        storePlayers.delete(players.next().key)
-      }
-    } finally {
-      players.close()
-    }
-  }
-
   def expose(prefix: String, timestamp: Long, file: Path): Unit = {
     val client = new BlobServiceClientBuilder()
       .connectionString(config.connectionString)
@@ -264,7 +254,7 @@ class PlayerSegmentationPunctuatorTransformer(
     val blobClient = client
       .getBlobContainerClient(config.outputContainerName)
       .getBlobClient(
-        s"data/${prefix}/players/segmentation-${timestamp}.json"
+        s"data/${prefix}/players/segmentation-${UUID.randomUUID.toString()}.json"
       )
     blobClient.uploadFromFile(file.toString(), true)
     val blobSasPermission = new BlobSasPermission().setReadPermission(true)

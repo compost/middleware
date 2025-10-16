@@ -41,10 +41,12 @@ class PlayersTransformer(
     config: com.jada.configuration.ApplicationConfiguration,
     sqs: software.amazon.awssdk.services.sqs.SqsClient,
     ueNorthSQS: software.amazon.awssdk.services.sqs.SqsClient,
-    playerStoreName: String
+    playerStoreName: String,
+    walletStoreName: String
 ) extends Transformer[String, Array[Byte], KeyValue[String, PlayerStore]] {
   private var processorContext: ProcessorContext = _
   private var playerKVStore: KeyValueStore[String, PlayerStore] = _
+  private var walletStore: KeyValueStore[String, String] = _
 
   private val sender = new Sender(config, sqs, ueNorthSQS, false, false)
   final val printer: Printer = Printer(
@@ -75,6 +77,7 @@ class PlayersTransformer(
   override def init(processorContext: ProcessorContext): Unit = {
     this.processorContext = processorContext
     this.playerKVStore = getKVStore(playerStoreName)
+    this.walletStore = getKVStore(walletStoreName)
   }
 
   def deserializePlayer(data: Array[Byte]): Player = {
@@ -536,6 +539,8 @@ class PlayersTransformer(
             wallet.brand_id.get
           )
         }
+        val keyWallet =
+          s"${wallet.player_id.get}-${wallet.transaction_id.get}"
         if (
           wallet.transaction_type_id
             .map(_.toLowerCase())
@@ -546,6 +551,7 @@ class PlayersTransformer(
           && wallet.PayMethod
             .map(_.toLowerCase())
             .exists(method => cryptos.exists(method.contains))
+          && walletStore.get(keyWallet) == null
         ) {
           if (wallet.brand_id.isDefined) {
             val attributesList = List(
@@ -581,6 +587,7 @@ class PlayersTransformer(
               k,
               wallet.brand_id.get
             )
+            walletStore.put(keyWallet, "true")
           } else {
             logger.debug(s"${wallet.player_id} brand undefined")
           }

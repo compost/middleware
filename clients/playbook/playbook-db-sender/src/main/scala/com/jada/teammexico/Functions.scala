@@ -490,8 +490,8 @@ class Functions {
     )
   }
 
-  @FunctionName("historyStakeFactorCI-1452")
-  def runHistoryStakeFactor(
+  @FunctionName("CI-1738-balance")
+  def runBalance(
       @HttpTrigger(
         name = "req",
         methods = Array(HttpMethod.GET),
@@ -502,26 +502,17 @@ class Functions {
   ): Unit = {
     implicit val logger = context.getLogger
     logger.info(s"starting app $request")
-    Set(betwright, devBetwright).foreach(
-      runHistoryStakeFactorSub(_)
+    Set(pricedup).foreach(
+      runBalanceSub(_)
     )
   }
 
-  def runHistoryStakeFactorSub(b: Brand)(implicit logger: Logger) = {
+  def runBalanceSub(b: Brand)(implicit logger: Logger) = {
     val query =
       s"""
          | SELECT player_id as id, 
-         | NVL(inplay,'') as sf_inplay, 
-         | NVL(inplay_casino,'') as sf_inplay_casino, 
-         | NVL(inplay_livecasino,'') as sf_inplay_livecasino, 
-         | NVL(inplay_lottery,'') as sf_inplay_lottery, 
-         | NVL(inplay_virtualsports,'') as sf_inplay_virtualsports, 
-         | NVL(prematch,'') as sf_prematch, 
-         | NVL(prematch_casino,'') as sf_prematch_casino, 
-         | NVL(prematch_livecasino,'') as sf_prematch_livecasino, 
-         | NVL(prematch_lottery,'') as sf_prematch_lottery, 
-         | NVL(prematch_virtualsports,'') as sf_prematch_virtualsports 
-         | FROM BUS.RAW_CRM_IMPORT_STAKE_FACTOR
+         | balance as balance 
+         | FROM BUS.CRM_PLAYBOOK_WALLET_BALANCE
          | WHERE brand_id ${b.filter}
       """.stripMargin
 
@@ -537,115 +528,19 @@ class Functions {
     val newDf = df.select(
       df.col("id"),
       map(
-        lit("sf_inplay"),
-        $"sf_inplay",
-        lit("sf_inplay_casino"),
-        $"sf_inplay_casino",
-        lit("sf_inplay_livecasino"),
-        $"sf_inplay_livecasino",
-        lit("sf_inplay_lottery"),
-        $"sf_inplay_lottery",
-        lit("sf_inplay_virtualsports"),
-        $"sf_inplay_virtualsports",
-        lit("sf_prematch"),
-        $"sf_prematch",
-        lit("sf_prematch_casino"),
-        $"sf_prematch_casino",
-        lit("sf_prematch_livecasino"),
-        $"sf_prematch_livecasino",
-        lit("sf_prematch_lottery"),
-        $"sf_prematch_lottery",
-        lit("sf_prematch_virtualsports"),
-        $"sf_prematch_virtualsports"
+        lit("balance"),
+        $"balance"
       ).as("properties")
     )
 
     saveDFAndSendBatchNotif(
       newDf,
       b,
-      "history_stake_factor",
-      "history_stake_factor.json"
+      "load_balance",
+      "load_balance.json"
     )
   }
 
-  @FunctionName("CI-1452")
-  def ci1452(
-      @HttpTrigger(
-        name = "req",
-        methods = Array(HttpMethod.GET),
-        authLevel = AuthorizationLevel.ADMIN
-      )
-      request: HttpRequestMessage[Optional[String]],
-      context: ExecutionContext
-  ): Unit = {
-    implicit val logger = context.getLogger
-    logger.info(s"starting app $context")
-
-    val table = "BUS.RAW_CRM_IMPORT_PLAYBOOK"
-    val properties = Map[String, String](
-      "affiliate_id" -> "AFFILIATEID",
-      "brand_id" -> "BRAND_ID",
-      "country_description" -> "COUNTRY",
-      "currency_description" -> "CURRENCY",
-      "dob" -> "SUBSTR(DOB, 0, 10)",
-      "email" -> "EMAIL",
-      "first_dep_datetime" -> "SUBSTR(FIRST_DEP_DATE, 0, 10)",
-      "first_name" -> "FIRST_NAME",
-      "is_self_excluded" -> "IS_SELF_EXCLUDED",
-      "last_name" -> "LAST_NAME",
-      "email_consented" -> "iff(MARKETING_EMAIL like 'False', 'false', 'true')",
-      "phone_consented" -> "iff(MARKETING_PHONE like 'False', 'false', 'true')",
-      "sms_consented" -> "iff(MARKETING_SMS like 'False', 'false', 'true')",
-      "phone_number" -> "PHONENUMBER",
-      "player_id" -> "PLAYER_ID",
-      "reg_datetime" -> "SUBSTR(REG_DATETIME, 0, 10)",
-      "status" -> "STATUS",
-      "test_user" -> "TEST_USER",
-      "VIP" -> "VIP",
-      "postcode" -> "POSTCODE",
-      "promo_id" -> "PROMO_ID",
-      "promo_banned" -> "PROMO_BANNED",
-      "player_blocked_reason" -> "BLOCKED_REASON",
-      "city" -> "CITY"
-    ).map { case (k, v) => s"'$k', $v" }.mkString(",")
-    val name = "history-player"
-    Set(betwright, devBetwright).foreach(historySub(_, name, table, properties))
-  }
-
-  def historySub(
-      brand: Brand,
-      name: String,
-      table: String,
-      properties: String,
-      columnPlayerId: String = "PLAYER_ID",
-      columnBrandId: String = "BRAND_ID"
-  )(implicit logger: java.util.logging.Logger): Unit = {
-    val sql = s"""
-          |SELECT TO_JSON(OBJECT_CONSTRUCT('id', ${columnPlayerId}, 'properties',  OBJECT_CONSTRUCT(${properties}))) 
-          |FROM ${table}
-          |WHERE ${columnBrandId} ${brand.filter}
-          |""".stripMargin
-    logger.info(sql)
-    val df = spark.read
-      .format(net.snowflake.spark.snowflake.Utils.SNOWFLAKE_SOURCE_NAME)
-      .option(
-        "query",
-        sql
-      )
-      .options(sfOptions)
-      .load()
-
-    import spark.implicits._
-    import functions._
-    saveDFAndSendBatchNotif(
-      df,
-      brand,
-      name,
-      s"$name.json",
-      format = "txt",
-      send = true
-    )
-  }
   def saveDFAndSendBatchNotif(
       dataFrame: DataFrame,
       b: Brand,

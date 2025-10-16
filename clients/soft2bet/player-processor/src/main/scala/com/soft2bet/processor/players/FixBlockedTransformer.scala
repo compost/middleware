@@ -23,6 +23,7 @@ import java.io.FileWriter
 import java.nio.file.{Files, Path}
 import java.time.{Instant, OffsetDateTime}
 import com.soft2bet.model.PlayerStore
+import java.util.UUID
 
 class FixBlockedTransformer(
     config: com.jada.configuration.ApplicationConfiguration,
@@ -74,19 +75,8 @@ class FixBlockedTransformer(
     } finally {
       elements.close()
     }
-    cleanStore(prefix)
   }
 
-  def cleanStore(prefix: String): Unit = {
-    val elements = store.prefixScan(s"${prefix}-", new StringSerializer())
-    try {
-      while (elements.hasNext()) {
-        store.delete(elements.next().key)
-      }
-    } finally {
-      elements.close()
-    }
-  }
   def writeFile(
       prefix: String,
       login: KeyValueIterator[String, PlayerStore]
@@ -134,7 +124,7 @@ class FixBlockedTransformer(
     val blobClient = client
       .getBlobContainerClient(config.outputContainerName)
       .getBlobClient(
-        s"data/${prefix}/login/login-${timestamp}.json"
+        s"data/${prefix}/login/login-${UUID.randomUUID().toString()}.json"
       )
     blobClient.uploadFromFile(file.toString(), true)
     val blobSasPermission = new BlobSasPermission().setReadPermission(true)

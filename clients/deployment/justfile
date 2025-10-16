@@ -1,4 +1,5 @@
 import "../justfile"
+import "soft2bet.just"
 # fmt on terraform
 fmt:
   terraform fmt
@@ -48,7 +49,7 @@ activate RG NAME:
 
 deactivate-activate RG NAME:
   @just deactivate {{RG}} {{NAME}}
-  sleep 2
+  sleep 2 
   @just activate {{RG}} {{NAME}}
 
 

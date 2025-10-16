@@ -23,6 +23,7 @@ import java.io.FileWriter
 import java.nio.file.{Files, Path}
 import java.time.{Instant, OffsetDateTime}
 import com.soft2bet.model.PlayerStoreSQS
+import java.util.UUID
 
 class MissingDataTransformer(
     config: com.jada.configuration.ApplicationConfiguration,
@@ -74,19 +75,8 @@ class MissingDataTransformer(
     } finally {
       elements.close()
     }
-    cleanStore(prefix)
   }
 
-  def cleanStore(prefix: String): Unit = {
-    val elements = store.all()
-    try {
-      while (elements.hasNext()) {
-        store.delete(elements.next().key)
-      }
-    } finally {
-      elements.close()
-    }
-  }
   def writeFile(
       prefix: String,
       playerstore: KeyValueIterator[String, PlayerStore]
@@ -136,7 +126,7 @@ class MissingDataTransformer(
     val blobClient = client
       .getBlobContainerClient(config.outputContainerName)
       .getBlobClient(
-        s"data/${prefix}/missingdata/playerstore-${timestamp}.json"
+        s"data/${prefix}/missingdata/playerstore-${UUID.randomUUID().toString()}.json"
       )
     blobClient.uploadFromFile(file.toString(), true)
     val blobSasPermission = new BlobSasPermission().setReadPermission(true)

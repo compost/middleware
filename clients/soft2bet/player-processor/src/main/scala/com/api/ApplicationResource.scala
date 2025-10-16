@@ -39,6 +39,10 @@ import org.joda.time.DateTime
 import com.soft2bet.model.PlayerSegmentation
 import com.soft2bet.model.PlayerSegmentationSQS
 
+import javax.management.{MBeanServer, ObjectName}
+import java.lang.management.ManagementFactory
+import scala.jdk.CollectionConverters._
+
 @Path("/q")
 @ApplicationScoped
 class ApplicationResource @Inject() (
@@ -75,7 +79,6 @@ class ApplicationResource @Inject() (
     @Inject @com.jada.FixBlockedTopology fixBlockedStreams: Option[
       KafkaStreams
     ],
-
     kafkaProducer: KafkaProducer[String, String]
 ) {
 
@@ -90,7 +93,7 @@ class ApplicationResource @Inject() (
     ("fdl", firstDepositLossStreams),
     ("missing-data", missingDataStreams),
     ("login", loginStreams),
-    ("fix-blocked", fixBlockedStreams),
+    ("fix-blocked", fixBlockedStreams)
   )
 
   val ueNorthSQS: software.amazon.awssdk.services.sqs.SqsClient =
@@ -121,6 +124,106 @@ class ApplicationResource @Inject() (
 
   def onStop(@Observes ev: ShutdownEvent) = {
     streams.values.flatten.foreach(_.close())
+  }
+
+  @GET
+  @Produces(Array(MediaType.TEXT_PLAIN))
+  def getState(@QueryParam("token") token: String): String = {
+    if (token != "eb20ec2f-81b2-4ad0-82bd-5cfa796d43b4") {
+      return "{}"
+    }
+
+    val result = new StringBuilder()
+    streams.filter(v => v._2.isDefined) foreach {
+      case (key: String, stream: Option[KafkaStreams]) => {
+        val state = stream.get.state()
+        val metadata = stream.get.localThreadsMetadata()
+
+        result.append(s"Kafka Streams State: $key $state\n\n")
+
+        metadata.asScala.foreach { threadMetadata =>
+          result.append(s"Thread: ${threadMetadata.threadName()}\n")
+          result.append(
+            s"  Active tasks: ${threadMetadata.activeTasks().size()}\n"
+          )
+          result.append(
+            s"  Standby tasks: ${threadMetadata.standbyTasks().size()}\n"
+          )
+
+          threadMetadata.standbyTasks().asScala.foreach { taskMetadata =>
+            result.append(s"    Standby Task: ${taskMetadata.taskId()}\n")
+            result.append(
+              s"      Partitions: ${taskMetadata.topicPartitions()}\n"
+            )
+          }
+        }
+      }
+    }
+    result.toString()
+  }
+  @GET
+  @Path("/all-mbeans")
+  @Produces(Array(MediaType.TEXT_PLAIN))
+  def listAllMBeans(@QueryParam("token") token: String): String = {
+    if (token != "eb20ec2f-81b2-4ad0-82bd-5cfa796d43b4") {
+      return "{}"
+    }
+    val mbs: MBeanServer = ManagementFactory.getPlatformMBeanServer
+    val allBeans = mbs.queryNames(null, null).asScala
+
+    val kafkaStreams = allBeans.filter(_.toString.contains("kafka.streams"))
+
+    if (kafkaStreams.isEmpty) {
+      "No Kafka Streams MBeans found!\n\nAll MBeans:\n" +
+        allBeans.mkString("\n")
+    } else {
+      "Kafka Streams MBeans:\n" + kafkaStreams.mkString("\n")
+    }
+  }
+
+  @GET
+  @Path("metrics")
+  @Produces(Array(MediaType.APPLICATION_JSON))
+  def metrics(
+      @QueryParam("token") token: String
+  ): String = {
+    if (token != "eb20ec2f-81b2-4ad0-82bd-5cfa796d43b4") {
+      return "{}"
+    }
+    val mbs: MBeanServer = ManagementFactory.getPlatformMBeanServer
+    val patterns = List(
+      "kafka.streams:type=stream-state-metrics,*",
+      "kafka.streams:*",
+      "kafka.consumer:*"
+    )
+
+    val result = new StringBuilder()
+
+    patterns.foreach { pattern =>
+      result.append(s"\n=== Pattern: $pattern ===\n")
+      val mbeans = mbs.queryNames(new ObjectName(pattern), null).asScala
+
+      if (mbeans.isEmpty) {
+        result.append("  No MBeans found\n")
+      } else {
+        mbeans.foreach { name =>
+          result.append(s"\nMBean: $name\n")
+          val info = mbs.getMBeanInfo(name)
+          info.getAttributes.foreach { attr =>
+            try {
+              val value = mbs.getAttribute(name, attr.getName)
+              result.append(s"  ${attr.getName}: $value\n")
+            } catch {
+              case e: Exception =>
+                result.append(s"  ${attr.getName}: ERROR - ${e.getMessage}\n")
+            }
+          }
+        }
+      }
+    }
+
+    result.toString()
+
   }
 
   @GET
