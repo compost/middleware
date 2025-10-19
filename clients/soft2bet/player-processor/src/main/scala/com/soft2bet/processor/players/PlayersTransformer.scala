@@ -678,7 +678,6 @@ class PlayersTransformer(
             case Some(player) =>
               player.copy(
                 player_id = Some(k),
-                GDPR = login.GDPR.orElse(player.GDPR),
                 GlobalProductClassification = login.GlobalProductClassification,
                 ProductClassification = login.ProductClassification,
                 FavoriteGameIds = login.FavoriteGameIds,
@@ -728,7 +727,6 @@ class PlayersTransformer(
             case _ =>
               PlayerStore(
                 player_id = Some(k),
-                GDPR = login.GDPR,
                 GlobalProductClassification = login.GlobalProductClassification,
                 ProductClassification = login.ProductClassification,
                 FavoriteGameIds = login.FavoriteGameIds,
