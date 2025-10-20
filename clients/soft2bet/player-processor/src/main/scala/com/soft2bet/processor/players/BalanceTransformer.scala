@@ -114,6 +114,18 @@ class BalanceTransformer(
     } finally {
       wagerings.close()
     }
+    cleanStore(prefix)
+  }
+
+  def cleanStore(prefix: String): Unit = {
+    val it = storeWagering.prefixScan(s"${prefix}-", new StringSerializer())
+    try {
+      while (it.hasNext()) {
+        storeWagering.delete(it.next().key)
+      }
+    } finally {
+      it.close()
+    }
   }
 
   def writeFile(

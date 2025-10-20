@@ -202,6 +202,17 @@ class PlayerSegmentationPunctuatorTransformer(
     } finally {
       players.close()
     }
+    cleanStore(prefix)
+  }
+  def cleanStore(prefix: String): Unit = {
+    val players = storePlayers.prefixScan(s"${prefix}-", new StringSerializer())
+    try {
+      while (players.hasNext()) {
+        storePlayers.delete(players.next().key)
+      }
+    } finally {
+      players.close()
+    }
   }
 
   def writeFile(

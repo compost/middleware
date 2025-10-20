@@ -39,7 +39,7 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "segmentation/player-processor"
-    docker_image_tag   = "20251014"
+    docker_image_tag   = "20251019-batch"
     storage_share_name = "segmentation-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -53,7 +53,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "kpi/player-processor"
-    docker_image_tag   = "20251014"
+    docker_image_tag   = "20251019-batch"
     storage_share_name = "deprecated-kpi-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -65,11 +65,11 @@ container_apps = [
 
   {
     name               = "soft2bet-firstdepositloss"
-    cpu                = 0.5
-    memory             = 1
+    cpu                = 1
+    memory             = 2
     docker_image_name  = "fld/player-processor"
     docker_image_tag   = "20251014"
-    storage_share_name = "firstdepositloss-sharestate"
+    storage_share_name = "firstdepositloss-2-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
     }
@@ -83,7 +83,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "statistics/player-processor"
-    docker_image_tag   = "20251014"
+    docker_image_tag   = "20251019-batch"
     storage_share_name = "statistics-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -112,7 +112,7 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "player-processor"
-    docker_image_tag   = "20251014"
+    docker_image_tag   = "20251019-batch"
     storage_share_name = "ldc-2-sharestate"
     envs = {
       "STATE_DIR"                             = "/app/state/ldc-20251004"
@@ -144,7 +144,7 @@ container_apps = [
     memory             = 2
     docker_image_name  = "funid/player-processor"
     docker_image_tag   = "20251014"
-    storage_share_name = "funid-sharestate"
+    storage_share_name = "funid-2-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
     }
@@ -172,7 +172,7 @@ container_apps = [
     memory             = 4
     docker_image_name  = "checker/aggregators-api"
     docker_image_tag   = "20250929-choisy"
-    storage_share_name = "checker-anglet-sharestate"
+    storage_share_name = "checker-anglet-2-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
     }
@@ -222,7 +222,7 @@ storage_configs = {
     aca   = true
   }
 
-  "firstdepositloss-sharestate" = {
+  "firstdepositloss-2-sharestate" = {
     quota = 50 # in GB
     aca   = true
   }
@@ -247,18 +247,18 @@ storage_configs = {
     aca   = true
   }
 
-  "funid-sharestate" = {
+  "funid-2-sharestate" = {
     quota = 50 # in GB
     aca   = true
   }
 
-  "checker-anglet-sharestate" = {
-    quota = 150 # in GB
+  "checker-anglet-2-sharestate" = {
+    quota = 500 # in GB
     aca   = true
   }
 
   "checker-biarritz-sharestate" = {
-    quota = 150 # in GB
+    quota = 500 # in GB
     aca   = true
   }
 

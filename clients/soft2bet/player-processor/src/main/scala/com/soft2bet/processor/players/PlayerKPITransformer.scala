@@ -116,6 +116,18 @@ class PlayerKPITransformer(
     } finally {
       players.close()
     }
+    cleanStore(prefix)
+  }
+
+  def cleanStore(prefix: String): Unit = {
+    val it = storePlayerKPIs.prefixScan(s"${prefix}-", new StringSerializer())
+    try {
+      while (it.hasNext()) {
+        storePlayerKPIs.delete(it.next().key)
+      }
+    } finally {
+      it.close()
+    }
   }
 
   def writeFile(
@@ -163,7 +175,6 @@ class PlayerKPITransformer(
             s"""{"id":"${player.player_id.get}","properties":${ldJson}}\n"""
           writer.write(line)
         }
-        storePlayerKPIs.delete(keyAndValue.key)
       }
     } finally {
       logger.debugv(

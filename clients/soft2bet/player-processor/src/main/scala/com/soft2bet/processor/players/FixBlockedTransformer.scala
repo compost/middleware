@@ -102,7 +102,6 @@ class FixBlockedTransformer(
             s"""{"id":"${id}","properties":{"isBlocked":"${keyAndValue.value.is_blocked.get}"}}\n"""
           writer.write(line)
         }
-        store.delete(keyAndValue.key)
       }
     } finally {
       logger.debugv(

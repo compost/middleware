@@ -155,6 +155,18 @@ class LifetimeDepositCountTransformer(
     } finally {
       wallets.close()
     }
+    cleanStore(prefix)
+  }
+
+  def cleanStore(prefix: String): Unit = {
+    val it = storeWallet.prefixScan(s"${prefix}-", new StringSerializer())
+    try {
+      while (it.hasNext()) {
+        storeWallet.delete(it.next().key)
+      }
+    } finally {
+      it.close()
+    }
   }
 
   def writeFile(

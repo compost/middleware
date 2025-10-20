@@ -22,7 +22,6 @@ case class Login(
     CanBeContactedByPhoneOrDynamicMessage: Option[String],
     CanReceivePromotions: Option[String],
     BonusProgram: Option[String],
-    GDPR: Option[String],
     IsOptInCashback: Option[String],
     IsOptInWeeklyReload: Option[String],
     IsOptInWeekendReload: Option[String],
@@ -34,7 +33,6 @@ case class Login(
 case class LoginJSON(
     lastLoginDate: Option[String] = None
 )
-
 
 object LoginJSON {
 

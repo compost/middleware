@@ -89,6 +89,17 @@ class LoginTransformer(
     } finally {
       elements.close()
     }
+    cleanStore(prefix)
+  }
+  def cleanStore(prefix: String): Unit = {
+    val it = store.prefixScan(s"${prefix}-", new StringSerializer())
+    try {
+      while (it.hasNext()) {
+        store.delete(it.next().key)
+      }
+    } finally {
+      it.close()
+    }
   }
 
   def writeFile(
@@ -118,7 +129,6 @@ class LoginTransformer(
         val line =
           s"""{"id":"${id}","properties":${loginJson}}\n"""
         writer.write(line)
-        store.delete(keyAndValue.key)
       }
     } finally {
       logger.debugv(
