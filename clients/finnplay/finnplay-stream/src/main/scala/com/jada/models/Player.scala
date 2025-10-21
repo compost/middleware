@@ -34,7 +34,7 @@ case class Player(
     player_status_id: Option[String] = None,
     player_status_description: Option[String] = None,
     SITE_ID: Option[String] = None,
-    Benefit: Option[String] = None,
+    Benefit: Option[String] = None
 )
 
 case class PlayerSQS(
@@ -71,7 +71,7 @@ case class PlayerSQS(
     device_type_description: Option[String] = None,
     player_status_id: Option[String] = None,
     player_status_description: Option[String] = None,
-    Benefit: Option[String] = None,
+    Benefit: Option[String] = None
 )
 
 object PlayerSQS {
@@ -88,21 +88,10 @@ object PlayerSQS {
   val kafkaFormat = DateTimeFormatter
     .ofPattern("yyyy-MM-dd' 'HH:mm:ss")
     .withZone(ZoneId.of("UTC"))
-  val sqsFormat = DateTimeFormatter
-    .ofPattern("yyyy-MM-dd' 'HH:mm:ss")
-    .withZone(ZoneId.of("Europe/Budapest"))
 
   def keepDate(brandId: Option[String], d: String): String = {
     if (d.length() > 10) {
-      val dd = brandId
-        .filter(_ == "106")
-        .map(_ => {
-          val kafka = kafkaFormat.parse(d)
-          sqsFormat.format(kafka)
-        })
-        .getOrElse(d)
-
-      dd.substring(0, 10)
+      d.substring(0, 10)
     } else {
       d
     }

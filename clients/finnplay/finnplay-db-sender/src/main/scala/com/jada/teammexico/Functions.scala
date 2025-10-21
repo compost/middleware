@@ -334,51 +334,6 @@ class Functions {
     )
   }
 
-  def runDateFix(
-      timerInfo: String,
-      context: ExecutionContext
-  ): Unit = {
-    implicit val logger = context.getLogger
-    logger.info(s"starting app $timerInfo")
-    runDateFixSub(vegasonline)
-  }
-  def runDateFixSub(b: Brand)(implicit logger: Logger) = {
-    val query =
-      s"""
-         |SELECT player_id as id, TO_VARCHAR(CONVERT_TIMEZONE('UTC', 'Europe/Budapest', first_dep_datetime), 'yyyy-MM-dd') as first_dep_datetime,TO_VARCHAR(CONVERT_TIMEZONE('UTC', 'Europe/Budapest', dob), 'yyyy-MM-dd') as dob, TO_VARCHAR(CONVERT_TIMEZONE('UTC', 'Europe/Budapest', reg_datetime), 'yyyy-MM-dd') as reg_datetime 
-         |FROM dim_players
-         |WHERE brand_id ${b.filter}
-      """.stripMargin
-
-    logger.info(query)
-    val df = spark.read
-      .format(net.snowflake.spark.snowflake.Utils.SNOWFLAKE_SOURCE_NAME)
-      .option("query", query)
-      .options(sfOptions)
-      .load()
-
-    import spark.implicits._
-    import functions._
-    val newDf = df.select(
-      df.col("id"),
-      map(
-        lit("dob"),
-        $"dob",
-        lit("reg_datetime"),
-        $"reg_datetime",
-        lit("first_dep_datetime"),
-        $"first_dep_datetime"
-      ).as("properties")
-    )
-
-    saveDFAndSendBatchNotif(
-      newDf,
-      b,
-      "budapest_timezone",
-      "budapest_timezone.json"
-    )
-  }
-
   def saveDFAndSendBatchNotif(
       dataFrame: DataFrame,
       b: Brand,

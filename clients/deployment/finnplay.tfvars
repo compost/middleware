@@ -23,7 +23,7 @@ container_apps = [
     cpu                = 1.25
     memory             = 2.5
     docker_image_name  = "finnplay/finnplay-stream"
-    docker_image_tag   = "20250826"
+    docker_image_tag   = "20251021"
     storage_share_name = "main-sharestate"
     envs = {
       "STATE_DIR"          = "/app/state/2025-08-26"
@@ -31,7 +31,7 @@ container_apps = [
     }
     secrets    = {}
     datasource = true
-    aca = true
+    aca        = true
   }
 
 ]

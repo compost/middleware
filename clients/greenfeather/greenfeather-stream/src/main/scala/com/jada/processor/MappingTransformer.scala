@@ -95,7 +95,7 @@ class MappingTransformer(
   ): KeyValue[String, PlayerStore] = {
     val playerFromStore = playerStore.get(key)
     val playerToSaveInStore = processorContext.topic() match {
-      case config.topicPlayersBatch=>
+      case config.topicPlayersBatch =>
         val inputPlayerBatch = deserialize[PlayerBatch](v)
         alert(
           config.topicPlayersBatch,
@@ -105,7 +105,7 @@ class MappingTransformer(
         )
         processPlayerBatch(playerFromStore, inputPlayerBatch)
 
-      case config.topicPlayerStatus=>
+      case config.topicPlayerStatus =>
         val inputPlayerStatus = deserialize[PlayerStatus](v)
         alert(
           config.topicPlayerStatus,
@@ -125,12 +125,12 @@ class MappingTransformer(
         )
         processPlayer(playerFromStore, inputPlayer)
 
-      case config.topicActionTrigger=>
+      case config.topicActionTrigger =>
         val actionTrigger = deserialize[ActionTrigger](v)
         processActionTrigger(actionTrigger)
         null
 
-      case config.topicLogins=>
+      case config.topicLogins =>
         val inputLogin = deserialize[Login](v)
         alert(
           config.topicLogins,
@@ -145,7 +145,7 @@ class MappingTransformer(
           null
         }
 
-      case config.topicWagerings=>
+      case config.topicWagerings =>
         val input = deserialize[Wagering](v)
         val pl = Option(playerFromStore) match {
           case None =>
@@ -162,17 +162,17 @@ class MappingTransformer(
         }
         processWebPush(pl, input.result_datetime.orElse(input.bet_datetime))
 
-      case config.topicWallets=>
+      case config.topicWallets =>
         val inputWallet = deserialize[Wallet](v)
         processWallet(inputWallet)
         null
 
-      case config.topicBonusTransaction=>
+      case config.topicBonusTransaction =>
         val inputBonus = deserialize[BonusTransaction](v)
         processBonusTransaction(inputBonus)
         null
 
-      case config.topicUserConsentUpdate=>
+      case config.topicUserConsentUpdate =>
         val inputConsent = deserialize[UserConsentUpdate](v)
         processConsent(playerFromStore, inputConsent)
     }
@@ -431,11 +431,11 @@ class MappingTransformer(
          |}
          |}
          |""".stripMargin
-      sender.sendMessageToSQS(
-        pl.player_id.get,
-        pl.brand_id.get,
-        payload
-      )
+      // sender.sendMessageToSQS(
+      //  pl.player_id.get,
+      //  pl.brand_id.get,
+      //  payload
+      // )
 
       updatedPlayer.orNull
     } else {
