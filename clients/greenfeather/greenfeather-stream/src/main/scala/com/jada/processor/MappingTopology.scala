@@ -47,6 +47,7 @@ import com.jada.serdes.CirceSerdes
 import com.jada.models._
 import io.circe._
 import io.circe.generic.auto._
+import cats.instances.string
 
 @ApplicationScoped
 class MappingTopology @Inject() (
@@ -92,7 +93,7 @@ class MappingTopology @Inject() (
     val kstream: KStream[String, Array[Byte]] =
       builder.stream[String, Array[Byte]](config.appTopics)(consumed)
 
-    kstream
+    val s = kstream
       .transform[String, PlayerStore](
         () =>
           new MappingTransformer(
@@ -102,9 +103,12 @@ class MappingTopology @Inject() (
           ),
         storePlayerStoreName
       )
-      .to(config.topicOutput)(
-        Produced.`with`(stringSerde, CirceSerdes.serde[PlayerStore])
-      )
+    s.to(config.topicOutput)(
+      Produced.`with`(stringSerde, CirceSerdes.serde[PlayerStore])
+    )
+    s.to(config.topicWebPushBatchOutput)(
+      Produced.`with`(stringSerde, stringSerde)
+    ).withName(config.topicWebPushBatchOutput)
 
     builder.build()
   }

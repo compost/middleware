@@ -48,6 +48,7 @@ case class ApplicationConfiguration(
 ) {
 
   val topicOutput = s"${prefix}-full-players"
+  val topicWebPushBatchOutput = s"${prefix}-webpush-batch"
 
   val topicPlayers = "players"
   val topicPlayersBatch = "player_batch"

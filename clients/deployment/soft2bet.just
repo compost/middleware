@@ -1,4 +1,4 @@
-version_main := 20251021
+version_main:="20251021"
 
 deactivate-soft2bet:
   @just deactivate Soft2Bet soft2bet-logins 
@@ -11,6 +11,15 @@ deactivate-soft2bet:
   @just deactivate Soft2Bet soft2bet-repartitioner
   @just deactivate Soft2Bet soft2bet-funid
   @just stop-main 
+
+deactivate-soft2bet-realtime:
+  #@just deactivate Soft2Bet soft2bet-logins 
+  @just deactivate Soft2Bet soft2bet-firstdepositloss
+  @just deactivate Soft2Bet soft2bet-sportpush
+  @just deactivate Soft2Bet soft2bet-repartitioner
+  @just deactivate Soft2Bet soft2bet-funid
+  @just stop-main 
+
 
 deactivate-soft2bet-batch:
   @just deactivate Soft2Bet soft2bet-segmentation 

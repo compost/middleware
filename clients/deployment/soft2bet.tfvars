@@ -115,7 +115,7 @@ container_apps = [
     docker_image_tag   = "20251021"
     storage_share_name = "ldc-2-sharestate"
     envs = {
-      "STATE_DIR"                             = "/app/state/ldc-20251021"
+      "STATE_DIR"                             = "/app/state/ldc-20251004"
       "DEFAULT_TOPOLOGY_ENABLED"              = "false"
       "LIFETIMEDEPOSITCOUNT_TOPOLOGY_ENABLED" = "true"
     }

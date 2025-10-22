@@ -29,6 +29,7 @@ import java.time.temporal.TemporalUnit
 import java.time.temporal.Temporal
 import java.time.temporal.ChronoUnit
 import com.jada.WebPush
+import org.apache.kafka.streams.processor.To
 
 class MappingTransformer(
     config: ApplicationConfiguration,
@@ -416,27 +417,15 @@ class MappingTransformer(
       java.time.ZonedDateTime.now(java.time.ZoneId.of("GMT"))
     )
     if (mp.isDefined && updatedPlayer.isDefined) {
+      val key =
+        s"${$pl.brand_id.get}-${mp.get}-${pl.player_id.get}"
       val payload =
-        s"""
-         |{"type": "GENERIC_USER",
-         |"mappingSelector":"${sender.computeMappingSelector(
-            pl.brand_id,
-            mp.get
-          )}",
-         |"contactId": "${pl.player_id.get}",
-         |"properties": {
-         | "originalId": "${pl.player_id.get}",
-         | "brand_id": "${pl.brand_id.get}",
-         | "total_balance": "${pl.wagering_total_balance.get}"
-         |}
-         |}
-         |""".stripMargin
-      // sender.sendMessageToSQS(
-      //  pl.player_id.get,
-      //  pl.brand_id.get,
-      //  payload
-      // )
-
+        s"""{"id": "${pl.player_id.get}", "properties": {"originalId": "${pl.player_id.get}", "brand_id": "${pl.brand_id.get}", "total_balance": "${pl.wagering_total_balance.get}"}}"""
+      processorContext.forward(
+        key,
+        payload,
+        To.child(config.topicWebPushBatchOutput)
+      )
       updatedPlayer.orNull
     } else {
       pl
