@@ -1,6 +1,7 @@
 version_main:="20251021"
 
-soft2bet-deactivate-soft2bet  @just deactivate Soft2Bet soft2bet-logins 
+soft2bet-deactivate-all:
+  @just deactivate Soft2Bet soft2bet-logins 
   @just deactivate Soft2Bet soft2bet-segmentation 
   @just deactivate Soft2Bet soft2bet-deprecated-kpi
   @just deactivate Soft2Bet soft2bet-firstdepositloss
@@ -11,7 +12,8 @@ soft2bet-deactivate-soft2bet  @just deactivate Soft2Bet soft2bet-logins
   @just deactivate Soft2Bet soft2bet-funid
   @just stop-main 
 
-soft2bet-deactivate-soft2bet  @just deactivate Soft2Bet soft2bet-logins 
+soft2bet-deactivate-realtime:
+  @just deactivate Soft2Bet soft2bet-logins 
   @just deactivate Soft2Bet soft2bet-firstdepositloss
   @just deactivate Soft2Bet soft2bet-sportpush
   @just deactivate Soft2Bet soft2bet-repartitioner
@@ -19,12 +21,14 @@ soft2bet-deactivate-soft2bet  @just deactivate Soft2Bet soft2bet-logins
   @just stop-main 
 
 
-soft2bet-deactivate-soft2bet  @just deactivate Soft2Bet soft2bet-segmentation 
+soft2bet-deactivate-batch:
+  @just deactivate Soft2Bet soft2bet-segmentation 
   @just deactivate Soft2Bet soft2bet-deprecated-kpi
   @just deactivate Soft2Bet soft2bet-statistics
   @just deactivate Soft2Bet soft2bet-ldc
 
-soft2bet-activate-soft2bet  @just activate Soft2Bet soft2bet-segmentation 
+soft2bet-activate-batch:
+  @just activate Soft2Bet soft2bet-segmentation 
   @just activate Soft2Bet soft2bet-deprecated-kpi
   @just activate Soft2Bet soft2bet-statistics
   @just activate Soft2Bet soft2bet-ldc

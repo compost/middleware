@@ -106,10 +106,6 @@ class MappingTopology @Inject() (
     s.to(config.topicOutput)(
       Produced.`with`(stringSerde, CirceSerdes.serde[PlayerStore])
     )
-    s.to(config.topicWebPushBatchOutput)(
-      Produced.`with`(stringSerde, stringSerde)
-    ).withName(config.topicWebPushBatchOutput)
-
     builder.build()
   }
 

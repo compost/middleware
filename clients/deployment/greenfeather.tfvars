@@ -21,14 +21,14 @@ container_apps = [
     cpu                = 2
     memory             = 4
     docker_image_name  = "greenfeather/greenfeather-stream"
-    docker_image_tag   = "20250925-disable-webpush"
+    docker_image_tag   = "20251022"
     storage_share_name = "joy-main-sharestate"
     envs = {
       "PUNCTUATOR" = "PT60M"
       "STATE_DIR"  = "/app/state/current"
     }
-    secrets    = {}
-    aca        = true
+    secrets = {}
+    aca     = true
   },
   {
     name               = "greenfeather-joy-batch"
@@ -40,8 +40,8 @@ container_apps = [
     envs = {
       "STATE_DIR" = "/app/state/current"
     }
-    secrets    = {}
-    aca        = true
+    secrets = {}
+    aca     = true
   },
 
 

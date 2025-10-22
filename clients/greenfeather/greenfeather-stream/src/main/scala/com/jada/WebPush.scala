@@ -63,10 +63,10 @@ object WebPush {
         mp,
         Some(
           p.copy(
-            dailies = p.dailies,
-            happyHour = p.happyHour,
-            nightOwl = p.nightOwl,
-            earlyBird = p.earlyBird
+            dailies = dailies,
+            happyHour = happyHour,
+            nightOwl = nightOwl,
+            earlyBird = earlyBird
           )
         )
       )
