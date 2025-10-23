@@ -31,6 +31,7 @@ import com.soft2bet.model.Wagering
 import com.soft2bet.model.WageringJSON
 import java.util.UUID
 
+class Account(brandIds: Set[String], prefix: String, queue: String)
 object Sender {
 
   private final val logger =
@@ -186,7 +187,8 @@ object Sender {
       "322",
       "323",
       "325",
-      "326"
+      "326",
+      "330"
     )
   val Boomerang = Set("123", "124", "153", "133", "223", "308")
   val CasinoInfinity: Set[String] = Set("290", "301")
@@ -197,6 +199,7 @@ object Sender {
   val Ds: Set[String] = Set()
   val Sq = Set("255", "274")
   val SP = Set("327")
+  val Sweep = Set("329")
 
   val SgaPrefix = "sga"
   val DkPrefix = "dk"
@@ -218,6 +221,7 @@ object Sender {
   val SqPrefix = "sq"
   val IBetPrefix = "ibet"
   val SPPrefix = "sp"
+  val SweepPrefix = "sweep"
 
   val Brands = Set(
     SgaPrefix,
@@ -239,7 +243,8 @@ object Sender {
     CpPrefix,
     SqPrefix,
     IBetPrefix,
-    SPPrefix
+    SPPrefix,
+    SweepPrefix
   )
   def prefix(brandID: String): String = {
     if (Sender.Sga.contains(brandID)) {
@@ -280,6 +285,8 @@ object Sender {
       SqPrefix
     } else if (Sender.IBet.contains(brandID)) {
       IBetPrefix
+    } else if (Sender.Sweep.contains(brandID)) {
+      SweepPrefix
     } else {
       logger.error(s"${brandID} missing in the configuration")
       "nothandled"
@@ -414,7 +421,8 @@ class Sender(
       (sqs, config.sqsQueueSq)
     } else if (Sender.IBetPrefix == prefix) {
       (sqs, config.sqsQueueIBet)
-
+    } else if (Sender.SweepPrefix == prefix) {
+      (sqs, config.sqsQueueSweep)
     } else {
       logger.error(s"new brand not handled ")
       (null, null)

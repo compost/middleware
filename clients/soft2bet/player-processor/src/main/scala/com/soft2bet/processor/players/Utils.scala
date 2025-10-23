@@ -11,13 +11,11 @@ object Utils {
       Instant.ofEpochMilli(timestamp),
       UTC
     )
-    val onePm = LocalTime.of(13, 0, 0)
-    val tenPm = LocalTime.of(22, 0, 0)
+    val after = LocalTime.of(4, 0, 0)
+    val before = LocalTime.of(12, 0, 0)
     val timeToCheck = dateTime.toLocalTime()
-  
-    val noImportInThisSlot = timeToCheck.isAfter(onePm) && timeToCheck.isBefore(tenPm)
 
-    !(noImportInThisSlot)
+    return timeToCheck.isAfter(after) && timeToCheck.isBefore(before)
   }
 
 }

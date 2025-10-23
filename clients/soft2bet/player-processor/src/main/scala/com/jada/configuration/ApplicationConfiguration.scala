@@ -46,6 +46,7 @@ case class ApplicationConfiguration(
     @ConfigProperty(name = "sqs.queue.cp") sqsQueueCp: String,
     @ConfigProperty(name = "sqs.queue.sq") sqsQueueSq: String,
     @ConfigProperty(name = "sqs.queue.ibet") sqsQueueIBet: String,
+    @ConfigProperty(name = "sqs.queue.sweep") sqsQueueSweep: String,
     @ConfigProperty(name = "sqs.queue.group.id") sqsGroupId: String,
     @ConfigProperty(name = "startup") startup: Boolean,
     @ConfigProperty(name = "store.start-stop.name") storeStartStop: String,
@@ -97,7 +98,7 @@ case class ApplicationConfiguration(
       name = "login.topology.enabled",
       defaultValue = "false"
     ) val loginTopologyEnabled: Boolean,
-     @ConfigProperty(
+    @ConfigProperty(
       name = "fixblocked.topology.enabled",
       defaultValue = "false"
     ) val fixBlockedTopologyEnabled: Boolean,
