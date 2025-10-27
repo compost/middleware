@@ -56,7 +56,8 @@ object Sender {
     "300",
     "311",
     "320",
-    "328"
+    "328",
+    "331"
   )
   // val NB = Set("274")
   val Elabet = Set("215")
@@ -75,7 +76,6 @@ object Sender {
       "37",
       "85",
       "18",
-      "27",
       "45",
       "39",
       "48",
@@ -83,7 +83,6 @@ object Sender {
       "29",
       "28",
       "87",
-      "32",
       "26",
       "36",
       "46",
@@ -102,7 +101,6 @@ object Sender {
       "25",
       "49",
       "17",
-      "6",
       "44",
       "78",
       "107",
@@ -200,6 +198,7 @@ object Sender {
   val Sq = Set("255", "274")
   val SP = Set("327")
   val Sweep = Set("329")
+  val Mazi = Set("6", "27", "32")
 
   val SgaPrefix = "sga"
   val DkPrefix = "dk"
@@ -222,6 +221,7 @@ object Sender {
   val IBetPrefix = "ibet"
   val SPPrefix = "sp"
   val SweepPrefix = "sweep"
+  val MaziPrefix = "mazi"
 
   val Brands = Set(
     SgaPrefix,
@@ -244,7 +244,8 @@ object Sender {
     SqPrefix,
     IBetPrefix,
     SPPrefix,
-    SweepPrefix
+    SweepPrefix,
+    MaziPrefix
   )
   def prefix(brandID: String): String = {
     if (Sender.Sga.contains(brandID)) {
@@ -287,6 +288,8 @@ object Sender {
       IBetPrefix
     } else if (Sender.Sweep.contains(brandID)) {
       SweepPrefix
+    } else if (Sender.Mazi.contains(brandID)) {
+      MaziPrefix
     } else {
       logger.error(s"${brandID} missing in the configuration")
       "nothandled"
@@ -423,6 +426,8 @@ class Sender(
       (sqs, config.sqsQueueIBet)
     } else if (Sender.SweepPrefix == prefix) {
       (sqs, config.sqsQueueSweep)
+    } else if (Sender.MaziPrefix == prefix) {
+      (sqs, config.sqsQueueMazi)
     } else {
       logger.error(s"new brand not handled ")
       (null, null)
@@ -483,6 +488,10 @@ class Sender(
       (sqs, config.sqsQueueMX)
     } else if (Sender.IBet.contains(brandID)) {
       (sqs, config.sqsQueueIBet)
+    } else if (Sender.Sweep.contains(brandID)) {
+      (sqs, config.sqsQueueSweep)
+    } else if (Sender.Mazi.contains(brandID)) {
+      (sqs, config.sqsQueueMazi)
     } else if (Sender.SP.contains(brandID)) {
       (sqs, config.sqsQueueSP)
     } else { (null, null) }

@@ -198,8 +198,8 @@ class Functions {
     region = Regions.EU_CENTRAL_1
   )
   val fp = new Brands(
-    ids =
-      Set(229, 230, 236, 237, 253, 258, 272, 273, 282, 285, 300, 311, 320, 328),
+    ids = Set(229, 230, 236, 237, 253, 258, 272, 273, 282, 285, 300, 311, 320,
+      328, 331),
     folder = "fp",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/soft2bet-fp-eventhub.fifo",
@@ -214,14 +214,14 @@ class Functions {
   )
 
   val other = new Brands(
-    ids = Set(81, 43, 2, 34, 47, 52, 37, 85, 18, 27, 45, 39, 48, 5, 29, 28, 87,
-      32, 26, 36, 46, 84, 33, 16, 31, 19, 42, 35, 20, 38, 40, 50, 51, 25, 49,
-      17, 6, 44, 78, 107, 30, 108, 122, 125, 63, 128, 134, 147, 148, 149, 151,
-      152, 181, 183, 80, 184, 185, 196, 197, 199, 200, 201, 202, 203, 204, 217,
-      218, 219, 220, 221, 222, 224, 225, 227, 228, 234, 235, 240, 243, 245, 246,
-      247, 248, 250, 254, 256, 257, 261, 262, 267, 268, 269, 270, 271, 232, 280,
-      281, 283, 284, 287, 288, 293, 298, 299, 302, 303, 304, 305, 306, 307, 110,
-      198, 310, 260, 316, 317, 318, 319, 322, 323, 325, 326),
+    ids = Set(81, 43, 2, 34, 47, 52, 37, 85, 18, 45, 39, 48, 5, 29, 28, 87, 26,
+      36, 46, 84, 33, 16, 31, 19, 42, 35, 20, 38, 40, 50, 51, 25, 49, 17, 44,
+      78, 107, 30, 108, 122, 125, 63, 128, 134, 147, 148, 149, 151, 152, 181,
+      183, 80, 184, 185, 196, 197, 199, 200, 201, 202, 203, 204, 217, 218, 219,
+      220, 221, 222, 224, 225, 227, 228, 234, 235, 240, 243, 245, 246, 247, 248,
+      250, 254, 256, 257, 261, 262, 267, 268, 269, 270, 271, 232, 280, 281, 283,
+      284, 287, 288, 293, 298, 299, 302, 303, 304, 305, 306, 307, 110, 198, 310,
+      260, 316, 317, 318, 319, 322, 323, 325, 326, 330),
     folder = "other",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/soft2bet-jada-eventhub.fifo",
@@ -233,6 +233,22 @@ class Functions {
     folder = "ca",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/soft2bet-ca-jada-eventhub.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
+
+  val sweep = new Brands(
+    ids = Set(329),
+    folder = "sweep",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5314_sweep.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
+
+  val mazi = new Brands(
+    ids = Set(6, 27, 32),
+    folder = "mazi",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5315_mazi.fifo",
     region = Regions.EU_CENTRAL_1
   )
 
@@ -302,7 +318,9 @@ class Functions {
       nb,
       sq,
       ibet,
-      sp
+      sp,
+      sweep,
+      mazi
     ).filterNot(_.ids.isEmpty)
 
   def getenv(key: String, defaultValue: String): String = {

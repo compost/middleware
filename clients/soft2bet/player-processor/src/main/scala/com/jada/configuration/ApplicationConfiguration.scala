@@ -47,6 +47,7 @@ case class ApplicationConfiguration(
     @ConfigProperty(name = "sqs.queue.sq") sqsQueueSq: String,
     @ConfigProperty(name = "sqs.queue.ibet") sqsQueueIBet: String,
     @ConfigProperty(name = "sqs.queue.sweep") sqsQueueSweep: String,
+    @ConfigProperty(name = "sqs.queue.mazi") sqsQueueMazi: String,
     @ConfigProperty(name = "sqs.queue.group.id") sqsGroupId: String,
     @ConfigProperty(name = "startup") startup: Boolean,
     @ConfigProperty(name = "store.start-stop.name") storeStartStop: String,
