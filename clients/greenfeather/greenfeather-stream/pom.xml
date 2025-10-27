@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.jada</groupId>
   <artifactId>greenfeather-stream</artifactId>
-  <version>20251022</version>
+  <version>20251027</version>
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>

@@ -140,7 +140,10 @@ class MappingTransformer(
         )
         processLogin(inputLogin)
         if (playerFromStore != null) {
-          processWebPush(playerFromStore, inputLogin.login_datetime)
+          processWebPush(
+            playerFromStore,
+            inputLogin.login_datetime.filterNot(v => v.isEmpty())
+          )
         } else {
           null
         }
@@ -160,7 +163,12 @@ class MappingTransformer(
                 input.total_balance.orElse(toUpdate.wagering_total_balance)
             )
         }
-        processWebPush(pl, input.result_datetime.orElse(input.bet_datetime))
+        processWebPush(
+          pl,
+          input.result_datetime
+            .filterNot(v => v.isEmpty())
+            .orElse(input.bet_datetime.filterNot(v => v.isEmpty()))
+        )
 
       case config.topicWallets =>
         val inputWallet = deserialize[Wallet](v)
