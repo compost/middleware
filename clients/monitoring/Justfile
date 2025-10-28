@@ -1,0 +1,30 @@
+import "../deployment/soft2bet.just"
+import "../justfile"
+
+# Select an existing workspace.
+workspace WORKSPACE_NAME:
+    @terraform workspace select {{WORKSPACE_NAME}}
+
+# Apply 🚀
+apply TFVARS_FILE *FLAGS="":
+    # Get the workspace name from the tfvars file name (e.g., "client-a" from "client-a.tfvars").
+    @just workspace $(basename '{{TFVARS_FILE}}' .tfvars)
+
+    # Use `terraform apply -var-file` to apply the changes.
+    @terraform apply -var-file="{{TFVARS_FILE}}" {{FLAGS}}
+
+destroy TFVARS_FILE:
+    # Get the workspace name from the tfvars file name (e.g., "client-a" from "client-a.tfvars").
+    @just workspace $(basename '{{TFVARS_FILE}}' .tfvars)
+
+    # Use `terraform apply -var-file` to apply the changes.
+    @terraform apply -destroy -var-file="{{TFVARS_FILE}}"
+
+
+# Plan 
+plan TFVARS_FILE:
+    # Get the workspace name from the tfvars file name (e.g., "client-a" from "client-a.tfvars").
+    @just workspace $(basename '{{TFVARS_FILE}}' .tfvars)
+
+    # Use `terraform apply -var-file` to plan the changes.
+    @terraform plan -var-file="{{TFVARS_FILE}}"
