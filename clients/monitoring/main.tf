@@ -2,13 +2,13 @@
 terraform {
 
   required_version = ">= 1.0"
-  
+
   backend "s3" {
-    bucket  = "symplify-terraform-state-bucket"     
-    key     = "terraform.tfstate"          
-    region  = "eu-central-1"                         
+    bucket  = "symplify-terraform-state-bucket"
+    key     = "terraform.tfstate"
+    region  = "eu-central-1"
     encrypt = true
-    
+
   }
   required_providers {
     aws = {
@@ -24,13 +24,14 @@ terraform {
 
 # Configure the AzureRM provider
 provider "azurerm" {
+  resource_provider_registrations = "none"
   features {}
 }
 
 # Local values for consistent resource tagging
 locals {
   tags = merge({
-    "Client" = "All" 
+    "Client" = "All"
   }, var.tags)
 }
 
@@ -61,32 +62,32 @@ resource "azurerm_monitor_action_group" "email_alert" {
 
 # AzureRM alert configurations on error logs
 resource "azurerm_monitor_scheduled_query_rules_alert_v2" "error_logs_alert" {
-  name                 = "error-logs-alert"
-  display_name         = "error-logs-alert"
-  location             = data.azurerm_resource_group.monitoring.location
-  resource_group_name  = data.azurerm_resource_group.monitoring.name
-  description          = "Alert when ACA returns log erros"
+  name                = "error-logs-alert"
+  display_name        = "error-logs-alert"
+  location            = data.azurerm_resource_group.monitoring.location
+  resource_group_name = data.azurerm_resource_group.monitoring.name
+  description         = "Alert when ACA returns log erros"
 
-  scopes               = [data.azurerm_log_analytics_workspace.logs.id] 
+  scopes = [data.azurerm_log_analytics_workspace.logs.id]
 
   criteria {
     query                   = <<-QUERY
         ContainerAppConsoleLogs_CL
         | where parse_json(Log_s).["log.level"] == "ERROR"
       QUERY
-    time_aggregation_method = "Count" 
+    time_aggregation_method = "Count"
     operator                = "GreaterThan"
-    threshold               = 0  
+    threshold               = 0
   }
 
   auto_mitigation_enabled          = false
   workspace_alerts_storage_enabled = false
   enabled                          = true
-  query_time_range_override        = "PT15M" 
+  query_time_range_override        = "PT15M"
   skip_query_validation            = true
-  window_duration                  = "PT5M"
+  window_duration                  = "PT15M"
   evaluation_frequency             = "PT15M"
-  severity                         = 3  
+  severity                         = 3
 
   action {
     action_groups = [azurerm_monitor_action_group.email_alert.id]
@@ -94,3 +95,4 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "error_logs_alert" {
 
   tags = local.tags
 }
+
