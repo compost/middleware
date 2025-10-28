@@ -1,6 +1,3 @@
-import "../deployment/soft2bet.just"
-import "../justfile"
-
 # Select an existing workspace.
 workspace WORKSPACE_NAME:
     @terraform workspace select {{WORKSPACE_NAME}}
