@@ -405,3 +405,32 @@ resource "azurerm_monitor_metric_alert" "replica_count_alerts" {
   tags        = local.tags
 }
 
+# Azure alert : Restart count
+resource "azurerm_monitor_metric_alert" "restart_count_alerts" {
+
+  for_each = local.aca
+
+  name                = "restart-count-alert-${each.key}"
+  resource_group_name = data.azurerm_resource_group.main.name
+
+  scopes = [azurerm_container_app.main[each.key].id]
+
+  description = "Alerts on the restart count of the ${each.key} Container App."
+
+  criteria {
+    metric_namespace = "Microsoft.App/containerApps"
+    metric_name      = "RestartCount"
+    aggregation      = "Maximum"
+    operator         = "GreaterThan"
+    threshold        = 0
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.email_alert.id
+  }
+
+  window_size = "PT5M" 
+  frequency   = "PT1M" 
+  tags        = local.tags
+
+}
