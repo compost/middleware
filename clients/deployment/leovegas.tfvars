@@ -6,10 +6,10 @@ virtual_network_name = "vnet-leovegas"
 subnet_name          = "leovegas-environment"
 address_prefixes     = "10.10.9.0/27"
 
-workload_profile     = "Consumption"
+workload_profile = "Consumption"
 # New resources to be created
 storage_account_name = "leovegas2envstorage" # Must be globally unique
-create_outbound_ip = true
+create_outbound_ip   = true
 # Environmental variables for your application
 #aws_access_key_id    = 
 #aws_secret_key_value = ""
@@ -26,26 +26,26 @@ container_apps = [
     storage_share_name = "leovegas-eventhub-sharestate"
     envs = {
       "QUARKUS_SQS_AWS_REGION" = "eu-central-1"
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR"              = "/app/state/current"
     }
-    secrets    = {}
+    secrets  = {}
     eventhub = true
-    aca = true
+    aca      = true
   },
 
   {
     name               = "leovegas-mks"
-    cpu                = 0.5
-    memory             = 1
+    cpu                = 1
+    memory             = 2
     docker_image_name  = "leovegas/leovegas"
-    docker_image_tag   = "20251002"
+    docker_image_tag   = "20251029"
     storage_share_name = "leovegas-mks"
     envs = {
-      "STATE_DIR"          = "/app/state/current"
+      "STATE_DIR" = "/app/state/20251029"
     }
-    secrets    = {}
-    mks = true
-    aca = true
+    secrets = {}
+    mks     = true
+    aca     = true
   }
 
 ]

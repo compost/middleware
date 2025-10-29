@@ -42,4 +42,17 @@ public class PlayerKafka {
   public Optional<String> wantssms = Optional.empty();
   public Optional<String> wantscalls = Optional.empty();
   public Optional<String> wantsapppush = Optional.empty();
+  public Optional<String> wantscalls_casino = Optional.empty();
+  public Optional<String> wantscalls_livecasino = Optional.empty();
+  public Optional<String> wantscalls_sports = Optional.empty();
+  public Optional<String> wantscalls_bingo = Optional.empty();
+  public Optional<String> wantscommunication_casino = Optional.empty();
+  public Optional<String> wantscommunication_livecasino = Optional.empty();
+  public Optional<String> wantscommunication_sports = Optional.empty();
+  public Optional<String> wantscommunication_bingo = Optional.empty();
+  public Optional<String> wantssms_casino = Optional.empty();
+  public Optional<String> wantssms_livecasino = Optional.empty();
+  public Optional<String> wantssms_sports = Optional.empty();
+  public Optional<String> wantssms_bingo = Optional.empty();
+  public Optional<String> wantssocialmedia = Optional.empty();
 }

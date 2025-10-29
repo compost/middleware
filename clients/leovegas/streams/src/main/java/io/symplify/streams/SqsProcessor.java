@@ -27,6 +27,7 @@ import io.symplify.streams.Configuration.Mapping.Type;
 public class SqsProcessor implements Processor<String, byte[], Void, Void> {
 
   private final Logger logger = Logger.getLogger(this.getClass());
+
   public static ObjectMapper getObjectMapper() {
     var objMp = new ObjectMapper();
     objMp.registerModules(new Jdk8Module());
@@ -58,8 +59,8 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
   }
 
   private Optional<PlayerStore> processMesssage(RecordMetadata metadata, Record<String, byte[]> record) {
-    if(record.key() == null){
-        return Optional.empty();
+    if (record.key() == null) {
+      return Optional.empty();
     }
     try {
       switch (metadata.topic()) {
@@ -74,9 +75,9 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
         default:
           return Optional.empty();
       }
-    } catch(com.fasterxml.jackson.core.JsonParseException pfff) {
-        logger.warn("unable to read", pfff);  
-        return Optional.empty();
+    } catch (com.fasterxml.jackson.core.JsonParseException pfff) {
+      logger.warn("unable to read", pfff);
+      return Optional.empty();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -150,12 +151,10 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
 
     }
 
-    if ((oldPlayerSqs.isEmpty() || oldPlayerSqs.get().locked.isEmpty() || oldPlayerSqs.flatMap(p -> p.locked).map(p -> p.toLowerCase()).equals("false")) 
-        && newPlayerSqs.flatMap(p -> p.locked).map(p -> p.toLowerCase()).equals("true")) {
-      PlayerBlockedSqs sqs = new PlayerBlockedSqs();
-      sqs.mappingSelector = Selector.PLAYER_BLOCKED;
-      sqs.type = Type.USER_BLOCK;
-      sqs.originalId = player.player_id.get();
+    if (newPlayerSqs.get().locked.isPresent() && (oldPlayerSqs.isEmpty() || oldPlayerSqs.get().locked.isEmpty()
+        || !newPlayerSqs.get().locked.get().equalsIgnoreCase(oldPlayerSqs.get().locked.get()))) {
+      PlayerBlockedSqs sqs = PlayerBlockedSqs.transform(player.player_id.get(),
+          newPlayerSqs.flatMap(p -> p.locked).map(p -> p.toLowerCase()).get());
       sender.sendFull(player.brand_id.get(), player.player_id.get(), Type.USER_BLOCK, Selector.PLAYER_BLOCKED,
           sqs);
 

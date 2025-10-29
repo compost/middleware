@@ -44,6 +44,19 @@ public class PlayerSqs {
   public Optional<String> wantssms = Optional.empty();
   public Optional<String> wantscalls = Optional.empty();
   public Optional<String> wantsapppush = Optional.empty();
+  public Optional<String> wantscalls_casino = Optional.empty();
+  public Optional<String> wantscalls_livecasino = Optional.empty();
+  public Optional<String> wantscalls_sports = Optional.empty();
+  public Optional<String> wantscalls_bingo = Optional.empty();
+  public Optional<String> wantscommunication_casino = Optional.empty();
+  public Optional<String> wantscommunication_livecasino = Optional.empty();
+  public Optional<String> wantscommunication_sports = Optional.empty();
+  public Optional<String> wantscommunication_bingo = Optional.empty();
+  public Optional<String> wantssms_casino = Optional.empty();
+  public Optional<String> wantssms_livecasino = Optional.empty();
+  public Optional<String> wantssms_sports = Optional.empty();
+  public Optional<String> wantssms_bingo = Optional.empty();
+  public Optional<String> wantssocialmedia = Optional.empty();
 
   public PlayerSqs() {
   }
@@ -98,7 +111,20 @@ public class PlayerSqs {
         Objects.equals(this.wantscommunication, other.wantscommunication) &&
         Objects.equals(this.wantssms, other.wantssms) &&
         Objects.equals(this.wantscalls, other.wantscalls) &&
-        Objects.equals(this.wantsapppush, other.wantsapppush);
+        Objects.equals(this.wantsapppush, other.wantsapppush) &&
+        Objects.equals(this.wantscalls_casino, other.wantscalls_casino) &&
+        Objects.equals(this.wantscalls_livecasino, other.wantscalls_livecasino) &&
+        Objects.equals(this.wantscalls_sports, other.wantscalls_sports) &&
+        Objects.equals(this.wantscalls_bingo, other.wantscalls_bingo) &&
+        Objects.equals(this.wantscommunication_casino, other.wantscommunication_casino) &&
+        Objects.equals(this.wantscommunication_livecasino, other.wantscommunication_livecasino) &&
+        Objects.equals(this.wantscommunication_sports, other.wantscommunication_sports) &&
+        Objects.equals(this.wantscommunication_bingo, other.wantscommunication_bingo) &&
+        Objects.equals(this.wantssms_casino, other.wantssms_casino) &&
+        Objects.equals(this.wantssms_livecasino, other.wantssms_livecasino) &&
+        Objects.equals(this.wantssms_sports, other.wantssms_sports) &&
+        Objects.equals(this.wantssms_bingo, other.wantssms_bingo) &&
+        Objects.equals(this.wantssocialmedia, other.wantssocialmedia);
   }
 
   @Override
@@ -140,7 +166,20 @@ public class PlayerSqs {
         this.wantscommunication,
         this.wantssms,
         this.wantscalls,
-        this.wantsapppush);
+        this.wantsapppush,
+        this.wantscalls_casino,
+        this.wantscalls_livecasino,
+        this.wantscalls_sports,
+        this.wantscalls_bingo,
+        this.wantscommunication_casino,
+        this.wantscommunication_livecasino,
+        this.wantscommunication_sports,
+        this.wantscommunication_bingo,
+        this.wantssms_casino,
+        this.wantssms_livecasino,
+        this.wantssms_sports,
+        this.wantssms_bingo,
+        this.wantssocialmedia);
   }
 
   public static Optional<PlayerSqs> transform(io.symplify.store.PlayerStore store) {
@@ -184,6 +223,19 @@ public class PlayerSqs {
       sqs.wantssms = p.wantssms;
       sqs.wantscalls = p.wantscalls;
       sqs.wantsapppush = p.wantsapppush;
+      sqs.wantscalls_casino = p.wantscalls_casino;
+      sqs.wantscalls_livecasino = p.wantscalls_livecasino;
+      sqs.wantscalls_sports = p.wantscalls_sports;
+      sqs.wantscalls_bingo = p.wantscalls_bingo;
+      sqs.wantscommunication_casino = p.wantscommunication_casino;
+      sqs.wantscommunication_livecasino = p.wantscommunication_livecasino;
+      sqs.wantscommunication_sports = p.wantscommunication_sports;
+      sqs.wantscommunication_bingo = p.wantscommunication_bingo;
+      sqs.wantssms_casino = p.wantssms_casino;
+      sqs.wantssms_livecasino = p.wantssms_livecasino;
+      sqs.wantssms_sports = p.wantssms_sports;
+      sqs.wantssms_bingo = p.wantssms_bingo;
+      sqs.wantssocialmedia = p.wantssocialmedia;
       return sqs;
     });
   }
