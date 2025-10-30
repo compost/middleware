@@ -17,8 +17,8 @@ storage_account_name = "gigenvstorage" # Must be globally unique
 container_apps = [
   {
     name               = "slotbox-main"
-    cpu                = 0.75
-    memory             = 1.5
+    cpu                = 1
+    memory             = 2
     docker_image_name  = "slotbox/slotbox"
     docker_image_tag   = "20250929"
     storage_share_name = "sharestate"
@@ -34,12 +34,12 @@ container_apps = [
     docker_image_name  = "gig/gig-stream"
     docker_image_tag   = "20250825"
     storage_share_name = "gig-sharestate"
-    sub_path = "2025-08-23"
+    sub_path           = "2025-08-23"
     envs = {
       "STATE_DIR" = "/app/state/2025-08-23"
     }
-    secrets    = {}
-    aca        = true
+    secrets = {}
+    aca     = true
   }
 
 ]
