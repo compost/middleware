@@ -17,8 +17,8 @@ storage_account_name = "gigenvstorage" # Must be globally unique
 container_apps = [
   {
     name               = "slotbox-main"
-    cpu                = 1
-    memory             = 2
+    cpu                = 2
+    memory             = 4
     docker_image_name  = "slotbox/slotbox"
     docker_image_tag   = "20250929"
     storage_share_name = "sharestate"
