@@ -57,7 +57,9 @@ object Sender {
     "311",
     "320",
     "328",
-    "331"
+    "331",
+    "332",
+    "333"
   )
   // val NB = Set("274")
   val Elabet = Set("215")
@@ -186,7 +188,8 @@ object Sender {
       "323",
       "325",
       "326",
-      "330"
+      "330",
+      "334"
     )
   val Boomerang = Set("123", "124", "153", "133", "223", "308")
   val CasinoInfinity: Set[String] = Set("290", "301")
