@@ -42,3 +42,8 @@ soft2bet-stop-main:
 soft2bet-deploy-main:
   az webapp config container set --resource-group Soft2Bet --name soft2bet-players-processor --container-image soft2bet.azurecr.io/player-processor:{{version_main}}
 
+
+soft2bet-deactivate-checker:
+  @just deactivate Soft2Bet soft2bet-checker-anglet 
+  @just deactivate Soft2Bet soft2bet-checker-biarritz 
+

@@ -172,7 +172,7 @@ container_apps = [
     memory             = 4
     docker_image_name  = "checker/aggregators-api"
     docker_image_tag   = "20250929-choisy"
-    storage_share_name = "checker-anglet-2-sharestate"
+    storage_share_name = "checker-anglet-1-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
     }
@@ -186,13 +186,28 @@ container_apps = [
     memory             = 4
     docker_image_name  = "checker/aggregators-api"
     docker_image_tag   = "20250929-choisy"
-    storage_share_name = "checker-biarritz-sharestate"
+    storage_share_name = "checker-biarritz-1-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
     }
     secrets = {}
     aca     = true
   },
+
+  {
+    name               = "soft2bet-checker-bayonne"
+    cpu                = 2
+    memory             = 4
+    docker_image_name  = "checker/aggregators-api"
+    docker_image_tag   = "20250929-choisy"
+    storage_share_name = "checker-bayonne-1-sharestate"
+    envs = {
+      "STATE_DIR" = "/app/state/current"
+    }
+    secrets = {}
+    aca     = true
+  },
+
 
 
 
@@ -252,15 +267,21 @@ storage_configs = {
     aca   = true
   }
 
-  "checker-anglet-2-sharestate" = {
+  "checker-anglet-1-sharestate" = {
     quota = 500 # in GB
     aca   = true
   }
 
-  "checker-biarritz-sharestate" = {
+  "checker-biarritz-1-sharestate" = {
     quota = 500 # in GB
     aca   = true
   }
+
+  "checker-bayonne-1-sharestate" = {
+    quota = 500 # in GB
+    aca   = true
+  }
+
 
 
 }

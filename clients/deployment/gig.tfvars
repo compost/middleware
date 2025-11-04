@@ -21,7 +21,7 @@ container_apps = [
     memory             = 4
     docker_image_name  = "slotbox/slotbox"
     docker_image_tag   = "20250929"
-    storage_share_name = "sharestate"
+    storage_share_name = "slotbox-1-sharestate"
     envs               = {}
     secrets            = {}
     aca                = true
@@ -46,7 +46,7 @@ container_apps = [
 
 # Map of storage configurations to be created
 storage_configs = {
-  "sharestate" = {
+  "slotbox-1-sharestate" = {
     quota = 50 # in GB
     aca   = true
   }

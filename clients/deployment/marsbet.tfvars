@@ -18,24 +18,24 @@ storage_account_name = "wisegamingenvstorage" # Must be globally unique
 container_apps = [
   {
     name               = "marsbet-joy-main"
-    cpu                = 1
-    memory             = 2 
+    cpu                = 2
+    memory             = 4
     docker_image_name  = "marsbet/base-stream"
     docker_image_tag   = "20250927"
-    storage_share_name = "marsbet-joy-sharestate"
-    path = "/app/state/"
-    sub_path = "current"
+    storage_share_name = "marsbet-20251104-sharestate"
+    path               = "/app/state/"
+    sub_path           = "current"
     envs = {
-      "STATE_DIR" = "/app/state/current"
+      "STATE_DIR" = "/app/state/20251104"
     }
-    secrets    = {}
-    aca        = true
+    secrets = {}
+    aca     = true
   },
 ]
 
 # Map of storage configurations to be created
 storage_configs = {
-  "marsbet-joy-sharestate" = {
+  "marsbet-20251104-sharestate" = {
     quota = 50 # in gb
     aca   = true
   }

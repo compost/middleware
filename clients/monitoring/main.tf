@@ -74,10 +74,23 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "error_logs_alert" {
     query                   = <<-QUERY
         ContainerAppConsoleLogs_CL
         | where parse_json(Log_s).["log.level"] == "ERROR"
+        | extend message = tostring(parse_json(Log_s).message)
+        | extend serviceName = tostring(parse_json(Log_s).serviceName)
       QUERY
     time_aggregation_method = "Count"
     operator                = "GreaterThan"
     threshold               = 0
+    dimension {
+      name     = "message"
+      operator = "Include"
+      values   = ["*"]
+    }
+
+    dimension {
+      name     = "serviceName"
+      operator = "Include"
+      values   = ["*"]
+    }
   }
 
   auto_mitigation_enabled          = false
