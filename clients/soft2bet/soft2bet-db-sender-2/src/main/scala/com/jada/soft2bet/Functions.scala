@@ -319,8 +319,8 @@ class Functions {
       sq,
       ibet,
       sp,
-      sweep,
-      mazi
+      sweep
+      // mazi
     ).filterNot(_.ids.isEmpty)
 
   def getenv(key: String, defaultValue: String): String = {

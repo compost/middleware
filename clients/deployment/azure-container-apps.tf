@@ -13,7 +13,7 @@ resource "azurerm_public_ip" "aca_outbound" {
   resource_group_name = data.azurerm_resource_group.main.name
   allocation_method   = "Static"
   sku                 = "Standard"
-  
+
   tags = local.tags
 }
 
@@ -24,7 +24,7 @@ resource "azurerm_nat_gateway" "aca_outbound" {
   location            = data.azurerm_resource_group.main.location
   resource_group_name = data.azurerm_resource_group.main.name
   sku_name            = "Standard"
-  
+
   tags = local.tags
 }
 
@@ -344,8 +344,8 @@ resource "azurerm_container_app" "main" {
 
 
       volume_mounts {
-        name = "rocksdb-volume"
-        path = each.value.path
+        name     = "rocksdb-volume"
+        path     = each.value.path
         sub_path = each.value.sub_path
       }
 
@@ -359,20 +359,23 @@ resource "azurerm_container_app" "main" {
         transport = "HTTP"
         path      = "/q/health"
         port      = 8080
+        //failure_count_threshold = 10
+        //interval_seconds        = 240
+        //timeout                 = 120
       }
 
     }
 
     volume {
-      name         = "rocksdb-volume"
-      storage_type = "AzureFile"
-      storage_name = azurerm_container_app_environment_storage.share_state[each.value.storage_share_name].name
+      name          = "rocksdb-volume"
+      storage_type  = "AzureFile"
+      storage_name  = azurerm_container_app_environment_storage.share_state[each.value.storage_share_name].name
       mount_options = each.value.mount_options
     }
   }
   tags = local.tags
   lifecycle {
-   ignore_changes = [ workload_profile_name]
+    ignore_changes = [workload_profile_name]
   }
 }
 
@@ -429,8 +432,9 @@ resource "azurerm_monitor_metric_alert" "restart_count_alerts" {
     action_group_id = azurerm_monitor_action_group.email_alert.id
   }
 
-  window_size = "PT5M" 
-  frequency   = "PT1M" 
+  window_size = "PT5M"
+  frequency   = "PT1M"
   tags        = local.tags
 
 }
+

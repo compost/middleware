@@ -430,9 +430,9 @@ class Sender(
     } else if (Sender.SweepPrefix == prefix) {
       (sqs, config.sqsQueueSweep)
     } else if (Sender.MaziPrefix == prefix) {
-      (sqs, config.sqsQueueMazi)
+      // (sqs, config.sqsQueueMazi)
+      (null, null)
     } else {
-      logger.error(s"new brand not handled ")
       (null, null)
     }
     if (cli != null) {
