@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.jada.soft2bet</groupId>
-  <artifactId>db-sender</artifactId>
+  <groupId>com.jada.leovegas</groupId>
+  <artifactId>leovegas-db-sender</artifactId>
   <version>0.1.0</version>
   <packaging>jar</packaging>
 
@@ -12,7 +14,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <scala.major.version>2.12</scala.major.version>
+    <scala.major.version>2.13</scala.major.version>
     <scala.minor.version>15</scala.minor.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <azure.functions.java.library.version>2.0.0</azure.functions.java.library.version>
@@ -31,11 +33,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>net.snowflake</groupId>
-      <artifactId>spark-snowflake_${scala.major.version}</artifactId>
-      <version>2.11.3-spark_3.3</version>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
+      <version>1.79</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>1.79</version>
+    </dependency>
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
@@ -56,6 +62,12 @@
       <groupId>com.microsoft.azure.functions</groupId>
       <artifactId>azure-functions-java-library</artifactId>
       <version>2.0.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>10.2.0.jre11</version>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
@@ -80,21 +92,28 @@
       <version>3.3.0</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-sql-kafka-0-10_${scala.major.version}</artifactId>
-      <version>3.3.0</version>
+      <groupId>net.snowflake</groupId>
+      <artifactId>spark-snowflake_${scala.major.version}</artifactId>
+      <version>3.1.1</version>
     </dependency>
-
+    <!-- https://mvnrepository.com/artifact/com.microsoft.azure/spark-mssql-connector -->
+    <dependency>
+      <groupId>com.microsoft.azure</groupId>
+      <artifactId>spark-mssql-connector_2.12</artifactId>
+      <version>1.2.0</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-sql_${scala.major.version}</artifactId>
       <version>3.3.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-azure -->
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-azure</artifactId>
       <version>3.3.4</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.azure/azure-storage-blob -->
     <dependency>
       <groupId>com.azure</groupId>
       <artifactId>azure-storage-blob</artifactId>
@@ -105,11 +124,6 @@
   <build>
     <sourceDirectory>${basedir}/src/main/scala</sourceDirectory>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -176,8 +190,8 @@
         <version>1.18.0</version>
         <configuration>
           <resourceGroup>${functionResourceGroup}</resourceGroup>
-          <pricingTier>S3</pricingTier>
-          <appServicePlanName>uvicorn</appServicePlanName>
+          <pricingTier>P1v3</pricingTier>
+          <appServicePlanName>middleware-function-apps</appServicePlanName>
           <appName>${functionAppName}</appName>
           <region>${functionAppRegion}</region>
           <runtime>
@@ -199,6 +213,22 @@
               <value>${AZURE_WEBSTORAGE}</value>
             </property>
             <property>
+              <name>CONNECTION_URL</name>
+              <value>${CONNECTION_URL}</value>
+            </property>
+            <property>
+              <name>AWS_SECRET_ACCESS_KEY</name>
+              <value>${AWS_SECRET_ACCESS_KEY}</value>
+            </property>
+            <property>
+              <name>AWS_ACCESS_KEY_ID</name>
+              <value>${AWS_ACCESS_KEY_ID}</value>
+            </property>
+            <property>
+              <name>AWS_DEFAULT_REGION</name>
+              <value>${AWS_DEFAULT_REGION}</value>
+            </property>
+            <property>
               <name>STORAGE_ACCESS_KEY</name>
               <value>${STORAGE_ACCESS_KEY}</value>
             </property>
@@ -207,8 +237,22 @@
               <value>${SF_PASSWORD}</value>
             </property>
             <property>
-              <name>KAFKA_BROKERS</name>
-              <value>10.10.1.12:9092,10.10.1.13:9092,10.10.1.14:9092</value>
+              <name>DATASOURCE_PEM_KEY_BASE64</name>
+              <value>${DATASOURCE_PEM_KEY_BASE64}</value>
+            </property>
+            <property>
+              <name>DATASOURCE_PASSPHRASE</name>
+              <value>${DATASOURCE_PASSPHRASE}</value>
+            </property>
+
+
+            <property>
+              <name>DRY_RUN</name>
+              <value>false</value>
+            </property>
+            <property>
+              <name>HISTORY</name>
+              <value>false</value>
             </property>
           </appSettings>
         </configuration>
