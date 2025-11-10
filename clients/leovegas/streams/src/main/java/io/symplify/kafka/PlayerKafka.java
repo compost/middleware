@@ -3,6 +3,7 @@ package io.symplify.kafka;
 import java.util.Optional;
 
 public class PlayerKafka {
+  public static final String PURGE = "purge";
   public Optional<String> player_id = Optional.empty();
   public Optional<String> reg_datetime = Optional.empty();
   public Optional<String> first_name = Optional.empty();

@@ -68,4 +68,7 @@ public class PlayerKafka {
   public Optional<String> casino_lifetime_average_bet_tenant = Optional.empty();
   public Optional<String> lifetime_deposit_bonus_cost_percentage_tenant = Optional.empty();
   public Optional<String> sport_lifetime_bet_count = Optional.empty();
+  public Optional<String> consent_marketing_telephone = Optional.empty();
+  public Optional<String> consent_marketing_direct_mail = Optional.empty();
+  public Optional<String> consent_marketing_oms = Optional.empty();
 }

@@ -29,9 +29,9 @@ public class Configuration {
       public static final String BIG_WIN = "big_win";
       public static final String PLAYER_BLOCKED = "player_blocked";
       public static final String SELF_EXCLUSION = "self_exclusion";
-      // not used
       public static final String SUCCESS_DEPOSIT = "success_deposit";
       public static final String SUCCESS_WITHDRAWAL = "success_withdrawal";
+      public static final String PLAYER_PURGE = "player_purge";
     }
   }
 

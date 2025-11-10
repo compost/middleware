@@ -69,6 +69,9 @@ public class PlayerSqs {
   public Optional<String> casino_lifetime_real_money_ngr = Optional.empty();
   public Optional<String> lifetime_deposits_over_lifetime_bonus_cost = Optional.empty();
   public Optional<String> lifetime_sports_bet_count = Optional.empty();
+  public Optional<String> consent_marketingtelephone = Optional.empty();
+  public Optional<String> consent_marketingdirectmail = Optional.empty();
+  public Optional<String> consent_marketingoms = Optional.empty();
 
   public PlayerSqs() {
   }
@@ -139,6 +142,9 @@ public class PlayerSqs {
       sqs.casino_lifetime_real_money_ngr = p.casino_lifetime_ngr_tenant;
       sqs.lifetime_deposits_over_lifetime_bonus_cost = p.lifetime_deposit_bonus_cost_percentage_tenant;
       sqs.lifetime_sports_bet_count = p.sport_lifetime_bet_count;
+      sqs.consent_marketingdirectmail = p.consent_marketing_direct_mail;
+      sqs.consent_marketingoms = p.consent_marketing_oms;
+      sqs.consent_marketingtelephone = p.consent_marketing_telephone;
       return sqs;
     });
   }
@@ -213,6 +219,9 @@ public class PlayerSqs {
     result = prime * result + ((lifetime_deposits_over_lifetime_bonus_cost == null) ? 0
         : lifetime_deposits_over_lifetime_bonus_cost.hashCode());
     result = prime * result + ((lifetime_sports_bet_count == null) ? 0 : lifetime_sports_bet_count.hashCode());
+    result = prime * result + ((consent_marketingtelephone == null) ? 0 : consent_marketingtelephone.hashCode());
+    result = prime * result + ((consent_marketingdirectmail == null) ? 0 : consent_marketingdirectmail.hashCode());
+    result = prime * result + ((consent_marketingoms == null) ? 0 : consent_marketingoms.hashCode());
     return result;
   }
 
@@ -540,6 +549,22 @@ public class PlayerSqs {
         return false;
     } else if (!lifetime_sports_bet_count.equals(other.lifetime_sports_bet_count))
       return false;
+    if (consent_marketingtelephone == null) {
+      if (other.consent_marketingtelephone != null)
+        return false;
+    } else if (!consent_marketingtelephone.equals(other.consent_marketingtelephone))
+      return false;
+    if (consent_marketingdirectmail == null) {
+      if (other.consent_marketingdirectmail != null)
+        return false;
+    } else if (!consent_marketingdirectmail.equals(other.consent_marketingdirectmail))
+      return false;
+    if (consent_marketingoms == null) {
+      if (other.consent_marketingoms != null)
+        return false;
+    } else if (!consent_marketingoms.equals(other.consent_marketingoms))
+      return false;
+
     return true;
   }
 

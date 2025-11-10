@@ -138,6 +138,14 @@ public class PlayerStore {
         .filter(v -> v != "").or(() -> stored.lifetime_deposit_bonus_cost_percentage_tenant);
     stored.sport_lifetime_bet_count = player.sport_lifetime_bet_count.filter(v -> v != "")
         .or(() -> stored.sport_lifetime_bet_count);
+
+    stored.consent_marketing_telephone = player.consent_marketing_telephone
+        .filter(v -> v != "").or(() -> stored.consent_marketing_telephone);
+    stored.consent_marketing_direct_mail = player.consent_marketing_direct_mail
+        .filter(v -> v != "").or(() -> stored.consent_marketing_direct_mail);
+    stored.consent_marketing_oms = player.consent_marketing_oms
+        .filter(v -> v != "").or(() -> stored.consent_marketing_oms);
+
     return Optional.of(this);
   }
 

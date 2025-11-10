@@ -148,7 +148,12 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
       var firstDepositDatetime = FirstDepositDatetimeSqs.transform(newPlayer.get());
       sender.send(player.brand_id.get(), player.player_id.get(), Type.GENERIC_USER, Selector.FIRST_DEPOSIT,
           firstDepositDatetime.get());
+    }
 
+    if (player.accountStatus.map(v -> v.equalsIgnoreCase(PlayerKafka.PURGE)).orElse(false)) {
+      var toSend = PurgeSqs.transform(player);
+      sender.send(player.brand_id.get(), player.player_id.get(), Type.GENERIC_USER, Selector.PLAYER_PURGE,
+          toSend);
     }
 
     if (newPlayerSqs.get().locked.isPresent() && (oldPlayerSqs.isEmpty() || oldPlayerSqs.get().locked.isEmpty()

@@ -64,6 +64,7 @@ object Sender {
   // val NB = Set("274")
   val Elabet = Set("215")
   val Sga = Set("56", "76", "77", "129", "314")
+  val Sga2 = Set("335", "336")
   val Dk = Set("57", "213")
   val Mga =
     Set("53", "54", "55", "64", "65", "66", "67", "109", "111", "259")
@@ -204,6 +205,7 @@ object Sender {
   val Mazi = Set("6", "27", "32")
 
   val SgaPrefix = "sga"
+  val Sga2Prefix = "sga2"
   val DkPrefix = "dk"
   val DsPrefix = "ds"
   val MgaPrefix = "mga"
@@ -228,6 +230,7 @@ object Sender {
 
   val Brands = Set(
     SgaPrefix,
+    Sga2Prefix,
     DkPrefix,
     DsPrefix,
     MgaPrefix,
@@ -253,6 +256,8 @@ object Sender {
   def prefix(brandID: String): String = {
     if (Sender.Sga.contains(brandID)) {
       SgaPrefix
+    } else if (Sender.Sga2.contains(brandID)) {
+      Sga2Prefix
     } else if (Sender.Dk.contains(brandID)) {
       DkPrefix
     } else if (Sender.Ds.contains(brandID)) {
@@ -391,6 +396,8 @@ class Sender(
     )
     val (cli, queueURL) = if (Sender.SgaPrefix == prefix) {
       (ueNorthSQS, config.sqsQueueSGA)
+    } else if (Sender.Sga2Prefix == prefix) {
+      (sqs, config.sqsQueueSGA2)
     } else if (Sender.DkPrefix == prefix) {
       (ueNorthSQS, config.sqsQueueDK)
     } else if (Sender.DsPrefix == prefix) {
@@ -457,6 +464,8 @@ class Sender(
 
     val (cli, queueURL) = if (Sender.Sga.contains(brandID)) {
       (ueNorthSQS, config.sqsQueueSGA)
+    } else if (Sender.Sga2.contains(brandID)) {
+      (sqs, config.sqsQueueSGA2)
     } else if (Sender.Dk.contains(brandID)) {
       (ueNorthSQS, config.sqsQueueDK)
     } else if (Sender.Ds.contains(brandID)) {

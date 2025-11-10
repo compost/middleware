@@ -175,6 +175,13 @@ class Functions {
       "https://sqs.eu-north-1.amazonaws.com/663880797555/soft2bet-sga-datahub-eventhub.fifo",
     region = Regions.EU_NORTH_1
   )
+  val sga2 = new Brands(
+    ids = Set(335, 336),
+    folder = "sga2",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5316_sga2.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
   val dk = new Brands(
     ids = Set(57, 213),
     folder = "dk",
@@ -303,6 +310,7 @@ class Functions {
       dk,
       mga,
       sga,
+      sga2,
       other,
       boomerang,
       casinoinfinity,

@@ -29,6 +29,7 @@ case class ApplicationConfiguration(
     @ConfigProperty(name = "sqs.queue.dk") sqsQueueDK: String,
     @ConfigProperty(name = "sqs.queue.ds") sqsQueueDS: String,
     @ConfigProperty(name = "sqs.queue.sga") sqsQueueSGA: String,
+    @ConfigProperty(name = "sqs.queue.sga2") sqsQueueSGA2: String,
     @ConfigProperty(name = "sqs.queue.boomerang") sqsQueueBoomerang: String,
     @ConfigProperty(
       name = "sqs.queue.casinoinfinity"
