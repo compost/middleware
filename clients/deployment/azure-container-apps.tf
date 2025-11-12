@@ -356,12 +356,12 @@ resource "azurerm_container_app" "main" {
       }
 
       liveness_probe {
-        transport = "HTTP"
-        path      = "/q/health"
-        port      = 8080
-        //   failure_count_threshold = 10
-        //   interval_seconds        = 240
-        //   timeout                 = 120
+        transport               = "HTTP"
+        path                    = "/q/health"
+        port                    = 8080
+        failure_count_threshold = coalesce(each.value.liveness_failure_count_threshold, var.liveness_failure_count_threshold)
+        interval_seconds        = coalesce(each.value.liveness_interval_seconds, var.liveness_interval_seconds)
+        timeout                 = coalesce(each.value.liveness_timeout, var.liveness_timeout)
       }
 
     }

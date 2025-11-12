@@ -16,7 +16,7 @@ public class Configuration {
   public class Mapping {
     public class Type {
       public static final String GENERIC_USER = "GENERIC_USER";
-      public static final String USER_BLOCK = "USER_BLOCK";
+      public static final String USER_BLOCKED_TOGGLE = "USER_BLOCKED_TOGGLE";
     }
 
     public class Selector {

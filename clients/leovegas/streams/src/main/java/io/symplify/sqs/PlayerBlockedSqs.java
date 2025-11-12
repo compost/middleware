@@ -14,7 +14,7 @@ public class PlayerBlockedSqs {
     PlayerBlockedSqs sqs = new PlayerBlockedSqs();
     sqs.originalId = originalId;
     sqs.mappingSelector = Selector.PLAYER_BLOCKED;
-    sqs.type = Type.USER_BLOCK;
+    sqs.type = Type.USER_BLOCKED_TOGGLE;
 
     sqs.blocked = locked;
     sqs.properties = java.util.Map.of("locked", locked);

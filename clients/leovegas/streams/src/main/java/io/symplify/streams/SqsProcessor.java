@@ -160,7 +160,7 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
         || !newPlayerSqs.get().locked.get().equalsIgnoreCase(oldPlayerSqs.get().locked.get()))) {
       PlayerBlockedSqs sqs = PlayerBlockedSqs.transform(player.player_id.get(),
           newPlayerSqs.flatMap(p -> p.locked).map(p -> p.toLowerCase()).get());
-      sender.sendFull(player.brand_id.get(), player.player_id.get(), Type.USER_BLOCK, Selector.PLAYER_BLOCKED,
+      sender.sendFull(player.brand_id.get(), player.player_id.get(), Type.USER_BLOCKED_TOGGLE, Selector.PLAYER_BLOCKED,
           sqs);
 
     }

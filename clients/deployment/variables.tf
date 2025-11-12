@@ -42,6 +42,9 @@ variable "container_apps" {
     mks                = optional(bool, false)
     eventhub           = optional(bool, false)
     aca                = bool
+    liveness_failure_count_threshold = optional(number)
+    liveness_interval_seconds        = optional(number)
+    liveness_timeout                 = optional(number)
   }))
 }
 
@@ -186,4 +189,23 @@ variable "mks_password" {
   description = "MKS password."
   type        = string
   sensitive   = true
+}
+
+# Container health probe configuration
+variable "liveness_failure_count_threshold" {
+  description = "Number of consecutive failures before the liveness probe is considered failed."
+  type        = number
+  default     = 10
+}
+
+variable "liveness_interval_seconds" {
+  description = "Interval in seconds between liveness probe checks."
+  type        = number
+  default     = 240
+}
+
+variable "liveness_timeout" {
+  description = "Timeout in seconds for the liveness probe."
+  type        = number
+  default     = 120
 }
