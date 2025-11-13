@@ -149,7 +149,7 @@ class Functions {
     "sfWarehouse" -> getenv("SF_WAREHOUSE", "DELIVERY_WH")
   )
 
-  @FunctionName("life20251113")
+  @FunctionName("lifetime")
   def runLife(
       @TimerTrigger(
         name = "GetDepositCount",
