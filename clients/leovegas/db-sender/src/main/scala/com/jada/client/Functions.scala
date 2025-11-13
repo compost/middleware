@@ -149,10 +149,10 @@ class Functions {
     "sfWarehouse" -> getenv("SF_WAREHOUSE", "DELIVERY_WH")
   )
 
-  @FunctionName("import")
-  def import(
+  @FunctionName("execute")
+  def execute(
       @TimerTrigger(
-        name = "import",
+        name = "execute",
         schedule = "0 0 10 * * *"
       ) timerInfo: String,
       context: ExecutionContext
