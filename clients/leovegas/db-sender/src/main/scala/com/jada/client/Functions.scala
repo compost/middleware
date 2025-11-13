@@ -152,7 +152,7 @@ class Functions {
   @FunctionName("lifetime")
   def runLife(
       @TimerTrigger(
-        name = "GetDepositCount",
+        name = "lifetime",
         schedule = "0 0 10 * * *"
       ) timerInfo: String,
       context: ExecutionContext
