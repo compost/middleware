@@ -149,10 +149,10 @@ class Functions {
     "sfWarehouse" -> getenv("SF_WAREHOUSE", "DELIVERY_WH")
   )
 
-  @FunctionName("lifetime")
-  def runLife(
+  @FunctionName("import")
+  def import(
       @TimerTrigger(
-        name = "GetDepositCount",
+        name = "import",
         schedule = "0 0 10 * * *"
       ) timerInfo: String,
       context: ExecutionContext
