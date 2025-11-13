@@ -11,6 +11,7 @@ public class Configuration {
     public static final String LOGINS = "logins";
     public static final String WAGERING = "wagering";
     public static final String WALLET = "wallet";
+    public static final String TRANSACTIONS = "transactions";
   }
 
   public class Mapping {

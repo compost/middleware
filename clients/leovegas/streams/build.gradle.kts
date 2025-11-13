@@ -31,7 +31,7 @@ dependencies {
 }
 
 group = "io.symplify"
-version = "20251111"
+version = "20251112"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21

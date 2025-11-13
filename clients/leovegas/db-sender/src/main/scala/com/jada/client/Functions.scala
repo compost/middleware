@@ -149,8 +149,8 @@ class Functions {
     "sfWarehouse" -> getenv("SF_WAREHOUSE", "DELIVERY_WH")
   )
 
-  @FunctionName("life")
-  def runGetDepositCount(
+  @FunctionName("life20251113")
+  def runLife(
       @TimerTrigger(
         name = "GetDepositCount",
         schedule = "0 0 10 * * *"
@@ -167,12 +167,14 @@ class Functions {
 
     val filter = " AND DATEDIFF(day, LAST_UPDATE, GETDATE()) <= 7"
     val subQuery =
-      s"select player_id as id, num_deposits::string as nb, deposits::string as total,TO_VARCHAR(last_update, 'yyyy-MM-dd') as last_activity_date, TO_VARCHAR(last_bet_date, 'yyyy-MM-dd') as last_bet_date   FROM bus.V_PLAYERS_LIFETIME_VALUES WHERE BRAND_ID ${b.filter}"
+      s"select player_id as id, num_deposits::string as nb, deposits::string as total, TO_VARCHAR(LATEST_DEPOSIT, 'yyyy-MM-dd') as last_deposit_date,TO_VARCHAR(last_update, 'yyyy-MM-dd') as last_activity_date, TO_VARCHAR(last_bet_date, 'yyyy-MM-dd') as last_bet_date   FROM bus.V_PLAYERS_LIFETIME_VALUES WHERE BRAND_ID ${b.filter}"
     val query = if (withFilter) {
       subQuery + filter
     } else {
       subQuery
     }
+
+    logger.info(query)
     val df = spark.read
       .format(net.snowflake.spark.snowflake.Utils.SNOWFLAKE_SOURCE_NAME)
       .option("query", query)
@@ -191,61 +193,7 @@ class Functions {
         lit("last_activity_date"),
         $"last_activity_date",
         lit("last_bet_date"),
-        $"last_bet_date"
-      ).as("properties")
-    )
-
-    saveDFAndSendBatchNotif(
-      newDf,
-      b,
-      "lifetime_deposit",
-      "lifetime_deposit.json"
-    )(logger)
-  }
-
-  @FunctionName("LastDepositDatetime")
-  def runLastLastDepositDatetime(
-      @TimerTrigger(
-        name = "LastLastDepositDatetime",
-        schedule = "0 15 10 * * *"
-      ) timerInfo: String,
-      context: ExecutionContext
-  ): Unit = {
-    implicit val logger = context.getLogger
-    logger.info(s"starting app $timerInfo")
-    brands.foreach(runLastDepD(_))
-  }
-
-  def runLastDepD(b: Brand, withFilter: Boolean = true)(implicit
-      logger: Logger
-  ) = {
-    val filter =
-      " AND DATEDIFF(day, TRY_TO_DATE(TO_CHAR(LATEST_DEPOSIT),'YYYYMMDDHHMISS'), GETDATE()) <= 8 "
-    val queryBase =
-      s"""
-         |SELECT player_id as id, TO_VARCHAR(LATEST_DEPOSIT, 'yyyy-MM-dd') as last_deposit_date
-         |FROM CENTRALDW.BUS.V_LAST_DEPOSIT_WITHDRAWAL
-         |WHERE brand_id ${b.filter} 
-      """.stripMargin
-
-    val query = if (withFilter) {
-      queryBase + filter
-    } else {
-      queryBase
-    }
-
-    logger.info(query)
-    val df = spark.read
-      .format(net.snowflake.spark.snowflake.Utils.SNOWFLAKE_SOURCE_NAME)
-      .option("query", query)
-      .options(sfOptions)
-      .load()
-
-    import spark.implicits._
-    import functions._
-    val newDf = df.select(
-      df.col("id"),
-      map(
+        $"last_bet_date",
         lit("last_deposit_date"),
         $"last_deposit_date"
       ).as("properties")
@@ -254,9 +202,9 @@ class Functions {
     saveDFAndSendBatchNotif(
       newDf,
       b,
-      "last_deposit_date",
-      "last_deposit_date.json"
-    )
+      "lifetime",
+      "lifetime.json"
+    )(logger)
   }
 
   def saveDFAndSendBatchNotif(

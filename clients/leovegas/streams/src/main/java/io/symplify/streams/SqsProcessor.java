@@ -72,6 +72,8 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
           return onTopicWagering(record);
         case Configuration.Topic.WALLET:
           return onTopicWallet(record);
+        case Configuration.Topic.TRANSACTIONS:
+          return onTopicTransactions(record);
         default:
           return Optional.empty();
       }
@@ -81,6 +83,17 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private Optional<PlayerStore> onTopicTransactions(Record<String, byte[]> record)
+      throws StreamReadException, DatabindException, IOException {
+
+    final var kafka = mapper.readValue(record.value(), TransactionKafka.class);
+    final var sqs = TransactionSqs.transform(kafka);
+    sender.sendFull(sqs.brand_id, sqs.player_id, sqs.type, sqs.mappingSelector,
+        sqs);
+
+    return Optional.empty();
   }
 
   private Optional<PlayerStore> onTopicWallet(Record<String, byte[]> record)
