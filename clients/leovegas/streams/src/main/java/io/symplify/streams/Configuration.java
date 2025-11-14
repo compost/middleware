@@ -12,12 +12,14 @@ public class Configuration {
     public static final String WAGERING = "wagering";
     public static final String WALLET = "wallet";
     public static final String TRANSACTIONS = "transactions";
+    public static final String USER_CONSENT_UPDATE = "user_consent_update";
   }
 
   public class Mapping {
     public class Type {
       public static final String GENERIC_USER = "GENERIC_USER";
       public static final String USER_BLOCKED_TOGGLE = "USER_BLOCKED_TOGGLE";
+      public static final String USER_CONSENT_UPDATE = "USER_CONSENT_UPDATE";
     }
 
     public class Selector {
@@ -33,6 +35,7 @@ public class Configuration {
       public static final String SUCCESS_DEPOSIT = "success_deposit";
       public static final String SUCCESS_WITHDRAWAL = "success_withdrawal";
       public static final String PLAYER_PURGE = "player_purge";
+      public static final String CONSENT_CHANGE = "consent_change";
     }
   }
 

@@ -11,7 +11,7 @@ public class TransactionSqs {
   public String contactId;
   public String brand_id;
   public String mappingSelector;
-  public Map<String, Object> parameters;
+  public Map<String, Object> properties;
 
   public static TransactionSqs transform(io.symplify.kafka.TransactionKafka in) {
     var out = new TransactionSqs();
@@ -21,7 +21,7 @@ public class TransactionSqs {
     out.player_id = in.player_id.orElse("unknown");
     out.brand_id = in.brand_id.orElse("unknown");
     out.originalId = in.player_id.orElse("unknown");
-    out.parameters = in.parameters;
+    out.properties = in.parameters;
     return out;
 
   }

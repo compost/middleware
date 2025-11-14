@@ -38,6 +38,7 @@ public class SqsTopology {
             Configuration.Topic.LOGINS,
             Configuration.Topic.WAGERING,
             Configuration.Topic.TRANSACTIONS,
+            Configuration.Topic.USER_CONSENT_UPDATE,
             Configuration.Topic.WALLET),
         Consumed.with(Serdes.String(), Serdes.ByteArray()))
         .process(() -> new SqsProcessor(sender), Configuration.Store.PLAYERS);

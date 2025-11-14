@@ -6,13 +6,13 @@ import io.symplify.streams.Configuration.Mapping.Type;
 public class PlayerBlockedSqs {
   public String mappingSelector;
   public String type;
-  public String originalId;
+  public String contactId;
   public String blocked;
   public java.util.Map<String, String> properties;
 
   public static PlayerBlockedSqs transform(String originalId, String locked) {
     PlayerBlockedSqs sqs = new PlayerBlockedSqs();
-    sqs.originalId = originalId;
+    sqs.contactId = originalId;
     sqs.mappingSelector = Selector.PLAYER_BLOCKED;
     sqs.type = Type.USER_BLOCKED_TOGGLE;
 

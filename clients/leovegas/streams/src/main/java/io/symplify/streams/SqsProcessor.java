@@ -74,6 +74,8 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
           return onTopicWallet(record);
         case Configuration.Topic.TRANSACTIONS:
           return onTopicTransactions(record);
+        case Configuration.Topic.USER_CONSENT_UPDATE:
+          return onTopicUserContentUpdate(record);
         default:
           return Optional.empty();
       }
@@ -83,6 +85,18 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private Optional<PlayerStore> onTopicUserContentUpdate(Record<String, byte[]> record)
+      throws StreamReadException, DatabindException, IOException {
+
+    final var kafka = mapper.readValue(record.value(), UserContentUpdateKafka.class);
+    final var sqs = UserContentUpdateSqs.transform(kafka);
+    sender.send(sqs.brand_id.get(), sqs.player_id.get(), Type.USER_CONSENT_UPDATE, Selector.CONSENT_CHANGE,
+        sqs);
+
+    return Optional.empty();
+
   }
 
   private Optional<PlayerStore> onTopicTransactions(Record<String, byte[]> record)
