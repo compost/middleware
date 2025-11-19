@@ -37,7 +37,8 @@ public class PlayerConsentSqs {
     sqs.consented = input.consented;
     sqs.channel = input.channel;
 
-    sqs.properties.put("consent_" + input.channel.get(), input.consented.orElse("undefined"));
+    sqs.properties.put("consent_" + input.channel.get(),
+        input.consented.map(Transformer::booleanToInteger).orElse("unknown"));
     return Optional.of(sqs);
   }
 
@@ -51,7 +52,7 @@ public class PlayerConsentSqs {
       sqs.brand_id = player.brand_id;
       sqs.consented = Optional.of("false");
       sqs.channel = Optional.ofNullable(channel);
-      sqs.properties.put("consent_" + channel, "false");
+      sqs.properties.put("consent_" + channel, "0");
       return sqs;
     }).collect(Collectors.toList());
   }

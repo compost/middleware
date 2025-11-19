@@ -99,8 +99,8 @@ public class PlayerSqs {
       sqs.signup_language_ID = p.language_alpha_2_code;
       sqs.signup_language = p.signup_language;
       sqs.currency_code = p.currency_code;
-      sqs.is_blocked = p.is_blocked;
-      sqs.is_self_excluded = p.is_self_excluded;
+      sqs.is_blocked = p.is_blocked.map(Transformer::booleanToInteger);
+      sqs.is_self_excluded = p.is_self_excluded.map(Transformer::booleanToInteger);
       sqs.account_creation_date = p.account_creation_datetime_local.map(Transformer::truncateOrKeep);
       sqs.account_verification_date = p.account_verification_datetime_local.map(Transformer::truncateOrKeep);
       sqs.emailaddress = p.email;
@@ -113,7 +113,7 @@ public class PlayerSqs {
       sqs.reference = p.reference;
       sqs.player_roles = p.role_name;
       sqs.player_tags = p.tag_name;
-      sqs.abuser_role_tag = p.is_abuser;
+      sqs.abuser_role_tag = p.is_abuser.map(Transformer::booleanToInteger);
       sqs.reward_indicator = p.fpp_reward_level_name;
       sqs.fpp_level = p.fpp_customer_level;
       sqs.fpp_reward_level = p.fpp_reward_level_name;
@@ -142,9 +142,9 @@ public class PlayerSqs {
       sqs.casino_lifetime_real_money_ngr = p.casino_lifetime_ngr_tenant;
       sqs.lifetime_deposits_over_lifetime_bonus_cost = p.lifetime_deposit_bonus_cost_percentage_tenant;
       sqs.lifetime_sports_bet_count = p.sport_lifetime_bet_count;
-      sqs.consent_marketingdirectmail = p.consent_marketing_direct_mail;
-      sqs.consent_marketingoms = p.consent_marketing_oms;
-      sqs.consent_marketingtelephone = p.consent_marketing_telephone;
+      sqs.consent_marketingdirectmail = p.consent_marketing_direct_mail.map(Transformer::booleanToInteger);
+      sqs.consent_marketingoms = p.consent_marketing_oms.map(Transformer::booleanToInteger);
+      sqs.consent_marketingtelephone = p.consent_marketing_telephone.map(Transformer::booleanToInteger);
       return sqs;
     });
   }

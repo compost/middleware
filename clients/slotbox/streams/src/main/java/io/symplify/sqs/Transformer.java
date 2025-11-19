@@ -16,4 +16,11 @@ public class Transformer {
     return v.length() > 10 ? v.substring(0, 10) : v;
   }
 
+  public static String booleanToInteger(String v) {
+    if (v == null || v.isBlank()) {
+      return v;
+    }
+    return v.toLowerCase().equals("true") ? "1" : "0";
+  }
+
 }
