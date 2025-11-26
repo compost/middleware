@@ -92,6 +92,8 @@ class Functions {
     region = Regions.EU_CENTRAL_1
   )
 
+  val all = Set(playnorth100, playnorth101, vegasonline)
+
   lazy val spark = SparkSession.builder
     .master("local[*]")
     .appName("finnplayGetBatchUpdate")
@@ -134,26 +136,10 @@ class Functions {
     "sfWarehouse" -> getenv("SF_WAREHOUSE", "DELIVERY_WH")
   )
 
-  @FunctionName("FixLastDate")
-  def fixLastDate(
-      @HttpTrigger(
-        name = "req",
-        methods = Array(HttpMethod.GET),
-        authLevel = AuthorizationLevel.ADMIN
-      )
-      request: HttpRequestMessage[Optional[String]],
-      context: ExecutionContext
-  ): Unit = {
-    implicit val logger = context.getLogger
-    runDC(playnorth100, false)
-    runDC(playnorth101, false)
-    runDC(vegasonline, false)
-  }
-
-  @FunctionName("GetDepositCount")
-  def runGetDepositCount(
+  @FunctionName("execute")
+  def execute(
       @TimerTrigger(
-        name = "GetDepositCount",
+        name = "execute",
         schedule = "0 0 10 * * *"
       ) timerInfo: String,
       context: ExecutionContext
@@ -161,16 +147,16 @@ class Functions {
     implicit val logger = context.getLogger
     logger.info(s"starting app $timerInfo")
 
-    runDC(playnorth100)
-    runDC(playnorth101)
-    runDC(vegasonline)
+    all.foreach(subExecute(_))
   }
 
-  def runDC(b: Brand, withFilter: Boolean = true)(implicit logger: Logger) = {
+  def subExecute(b: Brand, withFilter: Boolean = true)(implicit
+      logger: Logger
+  ) = {
 
     val filter = " AND DATEDIFF(day, LAST_UPDATE, GETDATE()) <= 7"
     val subQuery =
-      s"select player_id as id, num_deposits::string as nb, deposits::string as total,TO_VARCHAR(last_update, 'yyyy-MM-dd') as last_activity_date, TO_VARCHAR(last_bet_date, 'yyyy-MM-dd') as last_bet_date   FROM bus.V_PLAYERS_LIFETIME_VALUES WHERE BRAND_ID ${b.filter}"
+      s"select player_id as id, num_deposits::string as nb, deposits::string as total, TO_VARCHAR(LATEST_DEPOSIT, 'yyyy-MM-dd') as last_deposit_date,TO_VARCHAR(last_update, 'yyyy-MM-dd') as last_activity_date, TO_VARCHAR(last_bet_date, 'yyyy-MM-dd') as last_bet_date   FROM bus.V_PLAYERS_LIFETIME_VALUES WHERE BRAND_ID ${b.filter}"
     val query = if (withFilter) {
       subQuery + filter
     } else {
@@ -194,7 +180,9 @@ class Functions {
         lit("last_activity_date"),
         $"last_activity_date",
         lit("last_bet_date"),
-        $"last_bet_date"
+        $"last_bet_date",
+        lit("last_deposit_date"),
+        $"last_deposit_date"
       ).as("properties")
     )
 
@@ -204,134 +192,6 @@ class Functions {
       "lifetime_deposit",
       "lifetime_deposit.json"
     )(logger)
-  }
-
-  @FunctionName("FixLastDepositDatetime")
-  def fixLastLastDepositDatetime(
-      @HttpTrigger(
-        name = "req",
-        methods = Array(HttpMethod.GET),
-        authLevel = AuthorizationLevel.ADMIN
-      )
-      request: HttpRequestMessage[Optional[String]],
-      context: ExecutionContext
-  ): Unit = {
-    implicit val logger = context.getLogger
-    logger.info(s"starting app $request")
-    runLastDepD(playnorth100, false)
-    runLastDepD(playnorth101, false)
-    runLastDepD(vegasonline, false)
-  }
-
-  @FunctionName("LastDepositDatetime")
-  def runLastLastDepositDatetime(
-      @TimerTrigger(
-        name = "LastLastDepositDatetime",
-        schedule = "0 15 10 * * *"
-      ) timerInfo: String,
-      context: ExecutionContext
-  ): Unit = {
-    implicit val logger = context.getLogger
-    logger.info(s"starting app $timerInfo")
-    runLastDepD(playnorth100)
-    runLastDepD(playnorth101)
-    runLastDepD(vegasonline)
-  }
-
-  def runLastDepD(b: Brand, withFilter: Boolean = true)(implicit
-      logger: Logger
-  ) = {
-    val filter =
-      " AND DATEDIFF(day, TRY_TO_DATE(TO_CHAR(LATEST_DEPOSIT),'YYYYMMDDHHMISS'), GETDATE()) <= 8 "
-    val queryBase =
-      s"""
-         |SELECT player_id as id, TO_VARCHAR(LATEST_DEPOSIT, 'yyyy-MM-dd') as last_deposit_date
-         |FROM CENTRALDW.BUS.V_LAST_DEPOSIT_WITHDRAWAL
-         |WHERE brand_id ${b.filter} 
-      """.stripMargin
-
-    val query = if (withFilter) {
-      queryBase + filter
-    } else {
-      queryBase
-    }
-
-    logger.info(query)
-    val df = spark.read
-      .format(net.snowflake.spark.snowflake.Utils.SNOWFLAKE_SOURCE_NAME)
-      .option("query", query)
-      .options(sfOptions)
-      .load()
-
-    import spark.implicits._
-    import functions._
-    val newDf = df.select(
-      df.col("id"),
-      map(
-        lit("last_deposit_date"),
-        $"last_deposit_date"
-      ).as("properties")
-    )
-
-    saveDFAndSendBatchNotif(
-      newDf,
-      b,
-      "last_deposit_date",
-      "last_deposit_date.json"
-    )
-  }
-
-  @FunctionName("CleanLastDatetime")
-  def cleanLastLastDepositDatetime(
-      @HttpTrigger(
-        name = "req",
-        methods = Array(HttpMethod.GET),
-        authLevel = AuthorizationLevel.ADMIN
-      )
-      request: HttpRequestMessage[Optional[String]],
-      context: ExecutionContext
-  ): Unit = {
-    implicit val logger = context.getLogger
-    logger.info(s"starting app $request")
-    runLastClean(playnorth100)
-    runLastClean(playnorth101)
-    runLastClean(vegasonline)
-  }
-  def runLastClean(b: Brand)(implicit
-      logger: Logger
-  ) = {
-    val query =
-      s"""
-      > SELECT players.PLAYER_ID as id, '' as last_bet_date, '' as last_activity_date FROM DIM_PLAYERS players LEFT JOIN bus.V_PLAYERS_LIFETIME_VALUES i_dont_want
-      > ON (players.player_id = i_dont_want.player_id AND players.brand_id = i_dont_want.brand_id )
-      > WHERE i_dont_want.player_id IS NULL AND players.brand_id ${b.filter}
-      """.stripMargin('>')
-
-    logger.info(query)
-    val df = spark.read
-      .format(net.snowflake.spark.snowflake.Utils.SNOWFLAKE_SOURCE_NAME)
-      .option("query", query)
-      .options(sfOptions)
-      .load()
-
-    import spark.implicits._
-    import functions._
-    val newDf = df.select(
-      df.col("id"),
-      map(
-        lit("last_bet_date"),
-        $"last_bet_date",
-        lit("last_activity_date"),
-        $"last_activity_date"
-      ).as("properties")
-    )
-
-    saveDFAndSendBatchNotif(
-      newDf,
-      b,
-      "clean_last_deposit_date",
-      "clean_last_deposit_date.json"
-    )
   }
 
   def saveDFAndSendBatchNotif(

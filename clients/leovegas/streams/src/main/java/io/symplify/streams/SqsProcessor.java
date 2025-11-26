@@ -92,7 +92,7 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
 
     final var kafka = mapper.readValue(record.value(), UserContentUpdateKafka.class);
     final var sqs = UserContentUpdateSqs.transform(kafka);
-    sender.send(sqs.brand_id.get(), sqs.player_id.get(), Type.USER_CONSENT_UPDATE, Selector.CONSENT_CHANGE,
+    sender.sendFull(sqs.brand_id.get(), sqs.player_id.get(), sqs.type, sqs.mappingSelector,
         sqs);
 
     return Optional.empty();
