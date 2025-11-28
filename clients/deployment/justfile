@@ -1,6 +1,7 @@
 import "../justfile"
 import "soft2bet.just"
 import "gig.just"
+import "leovegas.just"
 # fmt on terraform
 fmt:
   terraform fmt
