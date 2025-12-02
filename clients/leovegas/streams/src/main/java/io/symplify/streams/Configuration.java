@@ -2,11 +2,12 @@ package io.symplify.streams;
 
 public class Configuration {
   public class Store {
-    public static final String PLAYERS = "players_new";
+    public static final String PLAYERS = "players";
   }
 
   public class Topic {
     public static final String PLAYERS = "players";
+    public static final String PLAYERS_NEW = "players_new";
     public static final String PLAYER_STATUS = "player_status";
     public static final String LOGINS = "logins";
     public static final String WAGERING = "wagering";

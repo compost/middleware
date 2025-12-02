@@ -176,7 +176,7 @@ class Functions {
     region = Regions.EU_NORTH_1
   )
   val sga2 = new Brands(
-    ids = Set(335, 336),
+    ids = Set(335, 336, 337),
     folder = "sga2",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5316_sga2.fifo",

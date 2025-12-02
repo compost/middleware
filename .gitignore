@@ -1,5 +1,9 @@
 .env
+.envrc.enc
+.sops.yaml
 .envrc
+.envrc.backup
+.envrc.dec
 target/
 ignore.txt
 tmp/

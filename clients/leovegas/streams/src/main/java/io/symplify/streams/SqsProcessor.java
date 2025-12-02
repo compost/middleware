@@ -66,6 +66,8 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
       switch (metadata.topic()) {
         case Configuration.Topic.PLAYERS:
           return onTopicPlayers(record);
+        case Configuration.Topic.PLAYERS_NEW:
+          return onTopicPlayers(record);
         case Configuration.Topic.LOGINS:
           return onTopicLogins(record);
         case Configuration.Topic.WAGERING:

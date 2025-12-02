@@ -6,6 +6,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
 import org.apache.kafka.streams.state.Stores;
 
@@ -35,12 +36,13 @@ public class SqsTopology {
     builder.stream(
         Set.of(
             Configuration.Topic.PLAYERS,
+            Configuration.Topic.PLAYERS_NEW,
             Configuration.Topic.LOGINS,
             Configuration.Topic.WAGERING,
             Configuration.Topic.TRANSACTIONS,
             Configuration.Topic.USER_CONSENT_UPDATE,
             Configuration.Topic.WALLET),
-        Consumed.with(Serdes.String(), Serdes.ByteArray()))
+        Consumed.with(Serdes.String(), Serdes.ByteArray()).withTimestampExtractor(new WallclockTimestampExtractor()))
         .process(() -> new SqsProcessor(sender), Configuration.Store.PLAYERS);
     return builder.build();
   }

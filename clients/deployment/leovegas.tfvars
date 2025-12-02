@@ -38,10 +38,10 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "leovegas/leovegas"
-    docker_image_tag   = "20251128"
+    docker_image_tag   = "20251128-depress"
     storage_share_name = "leovegas-mks"
     envs = {
-      "STATE_DIR" = "/app/state/20251029"
+      "STATE_DIR" = "/app/state/current"
     }
     secrets = {}
     mks     = true

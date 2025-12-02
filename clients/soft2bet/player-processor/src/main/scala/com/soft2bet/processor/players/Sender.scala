@@ -64,7 +64,7 @@ object Sender {
   // val NB = Set("274")
   val Elabet = Set("215")
   val Sga = Set("56", "76", "77", "129", "314")
-  val Sga2 = Set("335", "336")
+  val Sga2 = Set("335", "336", "337")
   val Dk = Set("57", "213")
   val Mga =
     Set("53", "54", "55", "64", "65", "66", "67", "109", "111", "259")

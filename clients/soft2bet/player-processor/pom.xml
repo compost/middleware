@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.jada</groupId>
   <artifactId>player-processor</artifactId>
-  <version>20251110</version>
+  <version>20251201</version>
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
