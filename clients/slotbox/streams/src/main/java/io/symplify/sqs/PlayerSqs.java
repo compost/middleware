@@ -90,7 +90,7 @@ public class PlayerSqs {
       sqs.dateofbirth = p.birth_date.map(Transformer::truncateOrKeep);
       sqs.sex = p.sex;
       sqs.country = p.country_alpha_2_code;
-      sqs.registration_country = p.current_country_name;
+      sqs.registration_country = p.country_alpha_2_code;
       sqs.current_country = p.current_country_name;
       sqs.city = p.city;
       sqs.zipcode = p.zipcode;
