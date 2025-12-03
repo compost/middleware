@@ -109,6 +109,25 @@ class Functions {
     region = Regions.EU_CENTRAL_1
   )
 
+  val gannar = new Brand(
+    id = 341,
+    folder = "gannar",
+    mappingSelector = "batch-import",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5317_WiseGlobalGannar",
+    region = Regions.EU_CENTRAL_1
+  )
+
+  val devGannar = new Brand(
+    id = 340,
+    folder = "gannar_DEV",
+    mappingSelector = "DEV_batch-import",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5317_WiseGlobalGannar",
+    region = Regions.EU_CENTRAL_1
+  )
+
+
   lazy val spark = SparkSession.builder
     .master("local[*]")
     .appName("BaseGetBatchUpdate")
@@ -122,7 +141,9 @@ class Functions {
   val all =
     Set(
       marsbet,
-      devMarsbet
+      devMarsbet,
+      gannar,
+      devGannar
     ).filter(b => ids.contains(b.id))
 
   val outputContainerName = "base"
