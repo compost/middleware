@@ -194,6 +194,55 @@ class Functions {
     )(logger)
   }
 
+  @FunctionName("login")
+  def login(
+ @HttpTrigger(
+        name = "req",
+        methods = Array(HttpMethod.GET),
+        authLevel = AuthorizationLevel.ADMIN
+      )
+      request: HttpRequestMessage[Optional[String]],
+      context: ExecutionContext
+  ): Unit = {
+    implicit val logger = context.getLogger
+    logger.info(s"starting app $context")
+
+    all.foreach(subLogin(_))
+  }
+
+  def subLogin(b: Brand, withFilter: Boolean = true)(implicit
+      logger: Logger
+  ) = {
+
+    val query = s"""select  originalId as id, NVL(SUBSTRING(lastlogintime_new, 0, 10), '') as login_datetime, NVL(TO_VARCHAR(LOGINSUCCESS_NEW), '') as login_success from BUS.LVC_LOGINS where brand_id ${b.filter}"""
+
+    val df = spark.read
+      .format(net.snowflake.spark.snowflake.Utils.SNOWFLAKE_SOURCE_NAME)
+      .option("query", query)
+      .options(sfOptions)
+      .load()
+
+    import spark.implicits._
+    import functions._
+    val newDf = df.select(
+      df.col("id"),
+      map(
+        lit("login_datetime"),
+        $"login_datetime",
+        lit("login_success"),
+        $"login_success",
+      ).as("properties")
+    )
+
+    saveDFAndSendBatchNotif(
+      newDf,
+      b,
+      "fix_login",
+      "fix_login.json"
+    )(logger)
+  }
+
+
   def saveDFAndSendBatchNotif(
       dataFrame: DataFrame,
       b: Brand,

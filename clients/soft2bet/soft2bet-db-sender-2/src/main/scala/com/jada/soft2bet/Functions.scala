@@ -169,21 +169,21 @@ class Functions {
     region = Regions.EU_CENTRAL_1
   )
   val sga = new Brands(
-    ids = Set(56, 76, 77, 129, 314),
+    ids = Set(56, 76, 77, 129, 314, 337),
     folder = "sga",
     queue =
       "https://sqs.eu-north-1.amazonaws.com/663880797555/soft2bet-sga-datahub-eventhub.fifo",
     region = Regions.EU_NORTH_1
   )
   val sga2 = new Brands(
-    ids = Set(335, 336, 337),
+    ids = Set(335, 336),
     folder = "sga2",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5316_sga2.fifo",
     region = Regions.EU_CENTRAL_1
   )
   val dk = new Brands(
-    ids = Set(57, 213),
+    ids = Set(57, 213, 342),
     folder = "dk",
     queue =
       "https://sqs.eu-north-1.amazonaws.com/663880797555/soft2bet-dk-datahub-eventhub.fifo",
@@ -228,7 +228,7 @@ class Functions {
       220, 221, 222, 224, 225, 227, 228, 234, 235, 240, 243, 245, 246, 247, 248,
       250, 254, 256, 257, 261, 262, 267, 268, 269, 270, 271, 232, 280, 281, 283,
       284, 287, 288, 293, 298, 299, 302, 303, 304, 305, 306, 307, 110, 198, 310,
-      260, 316, 317, 318, 319, 322, 323, 325, 326, 330, 333, 334, 339),
+      260, 316, 317, 318, 319, 322, 323, 325, 326, 330, 333, 334, 339, 343),
     folder = "other",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/soft2bet-jada-eventhub.fifo",
