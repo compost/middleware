@@ -183,7 +183,7 @@ class Functions {
     region = Regions.EU_CENTRAL_1
   )
   val dk = new Brands(
-    ids = Set(57, 213, 342),
+    ids = Set(57, 213, 342, 344),
     folder = "dk",
     queue =
       "https://sqs.eu-north-1.amazonaws.com/663880797555/soft2bet-dk-datahub-eventhub.fifo",
