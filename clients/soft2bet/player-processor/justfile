@@ -11,4 +11,5 @@ push-all:
   @just mvn-push sportpush 
   @just mvn-push login 
   @just mvn-push statistics 
+  @just mvn-push viplevel 
   @just mvn-push prod 

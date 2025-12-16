@@ -17,10 +17,10 @@ public class TransactionSqs {
     var out = new TransactionSqs();
     out.type = Configuration.Mapping.Type.GENERIC_USER;
     out.mappingSelector = in.mappingSelector.orElse("unknown");
-    out.contactId = in.player_id.orElse("unknown");
-    out.player_id = in.player_id.orElse("unknown");
+    out.contactId = in.originalId.orElse("unknown");
+    out.player_id = in.originalId.orElse("unknown");
+    out.originalId = in.originalId.orElse("unknown");
     out.brand_id = in.brand_id.orElse("unknown");
-    out.originalId = in.player_id.orElse("unknown");
     out.properties = in.parameters;
     return out;
 

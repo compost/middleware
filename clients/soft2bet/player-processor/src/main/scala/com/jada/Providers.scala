@@ -36,6 +36,14 @@ class Providers @Inject() (config: ApplicationConfiguration) {
   }
 
   @Produces
+  @VipLevelTopology
+  def buildVipLevelTopologyKafkaStreams(
+      @VipLevelTopology topology: Option[Topology]
+  ): Option[KafkaStreams] = {
+    buildKafkaStreams("vip-level-", topology)
+  }
+
+  @Produces
   @FirstDepositLossTopology
   def buildFirstDepositLossKafkaStreams(
       @FirstDepositLossTopology topology: Option[Topology]
@@ -67,8 +75,6 @@ class Providers @Inject() (config: ApplicationConfiguration) {
     buildKafkaStreams("fix-blocked-", topology)
   }
 
-
-
   @Produces
   @MissingDataTopology
   def buildMissingDataKafkaStreams(
@@ -76,7 +82,6 @@ class Providers @Inject() (config: ApplicationConfiguration) {
   ): Option[KafkaStreams] = {
     buildKafkaStreams("missing-data-", topology)
   }
-
 
   @Produces
   @RepartitionerTopology

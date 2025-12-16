@@ -21,6 +21,10 @@ import org.apache.kafka.streams.processor.ProcessorContext
 import org.apache.kafka.streams.state.KeyValueStore
 import org.jboss.logging.Logger
 import io.circe.syntax._
+import io.circe._
+import io.circe.generic.auto._
+import io.circe.generic.semiauto._
+
 import io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.kv
 
 import scala.util.{Failure, Success, Try}
@@ -37,9 +41,6 @@ class FunidTransformer(
   private var processorContext: ProcessorContext = _
   private var store: KeyValueStore[String, FunidPlayerStore] = _
 
-  import io.circe._
-  import io.circe.generic.auto._
-  import io.circe.generic.semiauto._
   implicit val funidVerificationDecoder: Decoder[FunidVerification] =
     deriveDecoder
   implicit val funidWalletDecoder: Decoder[FunidWallet] = deriveDecoder

@@ -1,4 +1,4 @@
-version_main:="20251209"
+version_main:="20251215"
 
 soft2bet-deactivate-all:
   @just deactivate Soft2Bet soft2bet-logins 
@@ -10,6 +10,7 @@ soft2bet-deactivate-all:
   @just deactivate Soft2Bet soft2bet-ldc
   @just deactivate Soft2Bet soft2bet-repartitioner
   @just deactivate Soft2Bet soft2bet-funid
+  @just deactivate Soft2Bet soft2bet-viplevel
   @just soft2bet-stop-main
 
 soft2bet-deactivate-realtime:
@@ -18,6 +19,7 @@ soft2bet-deactivate-realtime:
   @just deactivate Soft2Bet soft2bet-sportpush
   @just deactivate Soft2Bet soft2bet-repartitioner
   @just deactivate Soft2Bet soft2bet-funid
+  @just deactivate Soft2Bet soft2bet-viplevel
   @just soft2bet-stop-main 
 
 

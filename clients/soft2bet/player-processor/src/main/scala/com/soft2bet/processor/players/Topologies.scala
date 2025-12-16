@@ -28,10 +28,6 @@ import javax.inject.Inject
 import javax.enterprise.inject.Produces
 import software.amazon.awssdk.services.sqs.SqsClientBuilder
 import org.apache.kafka.streams.scala.kstream.Materialized
-import com.soft2bet.model.PlayerSegmentation
-import com.soft2bet.model.SportPush
-import com.soft2bet.model.FunidPlayerStore
-import com.soft2bet.model.PlayerKPI
 
 @ApplicationScoped
 class Topologies @Inject() (
@@ -311,6 +307,39 @@ class Topologies @Inject() (
             config,
             sqs,
             ueNorthSQS
+          )
+        )
+      Some(builder.build())
+    } else {
+      None
+    }
+
+  }
+
+  @Produces @com.jada.VipLevelTopology
+  def buildVipLevelTopology(): Option[Topology] = {
+
+    if (config.vipLevelTopologyEnabled) {
+
+      val builder = new StreamsBuilder
+
+      val storeName = "viplevels"
+      val store = Stores
+        .keyValueStoreBuilder(
+          Stores.persistentKeyValueStore(storeName),
+          stringSerde,
+          CirceSerdes.serde[VipLevel]
+        )
+      builder
+        .stream[String, VipLevel](
+          Common.vipLevelTopic
+        )(Consumed.`with`(stringSerde, CirceSerdes.serde[VipLevel]))
+        .transform(() =>
+          new VipLevelProcessor(
+            config,
+            sqs,
+            ueNorthSQS,
+            storeName
           )
         )
       Some(builder.build())

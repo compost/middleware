@@ -79,6 +79,9 @@ class ApplicationResource @Inject() (
     @Inject @com.jada.FixBlockedTopology fixBlockedStreams: Option[
       KafkaStreams
     ],
+    @Inject @com.jada.VipLevelTopology vipLevelStreams: Option[
+      KafkaStreams
+    ],
     kafkaProducer: KafkaProducer[String, String]
 ) {
 
@@ -93,7 +96,8 @@ class ApplicationResource @Inject() (
     ("fdl", firstDepositLossStreams),
     ("missing-data", missingDataStreams),
     ("login", loginStreams),
-    ("fix-blocked", fixBlockedStreams)
+    ("fix-blocked", fixBlockedStreams),
+    ("viplevel", vipLevelStreams)
   )
 
   val ueNorthSQS: software.amazon.awssdk.services.sqs.SqsClient =

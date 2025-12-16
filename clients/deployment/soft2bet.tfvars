@@ -27,7 +27,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "login/player-processor"
-    docker_image_tag   = "20251209"
+    docker_image_tag   = "20251215"
     storage_share_name = "logins-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -42,7 +42,7 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "segmentation/player-processor"
-    docker_image_tag   = "20251209"
+    docker_image_tag   = "20251215"
     storage_share_name = "segmentation-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -56,7 +56,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "kpi/player-processor"
-    docker_image_tag   = "20251209"
+    docker_image_tag   = "20251215"
     storage_share_name = "deprecated-kpi-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -71,7 +71,7 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "fld/player-processor"
-    docker_image_tag   = "20251209"
+    docker_image_tag   = "20251215"
     storage_share_name = "firstdepositloss-2-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -86,7 +86,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "statistics/player-processor"
-    docker_image_tag   = "20251209"
+    docker_image_tag   = "20251215"
     storage_share_name = "statistics-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -100,7 +100,7 @@ container_apps = [
     cpu                = 0.5
     memory             = 1
     docker_image_name  = "sportpush/player-processor"
-    docker_image_tag   = "20251209"
+    docker_image_tag   = "20251215"
     storage_share_name = "sportpush-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -115,7 +115,7 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "player-processor"
-    docker_image_tag   = "20251209"
+    docker_image_tag   = "20251215"
     storage_share_name = "ldc-2-sharestate"
     envs = {
       "STATE_DIR"                             = "/app/state/ldc-20251004"
@@ -132,7 +132,7 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "repartitioner/player-processor"
-    docker_image_tag   = "20251209"
+    docker_image_tag   = "20251215"
     storage_share_name = "repartitioner-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -142,11 +142,26 @@ container_apps = [
   },
 
   {
+    name               = "soft2bet-viplevel"
+    cpu                = 1
+    memory             = 2
+    docker_image_name  = "viplevel/player-processor"
+    docker_image_tag   = "20251216"
+    storage_share_name = "viplevel-sharestate"
+    envs = {
+      "STATE_DIR" = "/app/state/current"
+    }
+    secrets = {}
+    aca     = true
+  },
+
+
+  {
     name               = "soft2bet-funid"
     cpu                = 1
     memory             = 2
     docker_image_name  = "funid/player-processor"
-    docker_image_tag   = "20251209"
+    docker_image_tag   = "20251215"
     storage_share_name = "funid-2-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -266,6 +281,11 @@ storage_configs = {
   }
 
   "funid-2-sharestate" = {
+    quota = 50 # in GB
+    aca   = true
+  }
+
+  "viplevel-sharestate" = {
     quota = 50 # in GB
     aca   = true
   }

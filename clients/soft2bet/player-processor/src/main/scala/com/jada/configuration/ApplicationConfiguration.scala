@@ -101,6 +101,10 @@ case class ApplicationConfiguration(
       defaultValue = "false"
     ) val loginTopologyEnabled: Boolean,
     @ConfigProperty(
+      name = "viplevel.topology.enabled",
+      defaultValue = "false"
+    ) val vipLevelTopologyEnabled: Boolean,
+    @ConfigProperty(
       name = "fixblocked.topology.enabled",
       defaultValue = "false"
     ) val fixBlockedTopologyEnabled: Boolean,
