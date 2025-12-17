@@ -53,6 +53,7 @@ class VipLevelProcessor(
 
   override def init(processorContext: ProcessorContext): Unit = {
     this.processorContext = processorContext
+    this.store = processorContext.getStateStore(storeName)
   }
 
   override def transform(

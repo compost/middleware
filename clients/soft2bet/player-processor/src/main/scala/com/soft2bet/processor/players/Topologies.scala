@@ -330,17 +330,21 @@ class Topologies @Inject() (
           stringSerde,
           CirceSerdes.serde[VipLevel]
         )
+
+      builder.addStateStore(store)
       builder
         .stream[String, VipLevel](
           Common.vipLevelTopic
         )(Consumed.`with`(stringSerde, CirceSerdes.serde[VipLevel]))
-        .transform(() =>
-          new VipLevelProcessor(
-            config,
-            sqs,
-            ueNorthSQS,
-            storeName
-          )
+        .transform(
+          () =>
+            new VipLevelProcessor(
+              config,
+              sqs,
+              ueNorthSQS,
+              storeName
+            ),
+          storeName
         )
       Some(builder.build())
     } else {
