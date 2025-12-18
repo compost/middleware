@@ -190,7 +190,7 @@ container_apps = [
     memory             = 4
     docker_image_name  = "checker/aggregators-api"
     docker_image_tag   = "20250929-choisy"
-    storage_share_name = "checker-anglet-1-sharestate"
+    storage_share_name = "checker-anglet-2-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
     }
@@ -290,7 +290,7 @@ storage_configs = {
     aca   = true
   }
 
-  "checker-anglet-1-sharestate" = {
+  "checker-anglet-2-sharestate" = {
     quota = 500 # in GB
     aca   = true
   }

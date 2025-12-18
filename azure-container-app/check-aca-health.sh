@@ -30,7 +30,7 @@ while IFS=$'\t' read -r name resource_group fqdn running_state; do
             echo -n "  Health check: https://$fqdn/q/health - "
             # Make HTTP request and get both status code and response body
             temp_file=$(mktemp)
-            http_code=$(curl -s -w "%{http_code}" --connect-timeout 10 --max-time 30 "https://$fqdn/q/health" -o "$temp_file" 2>/dev/null)
+            http_code=$(curl -s -w "%{http_code}" --connect-timeout 3 --max-time 5 "https://$fqdn/q/health" -o "$temp_file" 2>/dev/null)
             response_body=$(cat "$temp_file" 2>/dev/null)
             rm -f "$temp_file"
             

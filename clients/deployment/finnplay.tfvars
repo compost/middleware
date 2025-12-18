@@ -24,7 +24,7 @@ container_apps = [
     memory             = 4
     docker_image_name  = "finnplay/finnplay-stream"
     docker_image_tag   = "20251021"
-    storage_share_name = "main-2-sharestate"
+    storage_share_name = "main-sharestate"
     envs = {
       "STATE_DIR"          = "/app/state/2025-08-26"
       "WEBSITE_DNS_SERVER" = "168.63.129.16"
@@ -38,7 +38,7 @@ container_apps = [
 
 # Map of storage configurations to be created
 storage_configs = {
-  "main-2-sharestate" = {
+  "main-sharestate" = {
     quota = 50 # in GB
     aca   = true
   }

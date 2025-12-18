@@ -22,7 +22,7 @@ container_apps = [
     memory             = 4
     docker_image_name  = "playbook/playbook-stream"
     docker_image_tag   = "20251006"
-    storage_share_name = "playbook-joy-sharestate"
+    storage_share_name = "playbook-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
     }
@@ -36,7 +36,7 @@ container_apps = [
     memory             = 4
     docker_image_name  = "balance/playbook-stream"
     docker_image_tag   = "20251006"
-    storage_share_name = "balance-20251104-sharestate"
+    storage_share_name = "balance-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/20251104"
     }
@@ -48,12 +48,12 @@ container_apps = [
 ]
 
 storage_configs = {
-  "playbook-joy-sharestate" = {
+  "playbook-sharestate" = {
     quota = 50
     aca   = true
   }
 
-  "balance-20251104-sharestate" = {
+  "balance-sharestate" = {
     quota = 50
     aca   = true
   }

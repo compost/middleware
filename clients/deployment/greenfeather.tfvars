@@ -22,7 +22,7 @@ container_apps = [
     memory             = 4
     docker_image_name  = "greenfeather/greenfeather-stream"
     docker_image_tag   = "20251027"
-    storage_share_name = "joy-main-2-sharestate"
+    storage_share_name = "joy-main-sharestate"
     envs = {
       "PUNCTUATOR" = "PT60M"
       "STATE_DIR"  = "/app/state/20251027"
@@ -49,7 +49,7 @@ container_apps = [
 
 # Map of storage configurations to be created
 storage_configs = {
-  "joy-main-2-sharestate" = {
+  "joy-main-sharestate" = {
     quota = 50 # in GB
     aca   = true
   },

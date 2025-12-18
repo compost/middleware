@@ -22,7 +22,7 @@ container_apps = [
     memory             = 4
     docker_image_name  = "marsbet/base-stream"
     docker_image_tag   = "20251203"
-    storage_share_name = "marsbet-20251104-sharestate"
+    storage_share_name = "marsbet-sharestate"
     path               = "/app/state/"
     sub_path           = "current"
     envs = {
@@ -35,7 +35,7 @@ container_apps = [
 
 # Map of storage configurations to be created
 storage_configs = {
-  "marsbet-20251104-sharestate" = {
+  "marsbet-sharestate" = {
     quota = 50 # in gb
     aca   = true
   }
