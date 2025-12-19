@@ -146,7 +146,7 @@ class Functions {
   )
 
   val sq = new Brands(
-    ids = Set(255, 274),
+    ids = Set(),
     folder = "sq",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5305_soft2betSquibo.fifo",
@@ -206,7 +206,7 @@ class Functions {
   )
   val fp = new Brands(
     ids = Set(229, 230, 236, 237, 253, 258, 272, 273, 282, 285, 300, 311, 320,
-      328, 331, 332, 338),
+      328, 331, 332, 338, 153, 308, 255, 274),
     folder = "fp",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/soft2bet-fp-eventhub.fifo",
@@ -268,7 +268,7 @@ class Functions {
   )
 
   val boomerang = new Brands(
-    ids = Set(123, 124, 153, 133, 223, 308),
+    ids = Set(123, 124, 133, 223),
     folder = "boomerang",
     queue =
       "https://sqs.eu-north-1.amazonaws.com/663880797555/soft2bet-boomerang-datahub-eventhub.fifo",
