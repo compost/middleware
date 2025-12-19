@@ -41,6 +41,7 @@ case class ApplicationConfiguration(
     @ConfigProperty(name = "sqs.queue.nb") sqsQueueNB: String,
     @ConfigProperty(name = "sqs.queue.sp") sqsQueueSP: String,
     @ConfigProperty(name = "sqs.queue.funid") sqsQueueFunid: String,
+    @ConfigProperty(name = "sqs.queue.onepass") sqsQueueOnePass: String,
     @ConfigProperty(name = "sqs.queue.elabet") sqsQueueElabet: String,
     @ConfigProperty(name = "sqs.queue.mx") sqsQueueMX: String,
     @ConfigProperty(name = "sqs.queue.spin247") sqsQueueSpin247: String,
@@ -105,17 +106,13 @@ case class ApplicationConfiguration(
       defaultValue = "false"
     ) val vipLevelTopologyEnabled: Boolean,
     @ConfigProperty(
-      name = "fixblocked.topology.enabled",
+      name = "onepass.topology.enabled",
       defaultValue = "false"
-    ) val fixBlockedTopologyEnabled: Boolean,
+    ) val onePassTopologyEnabled: Boolean,
     @ConfigProperty(
       name = "force",
       defaultValue = "true"
     ) val force: Boolean,
-    @ConfigProperty(
-      name = "missingdata.topology.enabled",
-      defaultValue = "false"
-    ) val missingDataTopologyEnabled: Boolean,
     @ConfigProperty(
       name = "dryRun",
       defaultValue = "false"

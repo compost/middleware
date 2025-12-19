@@ -41,6 +41,7 @@ object Sender {
   val Spin247 = Set("150", "249")
 
   val Funid = Set("214", "321")
+  val OnePass = Set("347")
   val IBet = Set("216", "244", "226", "41", "286")
   val FP = Set(
     "229",
@@ -235,6 +236,7 @@ object Sender {
   val SPPrefix = "sp"
   val SweepPrefix = "sweep"
   val MaziPrefix = "mazi"
+  val OnePassPrefix = "onepass"
 
   val Brands = Set(
     SgaPrefix,
@@ -259,7 +261,8 @@ object Sender {
     IBetPrefix,
     SPPrefix,
     SweepPrefix,
-    MaziPrefix
+    MaziPrefix,
+    OnePassPrefix
   )
   def prefix(brandID: String): String = {
     if (Sender.Sga.contains(brandID)) {
@@ -306,6 +309,8 @@ object Sender {
       SweepPrefix
     } else if (Sender.Mazi.contains(brandID)) {
       MaziPrefix
+    } else if (Sender.OnePass.contains(brandID)) {
+      OnePassPrefix
     } else {
       logger.error(s"${brandID} missing in the configuration")
       "nothandled"
@@ -444,6 +449,8 @@ class Sender(
       (sqs, config.sqsQueueIBet)
     } else if (Sender.SweepPrefix == prefix) {
       (sqs, config.sqsQueueSweep)
+    } else if (Sender.OnePassPrefix == prefix) {
+      (sqs, config.sqsQueueOnePass)
     } else if (Sender.MaziPrefix == prefix) {
       // (sqs, config.sqsQueueMazi)
       (null, null)
@@ -514,6 +521,8 @@ class Sender(
       (sqs, config.sqsQueueMazi)
     } else if (Sender.SP.contains(brandID)) {
       (sqs, config.sqsQueueSP)
+    } else if (Sender.OnePass.contains(brandID)) {
+      (sqs, config.sqsQueueOnePass)
     } else { (null, null) }
 
     if (cli != null) {

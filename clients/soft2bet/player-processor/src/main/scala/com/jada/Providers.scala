@@ -107,6 +107,14 @@ class Providers @Inject() (config: ApplicationConfiguration) {
   }
 
   @Produces
+  @OnePassTopology
+  def buildOnePassKafkaStreams(
+      @OnePassTopology topology: Option[Topology]
+  ): Option[KafkaStreams] = {
+    buildKafkaStreams("onepass-", topology)
+  }
+
+  @Produces
   @SportPushTopology
   def buildSportPushKafkaStreams(
       @SportPushTopology topology: Option[Topology]

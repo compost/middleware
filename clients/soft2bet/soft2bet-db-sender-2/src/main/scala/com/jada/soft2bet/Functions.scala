@@ -197,6 +197,15 @@ class Functions {
     region = Regions.EU_CENTRAL_1
   )
 
+  val onepass = new Brands(
+    ids = Set(347),
+    folder = "onepass",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5320_OnePass.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
+
+
   val nb = new Brands(
     ids = Set(),
     folder = "nb",
@@ -321,6 +330,7 @@ class Functions {
       elabet,
       cp,
       funid,
+      onepass,
       spin247,
       mx,
       nb,

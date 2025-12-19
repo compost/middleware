@@ -61,6 +61,9 @@ class ApplicationResource @Inject() (
     @Inject @com.jada.FunidTopology funidStreams: Option[
       KafkaStreams
     ],
+    @Inject @com.jada.OnePassTopology onePassStreams: Option[
+      KafkaStreams
+    ],
     @Inject @com.jada.RepartitionerTopology repartitionerStreams: Option[
       KafkaStreams
     ],
@@ -97,7 +100,8 @@ class ApplicationResource @Inject() (
     ("missing-data", missingDataStreams),
     ("login", loginStreams),
     ("fix-blocked", fixBlockedStreams),
-    ("viplevel", vipLevelStreams)
+    ("viplevel", vipLevelStreams),
+    ("onepass", onePassStreams)
   )
 
   val ueNorthSQS: software.amazon.awssdk.services.sqs.SqsClient =

@@ -83,6 +83,45 @@ class Topologies @Inject() (
 
   }
 
+  @Produces @com.jada.OnePassTopology
+  def buildOnePassTopology(): Option[Topology] = {
+
+    if (config.onePassTopologyEnabled) {
+      val playerStoreName = "onepass-processor-store"
+      val builder = new StreamsBuilder
+
+      val playersStore = Stores.keyValueStoreBuilder(
+        Stores.persistentKeyValueStore(playerStoreName),
+        stringSerde,
+        CirceSerdes.serde[OnePassPlayerStore]
+      )
+      builder.addStateStore(playersStore)
+      builder
+        .stream[String, Array[Byte]](
+          List(
+            Common.playersRepartitionedTopic,
+            Common.walletRepartitionedTopic,
+            Common.verificationRepartitionedTopic
+          ).toSet
+        )(Consumed `with` (stringSerde, new Serdes.ByteArraySerde()))
+        .filter((_, v) => v != null)
+        .transform(
+          () =>
+            new OnePassTransformer(
+              config,
+              sqs,
+              ueNorthSQS,
+              playerStoreName
+            ),
+          playerStoreName
+        )
+      Some(builder.build())
+    } else {
+      None
+    }
+
+  }
+
   @Produces @com.jada.SportPushTopology
   def buildSportPushTopology(): Option[Topology] = {
 
@@ -353,53 +392,6 @@ class Topologies @Inject() (
 
   }
 
-  @Produces @com.jada.FixBlockedTopology
-  def buildFixBlockedTopology(): Option[Topology] = {
-
-    if (config.fixBlockedTopologyEnabled) {
-
-      val playerStoreName = "fix-blocked-store"
-      val builder = new StreamsBuilder
-
-      val playersStore = Stores
-        .keyValueStoreBuilder(
-          Stores.persistentKeyValueStore(playerStoreName),
-          stringSerde,
-          CirceSerdes.serde[PlayerStore]
-        )
-        .withLoggingDisabled()
-
-      builder.addStateStore(playersStore)
-
-      builder
-        .stream[String, PlayerStore](
-          "soft2bet-players-app-v8-players-processor-store-changelog"
-        )(Consumed.`with`(stringSerde, CirceSerdes.serde[PlayerStore]))
-        .filter((_, v) =>
-          v.player_id.isDefined && v.brand_id.isDefined && v.is_blocked.isDefined && !v.is_blocked
-            .map(_.toLowerCase())
-            .contains("false")
-        )
-        .selectKey((_, v) =>
-          s"${Sender.prefix(v.brand_id.get)}-${v.brand_id.get}-${v.player_id.get}"
-        )
-        .transform(
-          () =>
-            new FixBlockedTransformer(
-              config,
-              sqs,
-              ueNorthSQS,
-              playerStoreName
-            ),
-          playerStoreName
-        )
-      Some(builder.build())
-    } else {
-      None
-    }
-
-  }
-
   @Produces @com.jada.FirstDepositLossTopology
   def buildFirstDepositLossTopology(): Option[Topology] = {
 
@@ -568,52 +560,6 @@ class Topologies @Inject() (
     } else {
       None
     }
-  }
-
-  @Produces @com.jada.MissingDataTopology
-  def buildMissinDataTopology(): Option[Topology] = {
-
-    if (config.missingDataTopologyEnabled) {
-
-      val sentStoreName = "missing-data"
-
-      val sentSttore = Stores
-        .keyValueStoreBuilder(
-          Stores.persistentKeyValueStore(sentStoreName),
-          stringSerde,
-          CirceSerdes.serde[PlayerStore]
-        )
-        .withLoggingDisabled()
-
-      val builder = new StreamsBuilder
-      builder.addStateStore(sentSttore)
-
-      builder
-        .stream[String, PlayerStore](
-          "soft2bet-players-app-v8-players-processor-store-changelog"
-        )(
-          Consumed
-            .`with`(stringSerde, CirceSerdes.serde[PlayerStore])
-        )
-        .filter((_, v) =>
-          v.player_id.isDefined && v.brand_id.isDefined && Sender.CasinoInfinity
-            .contains(v.brand_id.get)
-        )
-        .transform(
-          () =>
-            new MissingDataTransformer(
-              config,
-              sqs,
-              ueNorthSQS,
-              sentStoreName
-            ),
-          sentStoreName
-        )
-      Some(builder.build())
-    } else {
-      None
-    }
-
   }
 
 }

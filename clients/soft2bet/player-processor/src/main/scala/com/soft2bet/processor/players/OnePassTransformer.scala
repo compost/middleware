@@ -1,0 +1,179 @@
+package com.soft2bet.processor.players
+
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
+import com.amazonaws.services.sqs.{AmazonSQS, AmazonSQSClientBuilder}
+import com.amazonaws.services.sqs.model.SendMessageRequest
+import com.soft2bet.Common
+import com.soft2bet.model.{
+  AccountFrozen,
+  Achievement,
+  DOBTempFix,
+  Login,
+  Player,
+  PlayerStore,
+  Verification,
+  Wallet
+}
+import org.apache.kafka.streams.KeyValue
+import org.apache.kafka.streams.kstream.Transformer
+import org.apache.kafka.streams.processor.ProcessorContext
+import org.apache.kafka.streams.state.KeyValueStore
+import org.jboss.logging.Logger
+import io.circe.syntax._
+import io.circe._
+import io.circe.generic.auto._
+import io.circe.generic.semiauto._
+
+import io.quarkiverse.loggingjson.providers.KeyValueStructuredArgument.kv
+
+import scala.util.{Failure, Success, Try}
+import com.soft2bet.model._
+import com.jada.sqs.Body
+import io.circe.Printer
+
+class OnePassTransformer(
+    config: com.jada.configuration.ApplicationConfiguration,
+    sqs: software.amazon.awssdk.services.sqs.SqsClient,
+    ueNorthSQS: software.amazon.awssdk.services.sqs.SqsClient,
+    playerStoreName: String
+) extends Transformer[
+      String,
+      Array[Byte],
+      KeyValue[String, OnePassPlayerStore]
+    ] {
+  private var processorContext: ProcessorContext = _
+  private var store: KeyValueStore[String, OnePassPlayerStore] = _
+
+  implicit val funidVerificationDecoder: Decoder[OnePassVerification] =
+    deriveDecoder
+  implicit val funidWalletDecoder: Decoder[OnePassWallet] = deriveDecoder
+  implicit val funidPlayerDecoder: Decoder[OnePassPlayer] = deriveDecoder
+  private val sender = new Sender(config, sqs, ueNorthSQS, false, true)
+  final val printer: Printer = Printer(
+    dropNullValues = true,
+    indent = ""
+  )
+  private final val logger =
+    Logger.getLogger(classOf[PlayersTransformer])
+
+  override def init(processorContext: ProcessorContext): Unit = {
+    this.processorContext = processorContext
+    this.store = getKVStore(playerStoreName)
+  }
+
+  def deserialize[T](
+      data: Array[Byte]
+  )(implicit decode: io.circe.Decoder[T]): T = {
+    parser.decode[T](new String(data)).right.get
+  }
+
+  override def transform(
+      k: String,
+      v: Array[Byte]
+  ): KeyValue[String, OnePassPlayerStore] = {
+
+    processorContext.topic() match {
+      case Common.playersRepartitionedTopic =>
+        val player =
+          deserialize[OnePassPlayer](v)(funidPlayerDecoder)
+        val key = s"${player.brand_id.get}-${player.player_id.get}"
+        val previous = Option(store.get(key))
+        val newOne = OnePassPlayerStore(previous, player)
+        store.put(key, newOne)
+
+        if (
+          previous.map(
+            OnePassPlayerRegisteredSQS(_)
+          ) != OnePassPlayerRegisteredSQS(
+            newOne
+          )
+        ) {
+          val body = Body[OnePassPlayerRegisteredSQS](
+            "GENERIC_USER",
+            player.player_id.get,
+            "player_registered",
+            OnePassPlayerRegisteredSQS(newOne)
+          )
+          sender.sendToSQS(
+            printer.print(
+              Body.bodyEncoder[OnePassPlayerRegisteredSQS].apply(body)
+            ),
+            player.player_id.get,
+            player.brand_id.get
+          )
+        }
+
+        val body = Body[OnePassPlayerLoginSQS](
+          "GENERIC_USER",
+          player.player_id.get,
+          "player_login",
+          OnePassPlayerLoginSQS(newOne)
+        )
+        sender.sendToSQS(
+          printer.print(Body.bodyEncoder[OnePassPlayerLoginSQS].apply(body)),
+          player.player_id.get,
+          player.brand_id.get
+        )
+      case Common.verificationRepartitionedTopic =>
+        val verification =
+          deserialize[OnePassVerification](v)(funidVerificationDecoder)
+
+        val body = Body[OnePassVerificationSQS](
+          "GENERIC_USER",
+          verification.player_id.get,
+          "kyc",
+          OnePassVerificationSQS(verification)
+        )
+        sender.sendToSQS(
+          printer.print(Body.bodyEncoder[OnePassVerificationSQS].apply(body)),
+          verification.player_id.get,
+          verification.brand_id.get
+        )
+      case Common.walletRepartitionedTopic =>
+        val wallet = deserialize[OnePassWallet](v)(funidWalletDecoder)
+        val mappingSelector = wallet.transaction_type_id match {
+          case Some(v) if v.toLowerCase.startsWith("deposit") =>
+            Some("deposit_event")
+          case Some(v) if v.toLowerCase.startsWith("withdraw") =>
+            Some("withdrawal_event")
+          case _ => None
+        }
+        if (mappingSelector.isDefined) {
+          val body = Body[OnePassWalletSQS](
+            "GENERIC_USER",
+            wallet.player_id.get,
+            mappingSelector.get,
+            OnePassWalletSQS(wallet)
+          )
+          sender.sendToSQS(
+            printer.print(Body.bodyEncoder[OnePassWalletSQS].apply(body)),
+            wallet.player_id.get,
+            wallet.brand_id.get
+          )
+        }
+
+      case _ =>
+        logger.debug(s"${processorContext.topic()} not handled for now")
+    }
+    new KeyValue(k, null)
+  }
+
+  def getKVStore[K, V](storeName: String): KeyValueStore[K, V] = {
+    Try {
+      processorContext
+        .getStateStore(storeName)
+        .asInstanceOf[KeyValueStore[K, V]]
+    } match {
+      case Success(kvStore) => kvStore
+      case Failure(e: ClassCastException) =>
+        throw new IllegalArgumentException(
+          s"Please provide a KeyValueStore for $storeName, reason: $e"
+        )
+      case Failure(e) => throw e
+    }
+  }
+
+  override def close(): Unit = {}
+
+}
