@@ -57,7 +57,7 @@ class LifetimeDepositCountTransformer(
 
   private var processorContext: ProcessorContext = _
   private var storeWallet: KeyValueStore[String, Wallet] = _
-  private val sender = new Sender(config, sqs, ueNorthSQS, both = true, false)
+  private val sender = new Sender(config, sqs, ueNorthSQS, all = true)
   final val printer: Printer = Printer(
     dropNullValues = true,
     indent = ""

@@ -49,7 +49,13 @@ class OnePassTransformer(
     deriveDecoder
   implicit val funidWalletDecoder: Decoder[OnePassWallet] = deriveDecoder
   implicit val funidPlayerDecoder: Decoder[OnePassPlayer] = deriveDecoder
-  private val sender = new Sender(config, sqs, ueNorthSQS, false, true)
+  private val sender =
+    new Sender(
+      config,
+      sqs,
+      ueNorthSQS,
+      handleOnePass = true
+    )
   final val printer: Printer = Printer(
     dropNullValues = true,
     indent = ""
@@ -80,7 +86,15 @@ class OnePassTransformer(
         val key = s"${player.brand_id.get}-${player.player_id.get}"
         val previous = Option(store.get(key))
         val newOne = OnePassPlayerStore(previous, player)
-        store.put(key, newOne)
+        if (
+          newOne.brand_id.isDefined && Sender.OnePass.contains(
+            newOne.brand_id.get
+          )
+        ) {
+          store.put(key, newOne)
+        } else {
+          return new KeyValue(k, null)
+        }
 
         if (
           previous.map(

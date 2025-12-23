@@ -54,7 +54,7 @@ class PlayerKPITransformer(
 
   private var processorContext: ProcessorContext = _
   private var storePlayerKPIs: KeyValueStore[String, PlayerKPI] = _
-  private val sender = new Sender(config, sqs, ueNorthSQS, false, false)
+  private val sender = new Sender(config, sqs, ueNorthSQS)
   final val printer: Printer = Printer(
     dropNullValues = true,
     indent = ""

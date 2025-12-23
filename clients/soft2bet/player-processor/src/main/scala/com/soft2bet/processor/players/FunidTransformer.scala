@@ -45,7 +45,12 @@ class FunidTransformer(
     deriveDecoder
   implicit val funidWalletDecoder: Decoder[FunidWallet] = deriveDecoder
   implicit val funidPlayerDecoder: Decoder[FunidPlayer] = deriveDecoder
-  private val sender = new Sender(config, sqs, ueNorthSQS, false, true)
+  private val sender = new Sender(
+    config,
+    sqs,
+    ueNorthSQS,
+    handleFunid = true
+  )
   final val printer: Printer = Printer(
     dropNullValues = true,
     indent = ""
@@ -76,7 +81,16 @@ class FunidTransformer(
         val key = s"${player.brand_id.get}-${player.player_id.get}"
         val previous = Option(store.get(key))
         val newOne = FunidPlayerStore(previous, player)
-        store.put(key, newOne)
+        if (
+          newOne.brand_id.isDefined && Sender.Funid.contains(
+            newOne.brand_id.get
+          )
+        ) {
+          store.put(key, newOne)
+        } else {
+          store.delete(key)
+          return new KeyValue(k, null)
+        }
 
         if (
           previous.map(FunidPlayerRegisteredSQS(_)) != FunidPlayerRegisteredSQS(

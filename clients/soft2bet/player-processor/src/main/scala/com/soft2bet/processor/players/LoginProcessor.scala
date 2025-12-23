@@ -44,7 +44,7 @@ class LoginProcessor(
 ) extends Transformer[String, Login, KeyValue[String, PlayerStore]] {
   private var processorContext: ProcessorContext = _
 
-  private val sender = new Sender(config, sqs, ueNorthSQS, false, false)
+  private val sender = new Sender(config, sqs, ueNorthSQS)
   final val printer: Printer = Printer(
     dropNullValues = true,
     indent = ""

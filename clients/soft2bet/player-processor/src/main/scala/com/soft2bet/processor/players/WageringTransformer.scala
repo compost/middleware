@@ -45,7 +45,7 @@ class WageringTransformer(
   private var sent: KeyValueStore[String, Boolean] = _
   private var startStopKVStore: KeyValueStore[String, String] = _
 
-  private val sender = new Sender(config, sqs, ueNorthSQS, false, false)
+  private val sender = new Sender(config, sqs, ueNorthSQS)
   final val printer: Printer = Printer(
     dropNullValues = true,
     indent = ""
@@ -64,7 +64,7 @@ class WageringTransformer(
       k: String,
       input: Wagering
   ): KeyValue[String, PlayerStore] = {
-    val exist= Option(sent.get(k))
+    val exist = Option(sent.get(k))
     if (exist.isDefined) {
       return null
     }

@@ -321,8 +321,9 @@ class Sender(
     config: com.jada.configuration.ApplicationConfiguration,
     sqs: software.amazon.awssdk.services.sqs.SqsClient,
     ueNorthSQS: software.amazon.awssdk.services.sqs.SqsClient,
-    both: Boolean = false,
-    handleFunid: Boolean = false
+    all: Boolean = false,
+    handleFunid: Boolean = false,
+    handleOnePass: Boolean = false
 ) {
 
   final val printer: Printer = Printer(
@@ -459,13 +460,32 @@ class Sender(
     }
     if (cli != null) {
       if (
-        both ||
-        (Sender.FunidPrefix == prefix && handleFunid) || (!(Sender.FunidPrefix == prefix) && !handleFunid)
+        all ||
+        filterPrefix(prefix)
       ) {
         send(body, key, cli, queueURL)
       }
     }
   }
+
+  def filterPrefix(prefix: String): Boolean = {
+    (Sender.FunidPrefix == prefix && handleFunid) ||
+    (Sender.OnePassPrefix == prefix && handleOnePass) ||
+    (
+      Sender.FunidPrefix != prefix && !handleFunid
+        && Sender.OnePassPrefix != prefix && !handleOnePass
+    )
+  }
+
+  def filterBrandId(brandID: String): Boolean = {
+    (Sender.Funid.contains(brandID) && handleFunid) ||
+    (Sender.OnePass.contains(brandID) && handleOnePass) ||
+    (
+      !Sender.Funid.contains(brandID) && !handleFunid
+        && !Sender.OnePass.contains(brandID) && !handleOnePass
+    )
+  }
+
   def sendToSQS(
       body: String,
       key: String,
@@ -527,9 +547,8 @@ class Sender(
 
     if (cli != null) {
       if (
-        both ||
-        (Sender.Funid.contains(brandID) && handleFunid) || (!Sender.Funid
-          .contains(brandID) && !handleFunid)
+        all ||
+        filterBrandId(brandID)
       ) {
         logger.debugv(
           "sendToSQSWithQueue",

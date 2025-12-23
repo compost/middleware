@@ -68,22 +68,6 @@ class Providers @Inject() (config: ApplicationConfiguration) {
   }
 
   @Produces
-  @FixBlockedTopology
-  def buildFixBlockedTopologyKafkaStreams(
-      @FixBlockedTopology topology: Option[Topology]
-  ): Option[KafkaStreams] = {
-    buildKafkaStreams("fix-blocked-", topology)
-  }
-
-  @Produces
-  @MissingDataTopology
-  def buildMissingDataKafkaStreams(
-      @MissingDataTopology topology: Option[Topology]
-  ): Option[KafkaStreams] = {
-    buildKafkaStreams("missing-data-", topology)
-  }
-
-  @Produces
   @RepartitionerTopology
   def buildRepartitionerTopologyKafkaStreams(
       @RepartitionerTopology topology: Option[Topology]

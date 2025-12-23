@@ -55,7 +55,7 @@ class SportPushTransformer(
 
   override def init(context: ProcessorContext): Unit = {}
 
-  private val sender = new Sender(config, sqs, ueNorthSQS, false, false)
+  private val sender = new Sender(config, sqs, ueNorthSQS)
 
   final val printer: Printer = Printer(
     dropNullValues = true,

@@ -115,7 +115,7 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "player-processor"
-    docker_image_tag   = "20251218"
+    docker_image_tag   = "20251224"
     storage_share_name = "ldc-2-sharestate"
     envs = {
       "STATE_DIR"                             = "/app/state/ldc-20251004"
@@ -126,6 +126,19 @@ container_apps = [
     aca     = true
   },
 
+  {
+    name               = "soft2bet-onepass"
+    cpu                = 1
+    memory             = 2
+    docker_image_name  = "onepass/player-processor"
+    docker_image_tag   = "20251224"
+    storage_share_name = "onepass-sharestate"
+    envs = {
+      "STATE_DIR" = "/app/state/current"
+    }
+    secrets = {}
+    aca     = true
+  },
 
   {
     name               = "soft2bet-repartitioner"
@@ -161,7 +174,7 @@ container_apps = [
     cpu                = 1
     memory             = 2
     docker_image_name  = "funid/player-processor"
-    docker_image_tag   = "20251218"
+    docker_image_tag   = "20251224"
     storage_share_name = "funid-2-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
@@ -243,6 +256,12 @@ storage_configs = {
     quota = 5 # in GB
     aca   = true
   }
+
+  "onepass-sharestate" = {
+    quota = 50 # in GB
+    aca   = true
+  }
+
 
 
   "segmentation-sharestate" = {

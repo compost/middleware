@@ -73,13 +73,7 @@ class ApplicationResource @Inject() (
     @Inject @com.jada.FirstDepositLossTopology firstDepositLossStreams: Option[
       KafkaStreams
     ],
-    @Inject @com.jada.MissingDataTopology missingDataStreams: Option[
-      KafkaStreams
-    ],
     @Inject @com.jada.LoginTopology loginStreams: Option[
-      KafkaStreams
-    ],
-    @Inject @com.jada.FixBlockedTopology fixBlockedStreams: Option[
       KafkaStreams
     ],
     @Inject @com.jada.VipLevelTopology vipLevelStreams: Option[
@@ -97,9 +91,7 @@ class ApplicationResource @Inject() (
     ("repartitioner", repartitionerStreams),
     ("player-kpi", playerKPIStreams),
     ("fdl", firstDepositLossStreams),
-    ("missing-data", missingDataStreams),
     ("login", loginStreams),
-    ("fix-blocked", fixBlockedStreams),
     ("viplevel", vipLevelStreams),
     ("onepass", onePassStreams)
   )
@@ -113,7 +105,7 @@ class ApplicationResource @Inject() (
   private final val logger =
     Logger.getLogger(classOf[ApplicationResource])
 
-  private val sender = new Sender(config, sqs, ueNorthSQS, true, false)
+  private val sender = new Sender(config, sqs, ueNorthSQS, all = true)
   val running = new AtomicBoolean(false)
 
   final val printer: Printer = Printer(

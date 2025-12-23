@@ -63,7 +63,7 @@ class PlayerSegmentationPunctuatorTransformer(
 
   private var processorContext: ProcessorContext = _
   private var storePlayers: KeyValueStore[String, PlayerSegmentation] = _
-  private val sender = new Sender(config, sqs, ueNorthSQS, false, false)
+  private val sender = new Sender(config, sqs, ueNorthSQS)
   final val printer: Printer = Printer(
     dropNullValues = true,
     indent = ""

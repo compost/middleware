@@ -58,7 +58,7 @@ class BalanceTransformer(
     with Punctuator {
 
   private var storeWagering: KeyValueStore[String, Wagering] = _
-  private val sender = new Sender(config, sqs, ueNorthSQS, false, false)
+  private val sender = new Sender(config, sqs, ueNorthSQS)
   final val printer: Printer = Printer(
     dropNullValues = true,
     indent = ""
