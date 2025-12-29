@@ -1,0 +1,5 @@
+{
+  "app": "marsbet-stream",
+  "host": "marsbet-stream-awf2fnd2djh0cfaz.westeurope-01.azurewebsites.net",
+  "image": "centralregistry.azurecr.io/marsbet/base-stream:latest"
+}
