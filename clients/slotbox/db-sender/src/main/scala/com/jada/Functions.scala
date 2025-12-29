@@ -140,7 +140,7 @@ class Functions {
     implicit val logger = context.getLogger
     logger.info(s"starting app $context")
 
-    val table = "CENTRALDW.BUS.RAW_CRM_IMPORT_WISEGAMING"
+    val table = "BUS.SLOTBOX"
     val properties = Map[String, String](
       "player_id" -> "ORIGINALID",
       "brand_id" -> "BRAND_ID",
