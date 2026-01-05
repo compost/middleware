@@ -53,6 +53,26 @@ case class PlayerSegmentation(
     ZBR_current_activity_days: Option[String],
     ZBR_churn_prediction: Option[String],
     CROSS_ACTIVITY_STATUS: Option[String],
+    SPORT_PREFERENCE: Option[String],
+    LT_SPORT_PREFERENCE: Option[String],
+    TOP_COMPETITION: Option[String],
+    LT_TOP_COMPETITION: Option[String],
+    TOP_CASINO_GAME: Option[String],
+    LT_TOP_CASINO_GAME: Option[String],
+    TOP_CASINO_GAME_PROVIDER: Option[String],
+    LT_TOP_CASINO_GAME_PROVIDER: Option[String],
+    TOP_BONUS: Option[String],
+    LT_TOP_BONUS: Option[String],
+    COST_TO_DEPOSIT: Option[String],
+    COST_TO_GGR: Option[String],
+    LT_COST_TO_DEPOSIT: Option[String],
+    LT_COST_TO_GGR: Option[String],
+    BONUS_DEPENDENT: Option[String],
+    CURRENT_LEVEL: Option[String],
+    CURRENT_LEVEL_START_DATE: Option[String],
+    LEVEL_YESTERDAY: Option[String],
+    PREVIOUS_LEVEL: Option[String],
+    EVOLUTION: Option[String]
 )
 
 case class PlayerSegmentationSQS(
@@ -108,6 +128,26 @@ case class PlayerSegmentationSQS(
     ZBR_current_activity_days: Option[String],
     ZBR_churn_prediction: Option[String],
     CROSS_ACTIVITY_STATUS: Option[String],
+    SPORT_PREFERENCE: Option[String],
+    LT_SPORT_PREFERENCE: Option[String],
+    TOP_COMPETITION: Option[String],
+    LT_TOP_COMPETITION: Option[String],
+    TOP_CASINO_GAME: Option[String],
+    LT_TOP_CASINO_GAME: Option[String],
+    TOP_CASINO_GAME_PROVIDER: Option[String],
+    LT_TOP_CASINO_GAME_PROVIDER: Option[String],
+    TOP_BONUS: Option[String],
+    LT_TOP_BONUS: Option[String],
+    COST_TO_DEPOSIT: Option[String],
+    COST_TO_GGR: Option[String],
+    LT_COST_TO_DEPOSIT: Option[String],
+    LT_COST_TO_GGR: Option[String],
+    BONUS_DEPENDENT: Option[String],
+    CURRENT_LEVEL: Option[String],
+    CURRENT_LEVEL_START_DATE: Option[String],
+    LEVEL_YESTERDAY: Option[String],
+    PREVIOUS_LEVEL: Option[String],
+    EVOLUTION: Option[String]
 )
 
 object PlayerSegmentationSQS {
@@ -178,7 +218,28 @@ object PlayerSegmentationSQS {
         playerSegmentation.ZBR_days_from_registration,
       ZBR_current_activity_days = playerSegmentation.ZBR_current_activity_days,
       ZBR_churn_prediction = playerSegmentation.ZBR_churn_prediction,
-      CROSS_ACTIVITY_STATUS = playerSegmentation.CROSS_ACTIVITY_STATUS
+      CROSS_ACTIVITY_STATUS = playerSegmentation.CROSS_ACTIVITY_STATUS,
+      SPORT_PREFERENCE = playerSegmentation.SPORT_PREFERENCE,
+      LT_SPORT_PREFERENCE = playerSegmentation.LT_SPORT_PREFERENCE,
+      TOP_COMPETITION = playerSegmentation.TOP_COMPETITION,
+      LT_TOP_COMPETITION = playerSegmentation.LT_TOP_COMPETITION,
+      TOP_CASINO_GAME = playerSegmentation.TOP_CASINO_GAME,
+      LT_TOP_CASINO_GAME = playerSegmentation.LT_TOP_CASINO_GAME,
+      TOP_CASINO_GAME_PROVIDER = playerSegmentation.TOP_CASINO_GAME_PROVIDER,
+      LT_TOP_CASINO_GAME_PROVIDER =
+        playerSegmentation.LT_TOP_CASINO_GAME_PROVIDER,
+      TOP_BONUS = playerSegmentation.TOP_BONUS,
+      LT_TOP_BONUS = playerSegmentation.LT_TOP_BONUS,
+      COST_TO_DEPOSIT = playerSegmentation.COST_TO_DEPOSIT,
+      COST_TO_GGR = playerSegmentation.COST_TO_GGR,
+      LT_COST_TO_DEPOSIT = playerSegmentation.LT_COST_TO_DEPOSIT,
+      LT_COST_TO_GGR = playerSegmentation.LT_COST_TO_GGR,
+      BONUS_DEPENDENT = playerSegmentation.BONUS_DEPENDENT,
+      CURRENT_LEVEL = playerSegmentation.CURRENT_LEVEL,
+      CURRENT_LEVEL_START_DATE = playerSegmentation.CURRENT_LEVEL_START_DATE,
+      LEVEL_YESTERDAY = playerSegmentation.LEVEL_YESTERDAY,
+      PREVIOUS_LEVEL = playerSegmentation.PREVIOUS_LEVEL,
+      EVOLUTION = playerSegmentation.EVOLUTION
     )
   }
 }
