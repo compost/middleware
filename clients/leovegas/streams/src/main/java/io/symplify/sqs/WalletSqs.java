@@ -20,12 +20,14 @@ public class WalletSqs {
   @JsonIgnore
   public String mappingSelector;
   public Optional<String> player_id = Optional.empty();
+  public Optional<String> brand = Optional.empty();
   public Optional<String> currency = Optional.empty();
   public Optional<String> Transaction_Type = Optional.empty();
   public Optional<String> Transaction_Amount = Optional.empty();
 
   public void with(WalletKafka kafka) {
     this.player_id = kafka.player_id;
+    this.brand = kafka.brand;
     this.Transaction_Amount = kafka.amount;
     this.Transaction_Type = kafka.transaction_type;
     this.currency = kafka.currency_description;

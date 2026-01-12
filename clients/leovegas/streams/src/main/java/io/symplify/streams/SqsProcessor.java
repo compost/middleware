@@ -135,6 +135,7 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
       final BigWinSqs bw = new BigWinSqs();
       bw.player_id = kafka.player_id.get();
       bw.big_win = kafka.win_amount.get();
+      bw.brand = kafka.brand;
       sender.send(kafka.brand_id.get(), kafka.player_id.get(), Type.GENERIC_USER, Selector.BIG_WIN,
           bw);
     }
@@ -187,8 +188,10 @@ public class SqsProcessor implements Processor<String, byte[], Void, Void> {
 
     if (newPlayerSqs.get().locked.isPresent() && (oldPlayerSqs.isEmpty() || oldPlayerSqs.get().locked.isEmpty()
         || !newPlayerSqs.get().locked.get().equalsIgnoreCase(oldPlayerSqs.get().locked.get()))) {
-      PlayerBlockedSqs sqs = PlayerBlockedSqs.transform(player.player_id.get(),
-          newPlayerSqs.flatMap(p -> p.locked).map(p -> p.toLowerCase()).get());
+      var playerId = player.player_id.get();
+      var locked = newPlayerSqs.flatMap(p -> p.locked).map(p -> p.toLowerCase()).get();
+      var brand = newPlayerSqs.get().brand;
+      PlayerBlockedSqs sqs = PlayerBlockedSqs.transform(playerId, locked, brand);
       sender.sendFull(player.brand_id.get(), player.player_id.get(), Type.USER_BLOCKED_TOGGLE, Selector.PLAYER_BLOCKED,
           sqs);
 

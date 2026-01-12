@@ -22,6 +22,7 @@ public class PlayerKafka {
   public Optional<String> currency_id = Optional.empty();
   public Optional<String> currency_description = Optional.empty(); // missing in the mapping sheet
   public Optional<String> brand_id = Optional.empty();
+  public Optional<String> brand= Optional.empty();
   public Optional<String> sex = Optional.empty();
   public Optional<String> region = Optional.empty();
   public Optional<String> accountName = Optional.empty();

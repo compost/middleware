@@ -10,6 +10,7 @@ public class UserContentUpdateSqs {
   public Optional<String> player_id = Optional.empty();
   public Optional<String> contactId = Optional.empty();
   public Optional<String> brand_id = Optional.empty();
+  public Optional<String> brand = Optional.empty();
   public Optional<String> consented = Optional.empty();
   public Optional<String> channel = Optional.empty();
   public String type;
@@ -22,6 +23,7 @@ public class UserContentUpdateSqs {
     out.player_id = in.player_id;
     out.contactId = in.player_id;
     out.brand_id = in.brand_id;
+    out.brand = in.brand;
     out.channel = in.channel;
     out.consented = in.consented.flatMap(s -> {
       if ("1".equals(s))

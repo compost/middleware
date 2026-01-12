@@ -10,6 +10,7 @@ public class TransactionSqs {
   public String originalId;
   public String contactId;
   public String brand_id;
+  public String brand;
   public String mappingSelector;
   public Map<String, Object> properties;
 
@@ -21,6 +22,7 @@ public class TransactionSqs {
     out.player_id = in.originalId.orElse("unknown");
     out.originalId = in.originalId.orElse("unknown");
     out.brand_id = in.brand_id.orElse("unknown");
+    out.brand = in.brand.orElse("unknown");
     out.properties = in.parameters;
     return out;
 

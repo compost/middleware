@@ -22,6 +22,7 @@ public class PlayerSqs {
   public Optional<String> test_user = Optional.empty();
   public Optional<String> currency = Optional.empty();
   public Optional<String> brand_id = Optional.empty();
+  public Optional<String> brand = Optional.empty();
 
   public Optional<String> sex = Optional.empty();
   public Optional<String> region = Optional.empty();
@@ -91,6 +92,7 @@ public class PlayerSqs {
         Objects.equals(this.test_user, other.test_user) &&
         Objects.equals(this.currency, other.currency) &&
         Objects.equals(this.brand_id, other.brand_id) &&
+        Objects.equals(this.brand, other.brand) &&
         Objects.equals(this.sex, other.sex) &&
         Objects.equals(this.region, other.region) &&
         Objects.equals(this.accountName, other.accountName) &&
@@ -188,6 +190,7 @@ public class PlayerSqs {
       sqs.originalId = p.player_id;
       sqs.player_id = p.player_id;
       sqs.brand_id = p.brand_id;
+      sqs.brand = p.brand;
       sqs.reg_datetime = p.reg_datetime.map(Transformer::truncateOrKeep);
       sqs.first_name = p.first_name;
       sqs.last_name = p.last_name;
