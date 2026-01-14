@@ -43,7 +43,7 @@ container_apps = [
     memory             = 2
     docker_image_name  = "segmentation/player-processor"
     docker_image_tag   = "20260108"
-    storage_share_name = "segmentation-sharestate"
+    storage_share_name = "segmentation-v2-sharestate"
     envs = {
       "STATE_DIR" = "/app/state/current"
     }
@@ -264,7 +264,7 @@ storage_configs = {
 
 
 
-  "segmentation-sharestate" = {
+  "segmentation-v2-sharestate" = {
     quota = 50 # in GB
     aca   = true
   }
