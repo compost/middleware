@@ -65,10 +65,11 @@ case class PlayerStore(
     cp_accumulated: Option[String] = None,
     id_status: Option[String] = None,
     poa_status: Option[String] = None,
-    //technical
-    player_info_from_batch: Boolean= false,
-    player_batch_to_send: Boolean= false,
-    //players only
+    gcoins_balance: Option[String] = None,
+    // technical
+    player_info_from_batch: Boolean = false,
+    player_batch_to_send: Boolean = false,
+    // players only
     currency_id: Option[String] = None,
     verification_url: Option[String] = None,
     bonus_currency: Option[String] = None,
@@ -78,7 +79,7 @@ case class PlayerStore(
     ver_bonus_amount_frb: Option[String] = None,
     reg_supported_games_frb: Option[String] = None,
     ver_supported_games_frb: Option[String] = None,
-    //player_status
+    // player_status
     player_send_self_exclusion: Boolean = false,
     nb_player_send_self_exclusion: Option[Int] = None,
     nb_player_send_self_exclusion_done: Option[Int] = None,
@@ -88,11 +89,9 @@ case class PlayerStore(
     player_status_id: Option[String] = None,
     is_self_excluded_until: Option[String] = None,
     is_timeout_until: Option[String] = None,
-                      //consent
+    // consent
     email_consent: Option[String] = None,
     sms_consent: Option[String] = None
-
-
 )
 object PlayerStore {
 

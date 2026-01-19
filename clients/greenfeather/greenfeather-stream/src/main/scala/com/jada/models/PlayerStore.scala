@@ -66,6 +66,7 @@ case class PlayerStore(
     cp_accumulated: Option[String] = None,
     id_status: Option[String] = None,
     poa_status: Option[String] = None,
+    gcoins_balance: Option[String] = None,
     // technical
     player_info_from_batch: Boolean = false,
     player_batch_to_send: Boolean = false,

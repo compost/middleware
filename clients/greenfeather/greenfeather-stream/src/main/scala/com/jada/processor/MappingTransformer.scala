@@ -963,7 +963,9 @@ class MappingTransformer(
           player_info_from_batch = true,
           player_batch_to_send = true,
           id_status = inputPlayerBatch.id_status.orElse(player.id_status),
-          poa_status = inputPlayerBatch.poa_status.orElse(player.poa_status)
+          poa_status = inputPlayerBatch.poa_status.orElse(player.poa_status),
+          gcoins_balance =
+            inputPlayerBatch.gcoins_balance.orElse(player.gcoins_balance)
         )
 
       case None =>
@@ -1031,7 +1033,8 @@ class MappingTransformer(
           player_info_from_batch = true,
           player_batch_to_send = true,
           id_status = inputPlayerBatch.id_status,
-          poa_status = inputPlayerBatch.poa_status
+          poa_status = inputPlayerBatch.poa_status,
+          gcoins_balance = inputPlayerBatch.gcoins_balance
         )
     }
   }

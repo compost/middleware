@@ -61,5 +61,6 @@ case class PlayerBatch(
     avg_deposit_eur: Option[String] = None,
     cp_accumulated: Option[String] = None,
     id_status: Option[String] = None,
-    poa_status: Option[String] = None
+    poa_status: Option[String] = None,
+    gcoins_balance: Option[String] = None
 )

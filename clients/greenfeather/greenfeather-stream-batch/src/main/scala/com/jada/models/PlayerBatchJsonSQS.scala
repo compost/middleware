@@ -62,7 +62,8 @@ case class PlayerBatchJsonSQS(
     avg_deposit_eur: Option[String] = None,
     cp_accumulated: Option[String] = None,
     id_status: Option[String] = None,
-    poa_status: Option[String] = None
+    poa_status: Option[String] = None,
+    gcoins_balance: Option[String] = None
 )
 
 object PlayerBatchJsonSQS {
@@ -131,7 +132,8 @@ object PlayerBatchJsonSQS {
       avg_deposit_eur = ps.avg_deposit_eur,
       cp_accumulated = ps.cp_accumulated,
       id_status = ps.id_status,
-      poa_status = ps.poa_status
+      poa_status = ps.poa_status,
+      gcoins_balance = ps.gcoins_balance
     )
   }
 
