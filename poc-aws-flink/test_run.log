@@ -1,0 +1,35 @@
+Starting a Gradle Daemon, 1 stopped Daemon could not be reused, use --status for details
+
+
+[2A[1B[1m> Starting Daemon[m[17D[1B[1A> IDLE[0K[6D[1B[2A[1m<[0;1m-------------> 0% INITIALIZING [52ms][m[38D[2B[2A[1m<[0;1m-------------> 0% INITIALIZING [153ms][m[39D[2B[2A[1m<[0;1m-------------> 0% INITIALIZING [253ms][m[39D[2B[2A[1m<[0;1m-------------> 0% INITIALIZING [350ms][m[39D[2B[2AReusing configuration cache.[0K
+[1B[0K
+[2A[1m<[0;1m-------------> 0% INITIALIZING [453ms][m[39D[1B[1m> Loading configuration cache state[m[35D[1B[2A[1m<[0;1m-------------> 0% INITIALIZING [550ms][m[39D[2B[2A[1m<[0;1m-------------> 0% INITIALIZING [650ms][m[39D[2B[2A[1m<[0;1m-------------> 0% INITIALIZING [753ms][m[39D[1B[1m> Loading configuration cache state > :[m[39D[1B[2A[1m<[0;1m-------------> 0% INITIALIZING [853ms][m[39D[2B[2A[1m<[0;32;1m===[0;39;1m----------> 28% EXECUTING [953ms][m[0K[37D[1B[1m> :compileJava[m[0K[14D[1B[2A[1m<[0;32;1m=======[0;39;1m------> 57% EXECUTING [1s][m[0K[34D[1B[1m> :compileTestJava[m[18D[1B[2A[1m<[0;32;1m===========[0;39;1m--> 85% EXECUTING [1s][m[34D[1B[1m> :test[m[0K[7D[1B[1A[1m> :test > 0 tests completed[m[27D[1B[2A[1m<[0;32;1m===========[0;39;1m--> 85% EXECUTING [2s][m[34D[2B
+[1A[1m> :test > Executing test io.symplify.flink.FlinkIntegrationTest[m[63D[1B[2A[1m> :test[m[0K[7D[1B> IDLE[0K[6D[1B[3A[0K
+[31;1m> Task :test[0;39m[31m FAILED[39m[0K
+The automatic loading of test framework implementation dependencies has been deprecated. This is scheduled to be removed in Gradle 9.0. Declare the desired test framework directly on the test suite or explicitly declare the test framework implementation dependencies on the test's runtime classpath. Consult the upgrading guide for further information: https://docs.gradle.org/8.14.3/userguide/upgrading_version_8.html#test_framework_implementation_dependencies[0K
+
+FlinkIntegrationTest > initializationError [31mFAILED[39m
+    java.lang.ExceptionInInitializerError at Unsafe.java:-2
+        Caused by: java.lang.RuntimeException at FlinkIntegrationTest.java:47
+            Caused by: java.lang.IllegalStateException at FlinkIntegrationTest.java:43
+
+[Incubating] Problems report is available at: file:///Users/stephanejeandeaux/project/src/github.com/compost/middleware/poc-aws-flink/build/reports/problems/problems-report.html
+4 actionable tasks: 2 executed, 2 up-to-date
+Configuration cache entry reused.
+[0K
+[0K
+[0K
+[3A[1m<[0;1m-------------> 0% WAITING[m[26D[1B[1m> :test[m[7D[1B> IDLE[6D[1B
+1 test completed, 1 failed
+
+[31mFAILURE: [39m[31mBuild failed with an exception.[39m
+
+* What went wrong:
+Execution failed for task ':test'.
+[33m> [39mThere were failing tests. See the report at: file:///Users/stephanejeandeaux/project/src/github.com/compost/middleware/poc-aws-flink/build/reports/tests/test/index.html
+
+* Try:
+[33m> [39mRun with [1m--scan[m to get full insights.
+
+[31;1mBUILD FAILED[0;39m in 3s
+[3A[2K[1B[2K[1B[2K[2A
