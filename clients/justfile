@@ -17,7 +17,7 @@ mvn-push profile: login
 
 mvn-function:
   # deploy functions
-  mvn clean package azure-functions:deploy -Pjada -f {{invocation_directory()}}/pom.xml
+  mvn clean package azure-functions:deploy -Pjada -f {{invocation_directory()}}/pom.xml -s ${MVN_SETTINGS:-${HOME}/.m2/settings.xml}
 
 aca-replicas:
   # This command is slow as it makes a separate API call for each container app.
