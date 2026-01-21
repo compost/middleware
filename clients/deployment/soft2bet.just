@@ -1,4 +1,4 @@
-version_main:="20260108"
+version_main:="20260121"
 
 soft2bet-deactivate-all:
   @just deactivate Soft2Bet soft2bet-logins 
