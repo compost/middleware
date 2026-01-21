@@ -215,7 +215,7 @@ class Functions {
   )
   val fp = new Brands(
     ids = Set(229, 230, 236, 237, 253, 258, 272, 273, 282, 285, 300, 311, 320,
-      328, 331, 332, 338, 153, 308, 255, 274),
+      328, 331, 332, 338, 153, 308, 255, 274, 355),
     folder = "fp",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/soft2bet-fp-eventhub.fifo",
@@ -292,7 +292,7 @@ class Functions {
     region = Regions.EU_NORTH_1
   )
   val ro2 = new Brands(
-    ids = Set(309),
+    ids = Set(309, 356),
     folder = "ro2",
     queue =
       "https://sqs.eu-north-1.amazonaws.com/663880797555/eventhub_three_5310_soft2betRo2.fifo",
