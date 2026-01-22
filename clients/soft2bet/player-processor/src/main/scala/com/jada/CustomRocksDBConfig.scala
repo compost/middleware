@@ -1,7 +1,7 @@
 package com.jada
 
 import org.apache.kafka.streams.state.RocksDBConfigSetter
-import org.rocksdb.Options
+import org.rocksdb.{BlockBasedTableConfig, ChecksumType, Options}
 import java.util
 
 class CustomRocksDBConfig extends RocksDBConfigSetter {
@@ -12,5 +12,16 @@ class CustomRocksDBConfig extends RocksDBConfigSetter {
   ): Unit = {
     // Increase threads for background work like flushing and compaction
     options.setIncreaseParallelism(8)
+
+    // Disable paranoid checks
+    options.setParanoidChecks(false)
+
+    // Disable checksum verification (and generation for new blocks)
+    val tableConfig = options.tableFormatConfig() match {
+      case config: BlockBasedTableConfig => config
+      case _                             => new BlockBasedTableConfig()
+    }
+    tableConfig.setChecksumType(ChecksumType.kNoChecksum)
+    options.setTableFormatConfig(tableConfig)
   }
 }
