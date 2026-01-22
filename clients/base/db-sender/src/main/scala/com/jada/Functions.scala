@@ -114,7 +114,7 @@ class Functions {
     folder = "gannar",
     mappingSelector = "batch-import",
     queue =
-      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5317_WiseGlobalGannar",
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5317_WiseGlobalGannar.fifo",
     region = Regions.EU_CENTRAL_1
   )
 
@@ -123,10 +123,27 @@ class Functions {
     folder = "gannar_DEV",
     mappingSelector = "DEV_batch-import",
     queue =
-      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5317_WiseGlobalGannar",
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5317_WiseGlobalGannar.fifo",
     region = Regions.EU_CENTRAL_1
   )
 
+  val novero = new Brand(
+    id = 358,
+    folder = "novero",
+    mappingSelector = "batch-import",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5319_WiseGlobalNovero.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
+
+  val devNovero = new Brand(
+    id = 357,
+    folder = "novero_DEV",
+    mappingSelector = "DEV_batch-import",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5319_WiseGlobalNovero.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
 
   lazy val spark = SparkSession.builder
     .master("local[*]")
@@ -143,7 +160,9 @@ class Functions {
       marsbet,
       devMarsbet,
       gannar,
-      devGannar
+      devGannar,
+      novero,
+      devNovero
     ).filter(b => ids.contains(b.id))
 
   val outputContainerName = "base"
