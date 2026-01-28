@@ -145,6 +145,44 @@ class Functions {
     region = Regions.EU_CENTRAL_1
   )
 
+  val chainspin = new Brand(
+    id = 360,
+    folder = "chainspin",
+    mappingSelector = "batch-import",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5318_WiseGlobalChainSpin.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
+
+  val devChainspin = new Brand(
+    id = 359,
+    folder = "chainspin_DEV",
+    mappingSelector = "DEV_batch-import",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5318_WiseGlobalChainSpin.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
+
+  val rollblock = new Brand(
+    id = 362,
+    folder = "rollblock",
+    mappingSelector = "batch-import",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5322_WiseGlobalRollBlock.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
+
+  val devRollblock = new Brand(
+    id = 361,
+    folder = "rollblock_DEV",
+    mappingSelector = "DEV_batch-import",
+    queue =
+      "https://sqs.eu-central-1.amazonaws.com/663880797555/eventhub_three_5322_WiseGlobalRollBlock.fifo",
+    region = Regions.EU_CENTRAL_1
+  )
+
+
+
   lazy val spark = SparkSession.builder
     .master("local[*]")
     .appName("BaseGetBatchUpdate")
@@ -162,7 +200,11 @@ class Functions {
       gannar,
       devGannar,
       novero,
-      devNovero
+      devNovero,
+      chainspin,
+      devChainspin,
+      rollblock,
+      devRollblock,
     ).filter(b => ids.contains(b.id))
 
   val outputContainerName = "base"
@@ -260,8 +302,8 @@ class Functions {
   def runLastAD(b: Brand)(implicit logger: Logger) = {
     val query =
       s"""
-          |SELECT player_id as id, last_activity_date 
-          |FROM CENTRALDW.BUS.PLAYERS_LAST_ACTIVITY_DATE 
+          |SELECT player_id as id, last_activity_date
+          |FROM CENTRALDW.BUS.PLAYERS_LAST_ACTIVITY_DATE
           |WHERE brand_id ${b.filter} AND DATEDIFF(day, LAST_ACTIVITY_DATE, GETDATE()) <= 7
           |""".stripMargin
 
@@ -433,7 +475,7 @@ class Functions {
       columnBrandId: String = "BRAND_ID"
   )(implicit logger: java.util.logging.Logger): Unit = {
     val sql = s"""
-          |SELECT TO_JSON(OBJECT_CONSTRUCT('id', ${columnPlayerId}, 'properties',  OBJECT_CONSTRUCT(${properties}))) 
+          |SELECT TO_JSON(OBJECT_CONSTRUCT('id', ${columnPlayerId}, 'properties',  OBJECT_CONSTRUCT(${properties})))
           |FROM ${table}
           |WHERE ${columnBrandId} ${brand.filter}
           |""".stripMargin
