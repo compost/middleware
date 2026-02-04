@@ -237,7 +237,7 @@ class Functions {
       220, 221, 222, 224, 225, 227, 228, 234, 235, 240, 243, 245, 246, 247, 248,
       250, 254, 256, 257, 261, 262, 267, 268, 269, 270, 271, 232, 280, 281, 283,
       284, 287, 288, 293, 298, 299, 302, 303, 304, 305, 306, 307, 110, 198, 310,
-      260, 316, 317, 318, 319, 322, 323, 325, 326, 330, 333, 334, 339, 343, 345, 346, 348),
+      260, 316, 317, 318, 319, 322, 323, 325, 326, 330, 333, 334, 339, 343, 345, 346, 348, 363),
     folder = "other",
     queue =
       "https://sqs.eu-central-1.amazonaws.com/663880797555/soft2bet-jada-eventhub.fifo",
@@ -430,7 +430,7 @@ class Functions {
           |    select distinct currency_id as currency_id, currency_description, brand_id
           |    from dbo.dim_currency where currency_id is not null and currency_description is not null
           |    ) as c on p.currency_id = c.currency_id  and p.brand_id = c.brand_id
-          |WHERE b.brand_id ${b.filter} 
+          |WHERE b.brand_id ${b.filter}
           |""".stripMargin
     val diff = """
           | AND (
@@ -488,8 +488,8 @@ class Functions {
       .option(
         "query",
         s"""
-          |SELECT player_id as id, last_activity_date 
-          |FROM CENTRALDW.BUS.PLAYERS_LAST_ACTIVITY_DATE 
+          |SELECT player_id as id, last_activity_date
+          |FROM CENTRALDW.BUS.PLAYERS_LAST_ACTIVITY_DATE
           |WHERE brand_id ${b.filter} AND DATEDIFF(day, LAST_ACTIVITY_DATE, GETDATE()) <= 7
           |""".stripMargin
       )
@@ -524,9 +524,9 @@ class Functions {
       .option(
         "query",
         s"""
-          |SELECT id, '214' as brandid 
-          |FROM VALUES 
-         | as t(id) 
+          |SELECT id, '214' as brandid
+          |FROM VALUES
+         | as t(id)
           | WHERE id like 'FUNID_%'
           |""".stripMargin
       )
@@ -582,9 +582,9 @@ class Functions {
       properties: String
   )(implicit logger: java.util.logging.Logger): Unit = {
     val sql = s"""
-          |SELECT TO_JSON(OBJECT_CONSTRUCT('id', ${columnPlayerId}, 'properties',  OBJECT_CONSTRUCT(${properties}))) 
+          |SELECT TO_JSON(OBJECT_CONSTRUCT('id', ${columnPlayerId}, 'properties',  OBJECT_CONSTRUCT(${properties})))
           |FROM ${table}
-          |WHERE $columnBrandId ${brand.filter} 
+          |WHERE $columnBrandId ${brand.filter}
           |""".stripMargin
     logger.info(sql)
     val df = spark.read

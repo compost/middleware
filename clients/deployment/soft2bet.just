@@ -1,8 +1,8 @@
-version_main:="20260123"
+version_main:="20260203"
 
 soft2bet-deactivate-all:
-  @just deactivate Soft2Bet soft2bet-logins 
-  @just deactivate Soft2Bet soft2bet-segmentation 
+  @just deactivate Soft2Bet soft2bet-logins
+  @just deactivate Soft2Bet soft2bet-segmentation
   @just deactivate Soft2Bet soft2bet-deprecated-kpi
   @just deactivate Soft2Bet soft2bet-firstdepositloss
   @just deactivate Soft2Bet soft2bet-statistics
@@ -15,24 +15,24 @@ soft2bet-deactivate-all:
   @just soft2bet-stop-main
 
 soft2bet-deactivate-realtime:
-  @just deactivate Soft2Bet soft2bet-logins 
+  @just deactivate Soft2Bet soft2bet-logins
   @just deactivate Soft2Bet soft2bet-firstdepositloss
   @just deactivate Soft2Bet soft2bet-sportpush
   @just deactivate Soft2Bet soft2bet-repartitioner
   @just deactivate Soft2Bet soft2bet-funid
   @just deactivate Soft2Bet soft2bet-viplevel
   @just deactivate Soft2Bet soft2bet-onepass
-  @just soft2bet-stop-main 
+  @just soft2bet-stop-main
 
 
 soft2bet-deactivate-batch:
-  @just deactivate Soft2Bet soft2bet-segmentation 
+  @just deactivate Soft2Bet soft2bet-segmentation
   @just deactivate Soft2Bet soft2bet-deprecated-kpi
   @just deactivate Soft2Bet soft2bet-statistics
   @just deactivate Soft2Bet soft2bet-ldc
 
 soft2bet-activate-batch:
-  @just activate Soft2Bet soft2bet-segmentation 
+  @just activate Soft2Bet soft2bet-segmentation
   @just activate Soft2Bet soft2bet-deprecated-kpi
   @just activate Soft2Bet soft2bet-statistics
   @just activate Soft2Bet soft2bet-ldc
@@ -48,6 +48,9 @@ soft2bet-deploy-main:
 
 
 soft2bet-deactivate-checker:
-  @just deactivate Soft2Bet soft2bet-checker-anglet 
-  @just deactivate Soft2Bet soft2bet-checker-biarritz 
+  @just deactivate Soft2Bet soft2bet-checker-anglet
+  @just deactivate Soft2Bet soft2bet-checker-biarritz
 
+soft2bet-health:
+   @aca-health-checker check   --resource-group Soft2Bet --payload-regex '.*RUNNING.*'
+   @https https://soft2bet-players-processor.azurewebsites.net/q/health | grep RUNNING || echo main FAIL

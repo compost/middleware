@@ -39,6 +39,8 @@ struct Cli {
 enum Commands {
     #[command(about = "Check health status of all container apps")]
     Check {
+        #[arg(long, help = "Optional resource group to filter container apps")]
+        resource_group: Option<String>,
         #[arg(long, help = "Include response payload in output")]
         include_payload: bool,
         #[arg(long, help = "Optional regex pattern to validate payload against")]
@@ -460,10 +462,13 @@ fn sanitize_payload(text: &str) -> String {
     text.replace('\t', " ").replace('\n', " ").replace('\r', " ")
 }
 
-async fn check_container_apps_health(include_payload: bool, payload_regex: Option<String>, color_regex: bool, color_status: bool, format: &OutputFormat) -> Result<()> {
+async fn check_container_apps_health(resource_group: Option<String>, include_payload: bool, payload_regex: Option<String>, color_regex: bool, color_status: bool, format: &OutputFormat) -> Result<()> {
     let subscription_id = get_subscription_id().await?;
     let azure_client = AzureClient::new(subscription_id).await?;
-    let apps = azure_client.get_container_apps().await?;
+    let apps = match &resource_group {
+        Some(rg) => azure_client.get_container_apps_in_resource_group(rg).await?,
+        None => azure_client.get_container_apps().await?,
+    };
 
     // Compile regex if provided
     let regex = payload_regex
@@ -894,8 +899,8 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Check { include_payload, payload_regex, color_regex, color_status } => {
-            check_container_apps_health(include_payload, payload_regex, color_regex, color_status, &cli.format).await?;
+        Commands::Check { resource_group, include_payload, payload_regex, color_regex, color_status } => {
+            check_container_apps_health(resource_group, include_payload, payload_regex, color_regex, color_status, &cli.format).await?;
         }
         Commands::Activate { app_name, resource_group, revision_name } => {
             activate_revision_cmd(&app_name, &resource_group, &revision_name, &cli.format).await?;
